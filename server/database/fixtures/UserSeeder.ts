@@ -2,27 +2,29 @@ import AbstractSeeder from "./AbstractSeeder";
 
 class UserSeeder extends AbstractSeeder {
   constructor() {
-    // Call the constructor of the parent class (AbstractSeeder) with appropriate options
     super({ table: "user", truncate: true });
   }
 
-  // The run method - Populate the 'user' table with fake data
-
   run() {
-    // Generate and insert fake data into the 'user' table
     for (let i = 0; i < 10; i += 1) {
-      // Generate fake user data
       const fakeUser = {
-        email: this.faker.internet.email(), // Generate a fake email using faker library
-        password: this.faker.internet.password(), // Generate a fake password using faker library
-        refName: `user_${i}`, // Create a reference name for the user
+        email: this.faker.internet.email(),
+        login: this.faker.internet.username(),
+        password: this.faker.internet.password(),
+        firstname: this.faker.person.firstName(),
+        lastname: this.faker.person.lastName(),
+        born_at: this.faker.date.birthdate(),
+        address: this.faker.location.streetAddress(),
+        city: this.faker.location.city(),
+        zip_code: this.faker.location.zipCode("#####"),
+        phone: this.faker.string.numeric(10),
+        picture: this.faker.image.personPortrait(),
+        refName: `user_${i}`,
       };
 
-      // Insert the fakeUser data into the 'user' table
-      this.insert(fakeUser); // insert into user(email, password) values (?, ?)
+      this.insert(fakeUser);
     }
   }
 }
 
-// Export the UserSeeder class
 export default UserSeeder;
