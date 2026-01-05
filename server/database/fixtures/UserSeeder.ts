@@ -9,7 +9,7 @@ class UserSeeder extends AbstractSeeder {
     for (let i = 0; i < 10; i += 1) {
       const fakeUser = {
         email: this.faker.internet.email(),
-        login: this.faker.internet.username(),
+        username: this.faker.internet.username(),
         password: this.faker.internet.password(),
         firstname: this.faker.person.firstName(),
         lastname: this.faker.person.lastName(),
