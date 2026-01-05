@@ -48,10 +48,28 @@
   --body-mobile: "body-mobile";
   --tag-mobile: "tag-mobile";
 
-  --light-color: #fafafa;
-  --dark-color: #2e2e2e;
-  --neutral-color: #e2e2e2;
-  --accent-color: #ec5a00;
-  --validation-color: #00bd7d;
-  --input-color: rgba(0, 189, 125, 0.2);
+  --light-color: rgb(250, 250, 250);
+  --dark-color: rgb(46, 46, 46);
+  --neutral-color: rgb(226, 226, 226);
+  --accent-color: rgb(108, 92, 231);
+  --button-color: rgb(242, 183, 5);
+  --input-color: rgb(0, 189, 125);
+}
+
+[data-mode="light"] {
+  --light-color: rgb(250, 250, 250);
+  --dark-color: rgb(46, 46, 46);
+  --neutral-color: rgb(226, 226, 226);
+  --accent-color: rgb(108, 92, 231);
+  --button-color: rgb(242, 183, 5);
+  --input-color: rgb(0, 189, 125);
+}
+
+[data-mode="dark"] {
+  --light-color: rgb(28, 28, 28);
+  --dark-color: rgb(240, 240, 240);
+  --neutral-color: rgb(60, 60, 60);
+  --accent-color: rgb(130, 115, 255);
+  --button-color: rgb(255, 196, 25);
+  --input-color: rgb(0, 209, 155);
 }

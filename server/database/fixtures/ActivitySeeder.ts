@@ -9,11 +9,20 @@ class ActivitySeeder extends AbstractSeeder {
   run() {
     const levels = ["begginer", "amateur", "advance", "All"];
     const randomUser = Math.floor(Math.random() * 10);
+    const city = [
+      "Paris",
+      "Bordeaux",
+      "Lille",
+      "Lyon",
+      "Marseille",
+      "Toulouse",
+      "Strasbourg",
+    ];
 
     for (let i = 0; i < 20; i += 1) {
       const fakeUser = {
         address: this.faker.location.streetAddress(),
-        city: this.faker.location.city(),
+        city: this.faker.helpers.arrayElement(city),
         description: this.faker.lorem.words(10),
         zip_code: this.faker.location.zipCode("#####"),
         playing_at: this.faker.date.future(),
