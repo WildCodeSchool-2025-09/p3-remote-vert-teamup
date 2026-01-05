@@ -1,0 +1,57 @@
+@font-face {
+  font-family: "heading-mobile";
+  src: url(../assets/fonts/Poppins/Poppins-Black.ttf);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "title-mobile";
+  src: url(../assets/fonts/Poppins/Poppins-Black.ttf);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "button-mobile";
+  src: url(../assets/fonts/Poppins/Poppins-Black.ttf);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "body-highlight-mobile";
+  src: url(../assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "body-mobile";
+  src: url(../assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "tag-mobile";
+  src: url(../assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf);
+  font-size: 8px;
+  font-weight: 400;
+}
+
+:root {
+  --heading-mobile: "heading-mobile";
+  --title-mobile: "title-mobile";
+  --button-mobile: "button-mobile";
+  --body-highlight-mobile: "body-highlight-mobile";
+  --body-mobile: "body-mobile";
+  --tag-mobile: "tag-mobile";
+
+  --light-color: #fafafa;
+  --dark-color: #2e2e2e;
+  --neutral-color: #e2e2e2;
+  --accent-color: #ec5a00;
+  --validation-color: #00bd7d;
+  --input-color: rgba(0, 189, 125, 0.2);
+}
