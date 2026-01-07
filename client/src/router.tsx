@@ -1,10 +1,16 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
+import Activity from "./pages/Activity";
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <App />,
+    children: [
+      {
+        path: "/Activity",
+        element: <Activity />,
+      },
+    ],
   },
 ]);
 
