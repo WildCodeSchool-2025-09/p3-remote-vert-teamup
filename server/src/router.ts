@@ -2,12 +2,8 @@ import express from "express";
 
 const router = express.Router();
 
-/* ************************************************************************* */
-// Define Your API Routes Here
-/* ************************************************************************* */
+import activityActions from "./modules/Activity/activityActions";
 
-// Define item-related routes
-
-/* ************************************************************************* */
+router.get("/api/activities", activityActions.browse);
 
 export default router;
