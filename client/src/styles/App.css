@@ -1,0 +1,18 @@
+body {
+  background-color: var(--light-color);
+}
+
+button {
+  font-family: var(--button-mobile);
+  font-size: var(--button-size);
+}
+
+h1 {
+  font-family: var(--heading-mobile);
+  font-size: var(--heading-size);
+}
+
+h2 {
+  font-family: var(--title-mobile);
+  font-size: var(--title-size);
+}

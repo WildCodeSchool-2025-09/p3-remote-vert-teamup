@@ -1,5 +1,7 @@
 import { Outlet } from "react-router";
-import "src/styles/App.css";
+import "./styles/Reset.css";
+import "./styles/Variables.css";
+import "./styles/App.css";
 
 function App() {
   return (

@@ -1,0 +1,89 @@
+.card {
+  width: 85%;
+  background-color: var(--light-color);
+  border-radius: 10px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.card-header {
+  height: 7rem;
+  border-radius: 10px 10px 0 0;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 8px 8px 8px;
+  color: var(--light-color);
+
+  & > h2 {
+    text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+
+  & .label-price {
+    font-family: var(--body-highlight-mobile);
+    font-size: var(--body-size);
+    width: 3rem;
+    height: 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  }
+
+  & .free {
+    background-color: var(--input-color);
+  }
+
+  & .paid {
+    background-color: var(--accent-color);
+  }
+}
+
+.date-time-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  font-family: var(--body-highlight-mobile);
+  font-size: var(--body-size);
+
+  & > img {
+    margin-right: -4px;
+  }
+
+  & > img:nth-of-type(1) {
+    width: 1rem;
+  }
+
+  & > img:nth-of-type(2) {
+    width: 0.688rem;
+  }
+
+  & > img:nth-of-type(3) {
+    width: 0.875rem;
+  }
+}
+
+.card-tags {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px 8px 8px;
+  font-family: var(--tag-mobile);
+  font-size: var(--tag-size);
+
+  & .card-tag {
+    background-color: var(--neutral-color);
+    height: 0.8rem;
+    display: flex;
+    align-items: center;
+    padding: 0 6px 0 6px;
+    border-radius: 8px;
+  }
+
+  & .condition-missing {
+    display: none;
+  }
+}
