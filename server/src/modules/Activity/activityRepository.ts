@@ -2,17 +2,18 @@ import databaseClient from "../../../database/client";
 
 import type { Result, Rows } from "../../../database/client";
 
-type Activity = {
+type CardActivity = {
   id: number;
   address: string;
   city: string;
   zip_code: string;
   description: string;
   playing_at: string;
+  playing_time: string;
   playing_duration: number;
   nb_places: number;
   auto_validation: boolean;
-  price: number;
+  price: string;
   visibility: boolean;
   level: string;
   disabled: boolean;
@@ -22,6 +23,10 @@ type Activity = {
   toilet: boolean;
   user_id: number;
   sport_id: number;
+  username: string;
+  user_picture: string;
+  name: string;
+  sport_picture: string;
 };
 
 class ActivityRepository {
@@ -32,7 +37,7 @@ class ActivityRepository {
     );
 
     // Return the array of items
-    return rows as Activity[];
+    return rows as CardActivity[];
   }
 }
 
