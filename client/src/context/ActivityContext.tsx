@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Activity } from "../types/Activity";
 
@@ -14,6 +14,12 @@ const ActivityContext = createContext<ActivityContextType>({
 
 export function ActivityProvider({ children }: { children: ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities`)
+      .then((response) => response.json())
+      .then((activities) => setActivities(activities));
+  }, []);
 
   return (
     <ActivityContext.Provider value={{ activities, setActivities }}>
