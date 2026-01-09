@@ -1,4 +1,5 @@
 import express from "express";
+import activityActions from "./modules/activity/activityActions";
 
 const router = express.Router();
 
@@ -6,7 +7,7 @@ const router = express.Router();
 // Define Your API Routes Here
 /* ************************************************************************* */
 
-// Define item-related routes
+router.post("/api/activity", activityActions.add);
 
 /* ************************************************************************* */
 
