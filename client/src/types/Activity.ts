@@ -1,3 +1,7 @@
+export interface CardActivityType {
+  activity: Activity;
+}
+
 export interface Activity {
   id: number;
   address: string;
@@ -5,10 +9,11 @@ export interface Activity {
   zip_code: string;
   description: string;
   playing_at: string;
+  playing_time: string;
   playing_duration: number;
   nb_places: number;
   auto_validation: boolean;
-  price: number;
+  price: string;
   visibility: boolean;
   level: string;
   disabled: boolean;
@@ -18,4 +23,8 @@ export interface Activity {
   toilet: boolean;
   user_id: number;
   sport_id: number;
+  username: string;
+  user_picture: string;
+  name: string;
+  sport_picture: string;
 }
