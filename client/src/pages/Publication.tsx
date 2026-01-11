@@ -20,6 +20,7 @@ function Publication() {
   const [sportSearch, setSportSearch] = useState("");
   const [showSportDropdown, setShowSportDropdown] = useState(false);
   const comboboxRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
   const [address, setAddress] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [city, setCity] = useState("");
@@ -34,7 +35,6 @@ function Publication() {
   const [autoValidation, setAutoValidation] = useState(false);
   const [guestInput, setGuestInput] = useState("");
   const [guests, setGuests] = useState<string[]>([]);
-  const [showCriteriaModal, setShowCriteriaModal] = useState(false);
   const [locker, setLocker] = useState(false);
   const [shower, setShower] = useState(false);
   const [toilet, setToilet] = useState(false);
@@ -88,10 +88,18 @@ function Publication() {
     setGuests(guests.filter((g) => g !== guest));
   };
 
-  const closeModal = () => setShowCriteriaModal(false);
+  const openModal = () => {
+    modalRef.current?.showModal();
+  };
 
-  const handleModalKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") closeModal();
+  const closeModal = () => {
+    modalRef.current?.close();
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === modalRef.current) {
+      closeModal();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -321,32 +329,71 @@ function Publication() {
           rows={4}
         />
 
-        <button
-          type="button"
-          className="btn-criteria"
-          onClick={() => setShowCriteriaModal(true)}
-        >
-          Ajouter des critères
-        </button>
-
         {(locker ||
           shower ||
           toilet ||
           airConditioning ||
           level !== "All" ||
           handisport) && (
-          <section className="criteria-summary">
-            <strong>Critères :</strong>
-            <ul>
-              {level !== "All" && <li>Niveau : {level}</li>}
-              {locker && <li>Vestiaire</li>}
-              {shower && <li>Douche</li>}
-              {toilet && <li>Toilette</li>}
-              {airConditioning && <li>Climatisation</li>}
-              {handisport && <li>Handisport</li>}
-            </ul>
-          </section>
+          <div className="criteria-tags">
+            {level !== "All" && (
+              <span className="criteria-tag">
+                {level === "begginer"
+                  ? "Débutant"
+                  : level === "amateur"
+                    ? "Intermédiaire"
+                    : "Confirmé"}
+                <button type="button" onClick={() => setLevel("All")}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {locker && (
+              <span className="criteria-tag">
+                Vestiaires
+                <button type="button" onClick={() => setLocker(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {shower && (
+              <span className="criteria-tag">
+                Douches
+                <button type="button" onClick={() => setShower(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {toilet && (
+              <span className="criteria-tag">
+                Toilettes
+                <button type="button" onClick={() => setToilet(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {airConditioning && (
+              <span className="criteria-tag">
+                Climatisation
+                <button type="button" onClick={() => setAirConditioning(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {handisport && (
+              <span className="criteria-tag">
+                Handisport
+                <button type="button" onClick={() => setHandisport(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+          </div>
         )}
+
+        <button type="button" className="btn-criteria" onClick={openModal}>
+          Ajouter des critères
+        </button>
 
         <div className="status-box">
           <span className="status-label">Status * :</span>
@@ -437,78 +484,136 @@ function Publication() {
         </button>
       </form>
 
-      {showCriteriaModal && (
-        <dialog className="modal-criteria" open onKeyDown={handleModalKeyDown}>
-          <h2>Critères</h2>
-
-          <fieldset>
-            <legend>Niveau</legend>
-            <select
-              value={level}
-              onChange={(e) => setLevel(e.target.value as typeof level)}
+      <dialog
+        className="modal-criteria"
+        ref={modalRef}
+        onClick={handleBackdropClick}
+        onKeyDown={(e) => e.key === "Escape" && closeModal()}
+      >
+        <div className="modal-content">
+          <div className="modal-header">
+            <button type="button" className="modal-close" onClick={closeModal}>
+              ✕
+            </button>
+            <button
+              type="button"
+              className="modal-clear"
+              onClick={() => {
+                setLocker(false);
+                setShower(false);
+                setToilet(false);
+                setAirConditioning(false);
+                setLevel("All");
+                setHandisport(false);
+              }}
             >
-              <option value="All">Tout niveau</option>
-              <option value="begginer">Débutant</option>
-              <option value="amateur">Amateur</option>
-              <option value="advance">Confirmé</option>
-            </select>
-          </fieldset>
+              Tout effacer
+            </button>
+          </div>
 
-          <fieldset>
+          <fieldset className="criteria-fieldset">
             <legend>Équipements</legend>
-            <div className="checkbox-group">
-              <label>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Vestiaires
                 <input
                   type="checkbox"
                   checked={locker}
                   onChange={(e) => setLocker(e.target.checked)}
                 />
-                Vestiaire
               </label>
-              <label>
+              <label className="criteria-label">
+                Douches
                 <input
                   type="checkbox"
                   checked={shower}
                   onChange={(e) => setShower(e.target.checked)}
                 />
-                Douche
               </label>
-              <label>
+              <label className="criteria-label">
+                Toilettes
                 <input
                   type="checkbox"
                   checked={toilet}
                   onChange={(e) => setToilet(e.target.checked)}
                 />
-                Toilette
               </label>
-              <label>
+              <label className="criteria-label">
+                Climatisation
                 <input
                   type="checkbox"
                   checked={airConditioning}
                   onChange={(e) => setAirConditioning(e.target.checked)}
                 />
-                Climatisation
               </label>
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend>Accessibilité</legend>
-            <label>
-              <input
-                type="checkbox"
-                checked={handisport}
-                onChange={(e) => setHandisport(e.target.checked)}
-              />
-              Handisport
-            </label>
+          <hr className="criteria-divider" />
+
+          <fieldset className="criteria-fieldset">
+            <legend>Niveau</legend>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Tout niveau
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "All"}
+                  onChange={() => setLevel("All")}
+                />
+              </label>
+              <label className="criteria-label">
+                Débutant
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "begginer"}
+                  onChange={() => setLevel("begginer")}
+                />
+              </label>
+              <label className="criteria-label">
+                Intermédiaire
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "amateur"}
+                  onChange={() => setLevel("amateur")}
+                />
+              </label>
+              <label className="criteria-label">
+                Confirmé
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "advance"}
+                  onChange={() => setLevel("advance")}
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <hr className="criteria-divider" />
+
+          <fieldset className="criteria-fieldset">
+            <legend>Type de sport</legend>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Handisport
+                <input
+                  type="checkbox"
+                  checked={handisport}
+                  onChange={(e) => setHandisport(e.target.checked)}
+                />
+              </label>
+            </div>
           </fieldset>
 
           <button type="button" className="btn-validate" onClick={closeModal}>
             Valider
           </button>
-        </dialog>
-      )}
+        </div>
+      </dialog>
     </main>
   );
 }

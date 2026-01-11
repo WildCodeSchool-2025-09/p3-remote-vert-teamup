@@ -494,29 +494,39 @@ fieldset legend {
   line-height: 1;
 }
 
-.criteria-summary {
-  padding: 16px;
-  background-color: var(--neutral-color);
-  border-radius: 16px;
+.criteria-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
 }
 
-.criteria-summary strong {
-  font-family: var(--body-highlight-mobile);
-  font-size: var(--body-size);
-  color: var(--dark-color);
+.criteria-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #6c5ce7;
+  color: #fafafa;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 6px 10px 6px 14px;
+  border-radius: 15px;
 }
 
-.criteria-summary ul {
-  margin-top: 10px;
-  padding-left: 20px;
-  list-style: disc;
+.criteria-tag button {
+  background: none;
+  border: none;
+  color: #fafafa;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.8;
 }
 
-.criteria-summary li {
-  font-family: var(--body-mobile);
-  font-size: var(--body-size);
-  color: var(--dark-color);
-  margin-bottom: 6px;
+.criteria-tag button:hover {
+  opacity: 1;
 }
 
 .error-message {
@@ -549,64 +559,162 @@ fieldset legend {
 
 .modal-criteria {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--light-color);
-  padding: 28px 24px;
-  border-radius: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  margin: 0;
   border: none;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  width: 90%;
-  max-width: 360px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 1000;
+  background: transparent;
+  overflow: visible;
 }
 
 .modal-criteria::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal-criteria h2 {
-  font-family: var(--title-mobile);
-  font-size: var(--title-size);
+.modal-content {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fafafa;
+  width: 100%;
+  max-width: 390px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 16px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
   color: var(--dark-color);
-  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-clear {
+  background: none;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--dark-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.criteria-fieldset {
+  border: none;
+  padding: 0 37px;
   margin: 0;
 }
 
-.modal-criteria fieldset {
+.criteria-fieldset legend {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--dark-color);
+  margin-bottom: 12px;
+}
+
+.criteria-divider {
+  border: none;
+  border-top: 1px solid var(--dark-color);
+  margin: 16px 37px;
+}
+
+.criteria-group {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.modal-criteria legend {
-  font-family: var(--body-highlight-mobile);
-  font-size: var(--body-size);
-  color: var(--dark-color);
-}
-
-.modal-criteria select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--input-color);
-  border-radius: 25px;
-  font-family: var(--body-mobile);
-  font-size: var(--body-size);
-  background-color: var(--light-color);
-  color: var(--dark-color);
-  outline: none;
-}
-
-.modal-criteria select:focus {
-  border-color: var(--input-color);
-  box-shadow: 0 0 0 2px rgba(0, 189, 125, 0.2);
-}
-
-.modal-criteria fieldset > label {
-  flex-direction: row;
+.criteria-label {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  color: var(--dark-color);
+  cursor: pointer;
+}
+
+.criteria-label input[type="checkbox"],
+.criteria-label input[type="radio"] {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background-color: #e8e8e8;
+  border: 1px solid #c4c4c4;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.criteria-label input[type="checkbox"] {
+  border-radius: 2px;
+}
+
+.criteria-label input[type="radio"] {
+  border-radius: 50%;
+}
+
+.criteria-label input[type="checkbox"]:checked,
+.criteria-label input[type="radio"]:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px var(--dark-color);
+}
+
+.criteria-label input[type="checkbox"]:checked::after {
+  content: "✓";
+  display: block;
+  color: var(--light-color);
+  font-size: 8px;
+  text-align: center;
+  line-height: 10px;
+}
+
+.criteria-label input[type="radio"]:checked::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 4px;
+  background-color: var(--light-color);
+  border-radius: 50%;
+  margin: 3px auto;
+}
+
+.modal-criteria .btn-validate {
+  background-color: #f2b705;
+  color: #fafafa;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  padding: 6px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+  margin: 20px 0 30px;
 }
 
 @media (min-width: 1024px) {
@@ -738,21 +846,25 @@ fieldset legend {
     font-size: var(--body-desktop-size);
   }
 
-  .modal-criteria {
-    max-width: 480px;
-    padding: 36px 32px;
-    gap: 24px;
+  .modal-content {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    max-width: 420px;
+    max-height: 90vh;
   }
 
-  .modal-criteria h2 {
-    font-size: var(--title-desktop-size);
+  .criteria-fieldset legend {
+    font-size: 18px;
   }
 
-  .modal-criteria legend {
-    font-size: var(--body-desktop-size);
+  .criteria-label {
+    font-size: 12px;
   }
 
-  .modal-criteria select {
-    font-size: var(--body-desktop-size);
+  .criteria-label input[type="checkbox"],
+  .criteria-label input[type="radio"] {
+    width: 14px;
+    height: 14px;
   }
 }
