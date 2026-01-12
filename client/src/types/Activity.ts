@@ -27,4 +27,5 @@ export interface Activity {
   user_picture: string;
   name: string;
   sport_picture: string;
+  nb_participant: number;
 }
