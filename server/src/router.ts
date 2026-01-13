@@ -2,11 +2,9 @@ import express from "express";
 
 const router = express.Router();
 
-/* ************************************************************************* */
-// Define Your API Routes Here
-/* ************************************************************************* */
+import ActivityAction from "./modules/Activity/activityAction";
 
-// Define item-related routes
+router.get("/api/activity/filters", ActivityAction.browse);
 
 /* ************************************************************************* */
 

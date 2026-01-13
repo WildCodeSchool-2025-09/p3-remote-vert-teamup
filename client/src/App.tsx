@@ -1,7 +1,12 @@
-import "src/styles/App.css";
+import "./styles/App.css";
+import Filters from "./components/Filters/Filters";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <Filters />
+    </>
+  );
 }
 
 export default App;
