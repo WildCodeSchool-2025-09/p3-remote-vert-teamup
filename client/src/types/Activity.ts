@@ -1,8 +1,8 @@
-export interface CardActivityType {
+type CardActivityType = {
   activity: Activity;
-}
+};
 
-export interface Activity {
+type Activity = {
   id: number;
   address: string;
   city: string;
@@ -26,6 +26,5 @@ export interface Activity {
   username: string;
   user_picture: string;
   name: string;
-  sport_picture: string;
   nb_participant: number;
-}
+};

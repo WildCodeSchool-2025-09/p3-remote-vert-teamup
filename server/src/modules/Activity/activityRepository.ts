@@ -26,7 +26,6 @@ type CardActivity = {
   username: string;
   user_picture: string;
   name: string;
-  sport_picture: string;
   nb_participant: number;
 };
 
@@ -34,7 +33,7 @@ class ActivityRepository {
   async readAll() {
     // Execute the SQL SELECT query to retrieve all items from the "item" table
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT a.*, u.username, u.picture AS user_picture, s.name, s.picture AS sport_picture, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant FROM activity AS a JOIN user AS u ON u.id = a.user_id JOIN sport AS s ON s.id = a.sport_id LEFT JOIN participation AS p ON p.activity_id = a.id GROUP BY a.id",
+      "SELECT a.*, u.username, u.picture AS user_picture, s.name, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant FROM activity AS a JOIN user AS u ON u.id = a.user_id JOIN sport AS s ON s.id = a.sport_id LEFT JOIN participation AS p ON p.activity_id = a.id GROUP BY a.id",
     );
 
     // Return the array of items

@@ -15,8 +15,7 @@ CREATE TABLE user (
 
 CREATE TABLE sport (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(85) NOT NULL,
-  picture VARCHAR(255)
+  name VARCHAR(85) NOT NULL
 );
 
 CREATE TABLE activity (
@@ -71,31 +70,31 @@ CREATE TABLE participation (
 );
 
 
-INSERT INTO sport(name, picture)
+INSERT INTO sport(name)
 VALUES
-  ("Football", "/img_sports/football.png"),
-  ("Rugby", "/img_sports/rugby.png"),
-  ("Basketball", "/img_sports/basketball.png"),
-  ("Handball", "/img_sports/handball.png"),
-  ("Volleyball", "/img_sports/volleyball.png"),
-  ("Running", "/img_sports/running.png"),
-  ("Natation", "/img_sports/natation.png"),
-  ("Cyclisme", "/img_sports/cyclisme.png"),
-  ("VTT", "/img_sports/VTT.png"),
-  ("Tennis", "/img_sports/tennis.png"),
-  ("Tennis de table", "/img_sports/tennis_de_table.png"),
-  ("Badminton", "/img_sports/badminton.png"),
-  ("Squash", "/img_sports/squash.png"),
-  ("Padel", "/img_sports/padel.png"),
-  ("Bowling", "/img_sports/bowling.png"),
-  ("Fléchettes", "/img_sports/flechettes.png"),
-  ("Pétanque", "/img_sports/petanque.png"),
-  ("Karting", "/img_sports/karting.png"),
-  ("Canoë", "/img_sports/canoe.png"),
-  ("Surf", "/img_sports/surf.png"),
-  ("Ski", "/img_sports/ski.png"),
-  ("Snowboard", "/img_sports/snowboard.png"),
-  ("Patinage", "/img_sports/patinage.png"),
-  ("Escalade", "/img_sports/escalade.png"),
-  ("Randonnée", "/img_sports/randonee.png"),
-  ("Skateboard", "/img_sports/skateboard.png")
+  ("Football"),
+  ("Rugby"),
+  ("Basketball"),
+  ("Handball"),
+  ("Volleyball"),
+  ("Running"),
+  ("Natation"),
+  ("Cyclisme"),
+  ("VTT"),
+  ("Tennis"),
+  ("Tennis-de-table"),
+  ("Badminton"),
+  ("Squash"),
+  ("Padel"),
+  ("Bowling"),
+  ("Fléchettes"),
+  ("Pétanque"),
+  ("Karting"),
+  ("Canoë"),
+  ("Surf"),
+  ("Ski"),
+  ("Snowboard"),
+  ("Patinage"),
+  ("Escalade"),
+  ("Randonnée"),
+  ("Skateboard")
