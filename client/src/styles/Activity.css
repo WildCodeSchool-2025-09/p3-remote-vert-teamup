@@ -1,10 +1,21 @@
 h1 {
-  margin: 24px 0 16px 32px;
+  margin: 1.5rem 0 1rem 2rem;
 }
 
 .cards-activity {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 320px;
   gap: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    margin: 1.5rem 0 2rem 8rem;
+  }
+  .cards-activity {
+    width: 65%;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 2fr));
+    margin-left: 8rem;
+  }
 }
