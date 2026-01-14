@@ -117,18 +117,20 @@ function Filters() {
   return (
     <>
       <section className="section">
+        <div className="reset-btns-container flex-spacing">
+          <button type="button" className="close-btn cls-btn-size">
+            X
+          </button>
+          <button type="button" className="close-btn" onClick={resetFilters}>
+            Tout efface
+          </button>
+        </div>
         <div className="container">
-          <div className="filter-btns">
-            <button type="button">X</button>
-            <button type="button" onClick={resetFilters}>
-              Tout efface
-            </button>
-          </div>
           <fieldset className="equipment">
-            <legend>Equipments</legend>
-            <div>
+            <legend className="filter-title">Équipements</legend>
+            <div className="flex-clmn">
               {EQUIPMENT_OPTIONS.map((e) => (
-                <label key={e.key}>
+                <label key={e.key} className="flex-spacing">
                   {e.label}
                   <input
                     type="checkbox"
@@ -142,11 +144,11 @@ function Filters() {
             </div>
           </fieldset>
           <fieldset className="equipment">
-            <legend>Niveau</legend>
-            <div>
+            <legend className="filter-title">Niveau</legend>
+            <div className="flex-clmn">
               {LEVEL_OPTIONS.map((e) => {
                 return (
-                  <label key={e.key}>
+                  <label key={e.key} className="flex-spacing">
                     {e.label}
                     <input
                       type="radio"
@@ -160,10 +162,10 @@ function Filters() {
               })}
             </div>
           </fieldset>
-          <fieldset className="equipoment">
-            <legend>Budget</legend>
-            <div>
-              <label>
+          <fieldset className="">
+            <legend className="filter-title">Budget</legend>
+            <div className="flex-clmn">
+              <label className="flex-spacing">
                 Gratuit
                 <input
                   type="checkbox"
@@ -172,9 +174,7 @@ function Filters() {
                   onChange={handleCheckbox}
                 />
               </label>
-            </div>
-            <div>
-              <label>
+              <label className="flex-spacing">
                 Payent
                 <input
                   type="range"
@@ -196,25 +196,28 @@ function Filters() {
               </label>
             </div>
           </fieldset>
-          <fieldset className="equipment">
-            <legend>Type de Sport</legend>
-            <div>
-              <label>
+          <fieldset>
+            <legend className="filter-title">Type de Sport</legend>
+            <div className="flex-clmn">
+              <label className="flex-spacing">
                 Handisport
                 <input
                   type="checkbox"
-                  id="disabled"
                   name="disabled"
                   checked={filters.disabled}
                   onChange={handleCheckbox}
                 />
               </label>
+              <button
+                type="button"
+                onClick={fetchData}
+                className="validate-btn"
+              >
+                Validate
+              </button>
             </div>
           </fieldset>
         </div>
-        <button type="button" onClick={fetchData}>
-          Validate
-        </button>
       </section>
     </>
   );
