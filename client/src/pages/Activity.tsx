@@ -1,9 +1,28 @@
+import { useEffect, useState } from "react";
 import CardActivity from "../components/CardActivity";
-import { useActivity } from "../context/ActivityContext";
 import "../styles/Activity.css";
+import { useParams } from "react-router";
+import Pagination from "../components/Pagination";
+
+const LIMIT = 10;
 
 function Activity() {
-  const { activities } = useActivity();
+  const { page } = useParams();
+  const currentPage = Math.max(1, Number(page) || 1);
+
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}`,
+    )
+      .then((response) => response.json())
+      .then((activities) => {
+        setActivities(activities.activities);
+        setTotalPages(activities.pagination.totalPages);
+      });
+  }, [currentPage]);
 
   return (
     <>
@@ -13,6 +32,7 @@ function Activity() {
           <CardActivity key={activity.id} activity={activity} />
         ))}
       </section>
+      <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
   );
 }
