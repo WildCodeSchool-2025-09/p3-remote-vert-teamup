@@ -3,49 +3,58 @@ import { useState } from "react";
 
 type Filters = {
   locker: boolean;
-  douches: boolean;
+  shower: boolean;
   toilet: boolean;
   air_conditioning: boolean;
   level: string | null;
   price: number | null;
-  handisport: boolean;
+  disabled: boolean;
 };
 
-const EQUIPMENT_OPTIONS = [
-  { key: "locker", label: "Vestiaires", checked: false },
-  { key: "shower", label: "Douches", checked: false },
-  { key: "toilet", label: "Toilettes", checked: false },
-  { key: "air_conditioning", label: "Climatisation", checked: false },
+type EquipmentOptionsType = {
+  key: keyof Filters;
+  label: string;
+};
+
+const EQUIPMENT_OPTIONS: EquipmentOptionsType[] = [
+  { key: "locker", label: "Vestiaires" },
+  { key: "shower", label: "Douches" },
+  { key: "toilet", label: "Toilettes" },
+  { key: "air_conditioning", label: "Climatisation" },
 ];
 
-const LEVEL_OPTIONS = [
+type LevelOptionsType = {
+  key: string;
+  label: string;
+};
+
+const LEVEL_OPTIONS: LevelOptionsType[] = [
   { key: "all", label: "Tout Niveu" },
   { key: "amateur", label: "Débutant" },
   { key: "begginer", label: "Intermédiaire" },
   { key: "advance", label: "Confirmé" },
 ];
 
+const initialState = {
+  locker: false,
+  shower: false,
+  toilet: false,
+  air_conditioning: false,
+  level: null,
+  price: 30,
+  disabled: false,
+};
+
 function Filters() {
-  const initialState = {
-    locker: false,
-    shower: false,
-    toilet: false,
-    air_conditioning: false,
-    level: null,
-    price: null,
-    handisport: false,
-  };
-
-  const [filters, setFilters] = useState<Filters | object>(initialState);
+  const [filters, setFilters] = useState<Filters>(initialState);
   const [filteredActivities, setFilteredActivities] = useState({});
-  const [rangeGrayed, setRangeGrayed] = useState(false);
-  const [resetAll, setResetAll] = useState(false);
+  const [isFree, setIsFree] = useState<boolean>(false);
 
+  console.log(filters.price);
   console.log(filteredActivities);
 
   const resetFilters = () => {
     setFilters(initialState);
-    setResetAll(true);
   };
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,9 +76,10 @@ function Filters() {
       }
 
       if (name === "price") {
+        setIsFree(checked);
         return {
           ...prev,
-          price: checked ? (checked ? 0 : false) : value,
+          price: checked ? 0 : prev.price,
         };
       }
 
@@ -92,7 +102,7 @@ function Filters() {
     fetch(`http://localhost:3310/api/activity/filters?${queryString}`)
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Eequest Failed");
+          throw new Error("Request Failed");
         }
         return res.json();
       })
@@ -101,26 +111,6 @@ function Filters() {
         console.log(err);
       });
   };
-
-  // const fetchData = () => {
-  //   fetch("http://localhost:3310/api/activity/filters", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(filters),
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         throw new Error("Request Failed");
-  //       }
-  //       return res.json();
-  //     })
-  //     .then((data) => setFilteredActivities(data))
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
 
   return (
     <>
@@ -142,7 +132,7 @@ function Filters() {
                     type="checkbox"
                     name="equipment"
                     value={e.key}
-                    checked={resetAll}
+                    checked={filters[e.key] as boolean}
                     onChange={handleCheckbox}
                   />
                 </label>
@@ -160,6 +150,7 @@ function Filters() {
                       type="radio"
                       name="level"
                       value={e.key}
+                      checked={filters.level === e.key}
                       onChange={handleCheckbox}
                     />
                   </label>
@@ -175,11 +166,8 @@ function Filters() {
                 <input
                   type="checkbox"
                   name="price"
-                  // defaultChecked
-                  onChange={(e) => {
-                    handleCheckbox(e);
-                    setRangeGrayed(e.target.checked);
-                  }}
+                  checked={isFree}
+                  onChange={handleCheckbox}
                 />
               </label>
             </div>
@@ -189,11 +177,17 @@ function Filters() {
                 <input
                   type="range"
                   name="price"
-                  id="prange"
                   max={100}
-                  defaultValue={0}
-                  disabled={rangeGrayed}
-                  onChange={handleCheckbox}
+                  defaultValue={30}
+                  disabled={isFree}
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        price: Number(e.target.value),
+                      };
+                    });
+                  }}
                 />
               </label>
             </div>
@@ -207,6 +201,7 @@ function Filters() {
                   type="checkbox"
                   id="disabled"
                   name="disabled"
+                  checked={filters.disabled}
                   onChange={handleCheckbox}
                 />
               </label>
