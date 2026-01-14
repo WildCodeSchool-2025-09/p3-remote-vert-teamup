@@ -1,6 +1,6 @@
 import express from "express";
-import sportAction from "./modules/sport/sportAction";
 import activityAction from "./modules/activity/activityAction";
+import sportAction from "./modules/sport/sportAction";
 
 const router = express.Router();
 
