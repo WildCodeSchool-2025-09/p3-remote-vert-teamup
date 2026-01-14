@@ -12,8 +12,11 @@ function SearchBar() {
   });
   const [apiErrorSport, setApiErrorSport] = useState(false);
   const [apiErrorCity, setApiErrorCity] = useState(false);
-  const today = new Date();
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [emptyInputSport, setEmptyInputSport] = useState(false);
+  const [emptyInputCity, setEmptyInputCity] = useState(false);
+  const [emptyInputDate, setEmptyInputDate] = useState(false);
+  const today = new Date();
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   useEffect(() => {
@@ -37,6 +40,7 @@ function SearchBar() {
 
   function searchSport(e: React.ChangeEvent<HTMLInputElement>) {
     setActivityToPlay((prev) => ({ ...prev, sport: e.target.value }));
+    emptyInputSport && setEmptyInputSport(false);
     if (e.target.value.length > 0) {
       fetch(`${import.meta.env.VITE_API_URL}/api/sport?name=${e.target.value}`)
         .then((response) => response.json())
@@ -57,6 +61,7 @@ function SearchBar() {
 
   function searchCity(e: React.ChangeEvent<HTMLInputElement>) {
     setActivityToPlay((prev) => ({ ...prev, city: e.target.value }));
+    emptyInputCity && setEmptyInputCity(false);
     if (e.target.value.length > 2) {
       fetch(`https://geo.api.gouv.fr/communes?nom=${e.target.value}`)
         .then((response) => response.json())
@@ -75,7 +80,15 @@ function SearchBar() {
     setFilteredCities([]);
   }
 
+  function searchDate(e: React.ChangeEvent<HTMLInputElement>) {
+    setActivityToPlay((prev) => ({ ...prev, date: e.target.value }));
+    emptyInputDate && setEmptyInputDate(false);
+  }
+
   function clickForSearchInDesktop() {
+    !activityToPlay.sport && setEmptyInputSport(true);
+    !activityToPlay.city && setEmptyInputCity(true);
+    !activityToPlay.date && setEmptyInputDate(true);
     if (
       activityToPlay.sport &&
       activityToPlay.city &&
@@ -105,17 +118,22 @@ function SearchBar() {
             </g>
           </svg>
           <input
-            className={`${apiErrorSport ? "error-input" : ""}`}
+            className={`${apiErrorSport ? "error-input" : ""} ${filteredSports.length > 0 ? "bottom-border" : ""}`}
             type="text"
             placeholder="Rechercher une activité..."
             required
             value={activityToPlay.sport}
             onChange={searchSport}
+            onBlur={() => setFilteredSports([])}
           />
           <ul
-            className={`${apiErrorSport ? "dropdown-false" : filteredSports.length > 0 && "dropdown"}`}
+            className={`${apiErrorSport || emptyInputSport ? "dropdown-false" : filteredSports.length > 0 && "dropdown"}`}
           >
-            {apiErrorSport ? (
+            {emptyInputSport ? (
+              <li className="error-li">
+                <p>Veuillez remplir ce champs</p>
+              </li>
+            ) : apiErrorSport ? (
               <li className="error-li">
                 <p>Ce sport n'existe pas</p>
               </li>
@@ -131,12 +149,11 @@ function SearchBar() {
             )}
           </ul>
         </article>
-
         <article>
           <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true"
             className={`${apiErrorCity ? "error-svg" : ""}`}
+            aria-hidden="true"
+            viewBox="0 0 24 24"
           >
             <g clip-path="url(#clip0_70_42)">
               <path d="M5.44744 11.7671C4.8678 10.7042 4.55995 9.51181 4.55995 8.27356C4.55995 4.23444 7.83734 0.96003 11.8804 0.96003C15.9235 0.96003 19.2009 4.23444 19.2009 8.27356C19.2009 9.44537 18.9251 10.5768 18.4032 11.5969C18.2825 11.8329 18.376 12.1221 18.612 12.2428C18.848 12.3635 19.1372 12.2701 19.2579 12.0341C19.8486 10.8794 20.1609 9.59827 20.1609 8.27356C20.1609 3.70405 16.4535 3.05176e-05 11.8804 3.05176e-05C7.30737 3.05176e-05 3.59998 3.70405 3.59998 8.27356C3.59998 9.67341 3.94861 11.0237 4.60465 12.2267C4.73156 12.4595 5.02312 12.5453 5.25586 12.4183C5.48859 12.2914 5.57437 11.9999 5.44746 11.7671L5.44744 11.7671Z" />
@@ -145,18 +162,22 @@ function SearchBar() {
             </g>
           </svg>
           <input
-            className={`${apiErrorCity ? "error-input" : ""}`}
+            className={`${apiErrorCity ? "error-input" : ""} ${filteredCities.length > 0 ? "bottom-border" : ""}`}
             type="text"
             placeholder="Ville ?"
             required
             value={activityToPlay.city}
             onChange={searchCity}
+            onBlur={() => setFilteredCities([])}
           />
-
           <ul
-            className={`${apiErrorCity ? "dropdown-false" : filteredCities.length > 0 && "dropdown"}`}
+            className={`${apiErrorCity || emptyInputCity ? "dropdown-false" : filteredCities.length > 0 && "dropdown"}`}
           >
-            {apiErrorCity ? (
+            {emptyInputCity ? (
+              <li className="error-li">
+                <p>Veuillez remplir ce champs</p>
+              </li>
+            ) : apiErrorCity ? (
               <li className="error-li">
                 <p>Cette ville n'existe pas</p>
               </li>
@@ -171,19 +192,22 @@ function SearchBar() {
             )}
           </ul>
         </article>
-
         <article>
           <img src="/icon/calendar.png" alt="Calendrier" />
           <input
             type="date"
             required
             min={today.toISOString().split("T")[0]}
-            onChange={(e) =>
-              setActivityToPlay((prev) => ({ ...prev, date: e.target.value }))
-            }
+            onChange={searchDate}
           />
+          <ul className={`${emptyInputDate && "dropdown-false"}`}>
+            {emptyInputDate && (
+              <li className="error-li">
+                <p>Veuillez remplir ce champs</p>
+              </li>
+            )}
+          </ul>
         </article>
-
         {isMobile && (
           <button type="button" className="filter-button">
             Filtre
@@ -199,7 +223,6 @@ function SearchBar() {
           </button>
         )}
       </section>
-
       <section>
         {activities.length === 0 ? (
           <p>Aucun résultat</p>
@@ -208,7 +231,6 @@ function SearchBar() {
         ) : (
           <p>{activities.length} résultats</p>
         )}
-
         {activities?.map((activity) => (
           <p key={activity.id}>
             {activity.name} {activity.city} {activity.playing_at}
