@@ -48,7 +48,9 @@ const initialState = {
 function Filters() {
   const [filters, setFilters] = useState<Filters>(initialState);
   const [filteredActivities, setFilteredActivities] = useState({});
-  const [isFree, setIsFree] = useState<boolean>(false);
+  const [prevPayedPrice, setPrevPayedPrice] = useState(30);
+
+  const isFree = filters.price === 0;
 
   console.log(filters.price);
   console.log(filteredActivities);
@@ -76,10 +78,10 @@ function Filters() {
       }
 
       if (name === "price") {
-        setIsFree(checked);
         return {
           ...prev,
-          price: checked ? 0 : prev.price,
+          isFree: checked,
+          price: checked ? 0 : prevPayedPrice,
         };
       }
 
@@ -178,13 +180,15 @@ function Filters() {
                   type="range"
                   name="price"
                   max={100}
-                  defaultValue={30}
+                  value={filters.price ?? 0}
                   disabled={isFree}
                   onChange={(e) => {
                     setFilters((prev) => {
+                      const value = Number(e.target.value);
+                      setPrevPayedPrice(value === 0 ? 30 : value);
                       return {
                         ...prev,
-                        price: Number(e.target.value),
+                        price: value,
                       };
                     });
                   }}
