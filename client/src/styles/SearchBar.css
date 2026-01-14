@@ -35,13 +35,17 @@ section.searchbar article input {
   font-size: var(--body-size);
 }
 
+section.searchbar article input.bottom-border {
+  border-radius: 8px 8px 0 0;
+}
+
 section.searchbar article input:focus {
   border: solid 3px var(--input-color);
   outline: none;
 }
 
 section.searchbar article input.error-input {
-  border: 3px solid red;
+  border: 3px solid rgb(252, 66, 66);
 }
 
 section.searchbar article img {
@@ -60,7 +64,7 @@ section.searchbar article svg {
 }
 
 section.searchbar article svg.error-svg {
-  fill: red;
+  fill: rgb(252, 66, 66);
 }
 
 section.searchbar button.filter-button {
@@ -81,7 +85,7 @@ section.searchbar article ul.dropdown {
 section.searchbar article ul.dropdown-false {
   position: absolute;
   top: 37px;
-  border: 1px solid red;
+  border: 1px solid rgb(252, 66, 66);
   width: 100%;
   z-index: 2;
   background: var(--neutral-color);
@@ -158,5 +162,9 @@ section.searchbar article ul.dropdown-false li {
 
   section.searchbar button.search-button:hover {
     transform: scale(1.05);
+  }
+  section.searchbar {
+    justify-content: flex-start;
+    gap: 8px;
   }
 }
