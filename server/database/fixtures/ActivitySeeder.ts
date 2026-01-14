@@ -18,7 +18,7 @@ class ActivitySeeder extends AbstractSeeder {
       "Strasbourg",
     ];
 
-    for (let i = 0; i < 20; i += 1) {
+    for (let i = 0; i < 22; i += 1) {
       const randomUser = Math.floor(Math.random() * 10);
       const futureDate = this.faker.date.future();
       const hours = futureDate.getHours().toString().padStart(2, "0");

@@ -7,7 +7,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/Activities",
+        path: "/activities/page/:page",
         element: <Activity />,
       },
     ],
