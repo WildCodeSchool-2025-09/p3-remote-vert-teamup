@@ -1,7 +1,9 @@
-import "src/styles/App.css";
+import SearchBar from "./components/SearchBar";
+import "./styles/reset.css";
+import "./styles/variables.css";
 
 function App() {
-  return <></>;
+  return <SearchBar />;
 }
 
 export default App;
