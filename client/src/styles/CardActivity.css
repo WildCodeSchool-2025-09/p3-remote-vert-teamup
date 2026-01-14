@@ -3,11 +3,41 @@
   border-radius: 10px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   position: relative;
+  animation: scale 0.5s cubic-bezier(0.5, 0, 0.5, 1) both, appear 0.5s linear
+    both;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    &:hover {
+      border: 1px solid var(--accent-color);
+    }
+  }
 }
 
 .card-header {
   height: 7rem;
-  border-radius: 10px 10px 0 0;
+  border-radius: 6px 6px 0 0;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -38,6 +68,18 @@
 
   & .paid {
     background-color: var(--accent-color);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-header {
+    height: 8.7rem;
+
+    & .label-price {
+      font-size: var(--body-desktop-size);
+      width: 4rem;
+      height: 1.25rem;
+    }
   }
 }
 
@@ -143,18 +185,6 @@
 
 .Skateboard {
   background-image: url("../../public/img_sports/skateboard.png");
-}
-
-@media (min-width: 1024px) {
-  .card-header {
-    height: 8.7rem;
-
-    & .label-price {
-      font-size: var(--body-desktop-size);
-      width: 4rem;
-      height: 1.25rem;
-    }
-  }
 }
 
 .important-info {
@@ -295,6 +325,8 @@
     border-radius: 4px;
     background-color: var(--input-color);
     width: var(--size);
+    transform-origin: 0%;
+    animation: progress-bar-anim 0.5s 0.5s both;
 
     &.almost-full {
       background-color: var(--accent-color);
@@ -303,6 +335,15 @@
     &.full {
       background-color: var(--refused-color);
     }
+  }
+}
+
+@keyframes progress-bar-anim {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
   }
 }
 
@@ -379,6 +420,11 @@
       height: 2rem;
       width: 7.5rem;
       border-radius: 12px;
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.05);
+      }
 
       & > img {
         width: 1.2rem;
