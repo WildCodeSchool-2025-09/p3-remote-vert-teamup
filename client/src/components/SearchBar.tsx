@@ -141,7 +141,10 @@ function SearchBar() {
               activityToPlay.sport.length > 0 &&
               filteredSports.map((sport) => (
                 <li key={sport.id}>
-                  <button type="button" onClick={() => selectSport(sport.name)}>
+                  <button
+                    type="button"
+                    onMouseDown={() => selectSport(sport.name)}
+                  >
                     {sport.name}
                   </button>
                 </li>
@@ -184,7 +187,10 @@ function SearchBar() {
             ) : (
               filteredCities?.map((city) => (
                 <li key={city.code}>
-                  <button type="button" onClick={() => selectCity(city.nom)}>
+                  <button
+                    type="button"
+                    onMouseDown={() => selectCity(city.nom)}
+                  >
                     {`${city.nom}, ${city.codeDepartement}`}
                   </button>
                 </li>
