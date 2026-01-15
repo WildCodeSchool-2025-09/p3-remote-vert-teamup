@@ -8,7 +8,6 @@ const browse: RequestHandler = async (req, res, next) => {
       typeof req.query.filters === "string" ? req.query.filters : "{}";
 
     const filters = JSON.parse(checkFilters);
-    console.log(filters);
 
     const response = await itemRepository.readAll(filters);
 
