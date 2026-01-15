@@ -1,8 +1,11 @@
+body:has(.publication-page) {
+  background-color: var(--light-color);
+}
+
 .publication-page {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px 16px;
-  background-color: var(--light-color);
   min-height: 100vh;
 }
 
@@ -190,28 +193,36 @@
   pointer-events: none;
 }
 
+.places-budget-description-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.places-budget-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  order: 1;
+}
+
+.places-budget-column .input-with-icon {
+  order: 1;
+}
+
+.places-budget-column .budget-row {
+  order: 2;
+}
+
+.places-budget-description-row textarea {
+  order: 3;
+}
+
 .budget-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 12px 16px;
-  border: 1px solid var(--input-color);
-  border-radius: 10px;
-  background-color: var(--light-color);
-}
-
-@media (max-width: 480px) {
-  .budget-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .budget-row .price-input-wrapper {
-    width: 100%;
-    margin-left: 0;
-  }
+  justify-content: space-between;
+  width: 100%;
 }
 
 .budget-label {
@@ -256,8 +267,8 @@
 
 .radio-label input[type="radio"] {
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   border: 1px solid #c4c4c4;
   border-radius: 50%;
   background-color: #e8e8e8;
@@ -273,8 +284,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background-color: var(--light-color);
   border-radius: 50%;
 }
@@ -286,14 +297,39 @@
 }
 
 .price-input-wrapper {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px 14px;
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 102px;
+  height: 37px;
+  padding: 0 8px;
+  border: 1px solid var(--input-color);
+  border-radius: 10px;
+  background-color: var(--light-color);
+  box-sizing: border-box;
+}
+
+.price-input-wrapper.disabled {
+  background-color: #e2e2e2;
 }
 
 .price-input-wrapper input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--body-mobile);
+  font-size: var(--body-size);
+  color: var(--dark-color);
+  outline: none;
+}
+
+.price-input-wrapper input::placeholder {
+  color: var(--dark-color);
+}
+
+.price-input-wrapper img {
+  flex-shrink: 0;
 }
 
 .publication-form textarea {
@@ -516,6 +552,17 @@ fieldset legend {
 
 .btn-remove-guest {
   background-color: #00bd7d;
+}
+
+.criteria-desktop {
+  display: none;
+}
+
+.status-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
 }
 
 .criteria-tags {
@@ -743,142 +790,364 @@ fieldset legend {
 
 @media (min-width: 1024px) {
   .publication-page {
-    max-width: 800px;
-    padding: 48px 60px;
+    max-width: none;
+    width: 668px;
+    margin: 0;
+    margin-left: 160px;
+    padding: 40px 0;
   }
 
   .publication-page h1 {
-    font-size: var(--heading-desktop-size);
-    margin-bottom: 12px;
+    font-size: 32px;
+    margin-bottom: 4px;
   }
 
   .required-fields {
-    font-size: var(--tag-desktop-size);
-    margin-bottom: 28px;
+    font-size: 10px;
+    margin-bottom: 12px;
   }
 
   .publication-form {
-    gap: 20px;
+    gap: 16px;
   }
 
   .input-with-icon {
-    padding: 14px 20px;
-    gap: 14px;
+    height: 46px;
+    padding: 0 8px;
+    gap: 8px;
+    box-sizing: border-box;
   }
 
   .input-with-icon input,
   .input-with-icon select {
-    font-size: var(--body-desktop-size);
+    font-size: 14px;
   }
 
-  .publication-form textarea {
-    padding: 16px 20px;
-    font-size: var(--body-desktop-size);
+  .input-with-icon input::placeholder {
+    font-size: 14px;
   }
 
-  fieldset {
-    gap: 14px;
+  .input-with-icon img {
+    width: 30px;
+    height: 30px;
   }
 
-  fieldset legend {
-    font-size: var(--body-desktop-size);
-    margin-bottom: 6px;
+  .combobox .input-with-icon {
+    width: 330px;
+  }
+
+  .publication-form > .input-with-icon {
+    width: 668px;
   }
 
   .field-row {
-    gap: 20px;
+    display: flex;
+    width: 668px;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .field-row > .input-with-icon {
+    width: 330px;
+    flex: none;
   }
 
   .field-row-3 {
-    gap: 16px;
+    display: flex;
+    width: 668px;
+    gap: 8px;
   }
 
-  .budget-row {
-    gap: 24px;
-    padding: 14px 20px;
+  .field-row-3 > .input-with-icon {
+    width: 217px;
+    flex: none;
   }
 
-  .budget-label {
-    font-size: var(--body-desktop-size);
+  .field-row-3 > .input-with-icon:last-child {
+    width: 218px;
   }
 
   .date-placeholder,
   .time-placeholder {
-    left: 58px;
-    font-size: var(--body-desktop-size);
+    left: 46px;
+    font-size: 14px;
   }
 
-  .radio-label {
-    font-size: var(--body-desktop-size);
+  .places-budget-description-row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    width: 668px;
   }
 
-  .radio-group label,
-  .checkbox-group label {
-    font-size: var(--body-desktop-size);
+  .places-budget-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 330px;
+    order: unset;
   }
 
-  .price-input-wrapper {
-    min-width: 120px;
+  .places-budget-column .input-with-icon {
+    width: 330px;
+    height: 46px;
+    box-sizing: border-box;
+    order: unset;
   }
 
-  .btn-validate {
-    font-size: var(--button-desktop-size);
-    padding: 16px 32px;
+  .places-budget-column .budget-row {
+    order: unset;
   }
 
+  .places-budget-description-row textarea {
+    width: 330px;
+    height: 109px;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    order: unset;
+  }
+
+  .budget-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .budget-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .budget-row .radio-label {
+    font-size: 14px;
+  }
+
+  .budget-row .price-input-wrapper {
+    width: 102px;
+    height: 46px;
+    padding: 0 8px;
+    border: 1px solid var(--input-color);
+    border-radius: 10px;
+    background-color: var(--light-color);
+    box-sizing: border-box;
+  }
+
+  .budget-row .price-input-wrapper.disabled {
+    background-color: #e2e2e2;
+  }
+
+  .status-box {
+    width: 333px;
+    height: 46px;
+    padding: 0 16px;
+    align-self: flex-start;
+    box-sizing: border-box;
+  }
+
+  .status-box:last-child {
+    width: 327px;
+  }
+
+  .status-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .status-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: flex-start;
+    width: 668px;
+  }
+
+  /* Hide modal criteria button on desktop */
+  .btn-criteria {
+    display: none;
+  }
+
+  /* Inline criteria section for desktop */
+  .criteria-desktop {
+    display: block;
+    width: 668px;
+    padding: 20px 0;
+    border-top: 1px solid #2e2e2e;
+    border-bottom: 1px solid #2e2e2e;
+    margin: 8px 0;
+  }
+
+  .criteria-desktop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .criteria-desktop-header h3 {
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2e2e2e;
+    margin: 0;
+  }
+
+  .criteria-desktop-header button {
+    background: none;
+    border: none;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    color: #2e2e2e;
+    cursor: pointer;
+  }
+
+  .criteria-desktop-columns {
+    display: flex;
+    gap: 80px;
+  }
+
+  .criteria-desktop-column {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .criteria-desktop-column legend {
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2e2e2e;
+    text-decoration: underline;
+    margin-bottom: 12px;
+    padding: 0;
+  }
+
+  .criteria-desktop-column label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    color: #2e2e2e;
+    margin-bottom: 8px;
+    gap: 60px;
+    cursor: pointer;
+  }
+
+  .criteria-desktop-column input[type="checkbox"],
+  .criteria-desktop-column input[type="radio"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #e2e2e2;
+    border: 0.5px solid #2e2e2e;
+    border-radius: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .criteria-desktop-column input[type="radio"] {
+    border-radius: 50%;
+  }
+
+  .criteria-desktop-column input[type="checkbox"]:checked,
+  .criteria-desktop-column input[type="radio"]:checked {
+    background-color: #6c5ce7;
+    border-color: #6c5ce7;
+  }
+
+  .criteria-desktop-column input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fafafa;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .criteria-desktop-column input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background-color: #fafafa;
+    border-radius: 50%;
+  }
+
+  /* Hide criteria tags on desktop (shown inline instead) */
+  .criteria-tags {
+    display: none;
+  }
+
+  /* Publier button */
   .btn-publish {
-    font-size: var(--button-desktop-size);
+    width: 668px;
+    height: 48px;
+    font-size: 20px;
+    align-self: flex-start;
+  }
+
+  /* Guest section */
+  .guests-section {
+    width: 668px;
+    gap: 8px;
+  }
+
+  .guest-row {
+    justify-content: flex-start;
+  }
+
+  .guest-input-display {
+    width: 250px;
+    height: 46px;
+    box-sizing: border-box;
   }
 
   .guest-input-display span,
   .guest-input-display input {
-    font-size: var(--body-desktop-size);
+    font-size: 14px;
   }
 
-  .criteria-summary {
-    padding: 20px;
+  .btn-add-guest,
+  .btn-remove-guest {
+    height: 46px;
   }
 
-  .criteria-summary strong,
-  .criteria-summary li {
-    font-size: var(--body-desktop-size);
-  }
-
+  /* Error message */
   .error-message {
-    font-size: var(--body-desktop-size);
+    font-size: 14px;
   }
 
+  /* Success page */
   .publication-success {
     padding: 100px 40px;
   }
 
   .publication-success h2 {
-    font-size: var(--heading-desktop-size);
+    font-size: 32px;
   }
 
   .publication-success p {
-    font-size: var(--body-desktop-size);
+    font-size: 14px;
   }
 
+  /* Modal still works but less needed on desktop */
   .modal-content {
     top: 50%;
     transform: translate(-50%, -50%);
     border-radius: 20px;
     max-width: 420px;
     max-height: 90vh;
-  }
-
-  .criteria-fieldset legend {
-    font-size: 18px;
-  }
-
-  .criteria-label {
-    font-size: 12px;
-  }
-
-  .criteria-label input[type="checkbox"],
-  .criteria-label input[type="radio"] {
-    width: 14px;
-    height: 14px;
   }
 }

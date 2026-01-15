@@ -272,65 +272,69 @@ function Publication() {
           </div>
         </div>
 
-        <div className="input-with-icon">
-          <img src={PeopleIcon} alt="" width="24" height="24" />
-          <input
-            type="number"
-            placeholder="Nombre de places *"
-            value={nbPlaces}
-            onChange={(e) => setNbPlaces(e.target.value)}
-            required
-            min="1"
+        <div className="places-budget-description-row">
+          <div className="places-budget-column">
+            <div className="input-with-icon">
+              <img src={PeopleIcon} alt="" width="24" height="24" />
+              <input
+                type="number"
+                placeholder="Nombre de places *"
+                value={nbPlaces}
+                onChange={(e) => setNbPlaces(e.target.value)}
+                required
+                min="1"
+              />
+            </div>
+
+            <div className="budget-row">
+              <span className="budget-label">Budget * :</span>
+              <div className="radio-options">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="pricing"
+                    checked={isFree}
+                    onChange={() => setIsFree(true)}
+                  />
+                  Gratuit
+                </label>
+
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="pricing"
+                    checked={!isFree}
+                    onChange={() => setIsFree(false)}
+                  />
+                  Payant
+                </label>
+              </div>
+
+              <div
+                className={`price-input-wrapper ${isFree ? "disabled" : ""}`}
+              >
+                <img src={PriceIcon} alt="" width="20" height="20" />
+                <input
+                  type="number"
+                  placeholder="Prix (€)"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  min="0"
+                  step="0.01"
+                  disabled={isFree}
+                  required={!isFree}
+                />
+              </div>
+            </div>
+          </div>
+
+          <textarea
+            placeholder="Description ..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
           />
         </div>
-
-        <div className="budget-row">
-          <span className="budget-label">Budget * :</span>
-          <div className="radio-options">
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="pricing"
-                checked={isFree}
-                onChange={() => setIsFree(true)}
-              />
-              Gratuit
-            </label>
-
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="pricing"
-                checked={!isFree}
-                onChange={() => setIsFree(false)}
-              />
-              Payant
-            </label>
-          </div>
-
-          <div
-            className={`input-with-icon price-input-wrapper ${isFree ? "disabled" : ""}`}
-          >
-            <img src={PriceIcon} alt="" width="24" height="24" />
-            <input
-              type="number"
-              placeholder="Prix (€)"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              min="0"
-              step="0.01"
-              disabled={isFree}
-              required={!isFree}
-            />
-          </div>
-        </div>
-
-        <textarea
-          placeholder="Description ..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={4}
-        />
 
         {(locker ||
           shower ||
@@ -398,51 +402,161 @@ function Publication() {
           Ajouter des critères
         </button>
 
-        <div className="status-box">
-          <span className="status-label">Status * :</span>
-          <label className="radio-label">
-            <input
-              type="radio"
-              name="visibility"
-              checked={isPublic}
-              onChange={() => setIsPublic(true)}
-            />
-            Public
-          </label>
-          <label className="radio-label">
-            <input
-              type="radio"
-              name="visibility"
-              checked={!isPublic}
-              onChange={() => setIsPublic(false)}
-            />
-            Privée
-          </label>
-        </div>
+        <section className="criteria-desktop">
+          <header className="criteria-desktop-header">
+            <h3>Critères supplémentaires</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setLocker(false);
+                setShower(false);
+                setToilet(false);
+                setAirConditioning(false);
+                setLevel("All");
+                setHandisport(false);
+              }}
+            >
+              Effacer filtres
+            </button>
+          </header>
+          <div className="criteria-desktop-columns">
+            <fieldset className="criteria-desktop-column">
+              <legend>Équipements</legend>
+              <label>
+                Vestiaires
+                <input
+                  type="checkbox"
+                  checked={locker}
+                  onChange={(e) => setLocker(e.target.checked)}
+                />
+              </label>
+              <label>
+                Douches
+                <input
+                  type="checkbox"
+                  checked={shower}
+                  onChange={(e) => setShower(e.target.checked)}
+                />
+              </label>
+              <label>
+                Toilettes
+                <input
+                  type="checkbox"
+                  checked={toilet}
+                  onChange={(e) => setToilet(e.target.checked)}
+                />
+              </label>
+              <label>
+                Climatisation
+                <input
+                  type="checkbox"
+                  checked={airConditioning}
+                  onChange={(e) => setAirConditioning(e.target.checked)}
+                />
+              </label>
+            </fieldset>
+            <fieldset className="criteria-desktop-column">
+              <legend>Niveau</legend>
+              <label>
+                Tout niveau
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "All"}
+                  onChange={() => setLevel("All")}
+                />
+              </label>
+              <label>
+                Débutant
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "begginer"}
+                  onChange={() => setLevel("begginer")}
+                />
+              </label>
+              <label>
+                Intermédiaire
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "amateur"}
+                  onChange={() => setLevel("amateur")}
+                />
+              </label>
+              <label>
+                Confirmé
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "advance"}
+                  onChange={() => setLevel("advance")}
+                />
+              </label>
+            </fieldset>
+            <fieldset className="criteria-desktop-column">
+              <legend>Type de sport</legend>
+              <label>
+                Handisport
+                <input
+                  type="checkbox"
+                  checked={handisport}
+                  onChange={(e) => setHandisport(e.target.checked)}
+                />
+              </label>
+            </fieldset>
+          </div>
+        </section>
 
-        {isPublic ? (
+        <div className="status-row">
           <div className="status-box">
-            <span className="status-label">Réservation automatique * :</span>
+            <span className="status-label">Status * :</span>
             <label className="radio-label">
               <input
                 type="radio"
-                name="autoValidation"
-                checked={autoValidation}
-                onChange={() => setAutoValidation(true)}
+                name="visibility"
+                checked={isPublic}
+                onChange={() => setIsPublic(true)}
               />
-              Oui
+              Public
             </label>
             <label className="radio-label">
               <input
                 type="radio"
-                name="autoValidation"
-                checked={!autoValidation}
-                onChange={() => setAutoValidation(false)}
+                name="visibility"
+                checked={!isPublic}
+                onChange={() => setIsPublic(false)}
               />
-              Non
+              Privée
             </label>
           </div>
-        ) : (
+
+          {isPublic && (
+            <div className="status-box">
+              <span className="status-label">Réservation automatique * :</span>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="autoValidation"
+                  checked={autoValidation}
+                  onChange={() => setAutoValidation(true)}
+                />
+                Oui
+              </label>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="autoValidation"
+                  checked={!autoValidation}
+                  onChange={() => setAutoValidation(false)}
+                />
+                Non
+              </label>
+            </div>
+          )}
+        </div>
+
+        {!isPublic && (
           <div className="guests-section">
             {guests.map((guest) => (
               <div key={guest} className="guest-row">
