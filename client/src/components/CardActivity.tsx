@@ -27,11 +27,11 @@ function CardActivity({ activity }: CardActivityType) {
         </p>
       </div>
       <div className="important-info">
-        <img src="../../public/icons/calendar.png" alt="icon-calendar" />
+        <img src="/icons/calendar.png" alt="icon-calendar" />
         <p>{resultFormattedDate}</p>
-        <img src="../../public/icons/clock.png" alt="icon-clock" />
+        <img src="/icons/clock.png" alt="icon-clock" />
         <p>{activity.playing_time.slice(0, 5).replace(":", "h")}</p>
-        <img src="../../public/icons/pin.png" alt="icon-pin" />
+        <img src="/icons/pin.png" alt="icon-pin" />
         <p>{activity.city}</p>
       </div>
       <div className="card-tags">
@@ -42,26 +42,26 @@ function CardActivity({ activity }: CardActivityType) {
           {activity.level === "advance" && "Confirmé"}
         </p>
         <p className={`card-tag ${!activity.disabled && "condition-missing"}`}>
-          <img src="../../public/icons/disabled.png" alt="logo disabled" />
+          <img src="/icons/disabled.png" alt="logo disabled" />
           Handisport
         </p>
         <p className={`card-tag ${!activity.locker && "condition-missing"}`}>
-          <img src="../../public/icons/locker.png" alt="logo locker" />
+          <img src="/icons/locker.png" alt="logo locker" />
           Vestiaires
         </p>
         <p className={`card-tag ${!activity.shower && "condition-missing"}`}>
-          <img src="../../public/icons/shower.png" alt="logo shower" />
+          <img src="/icons/shower.png" alt="logo shower" />
           Douches
         </p>
         <p className={`card-tag ${!activity.toilet && "condition-missing"}`}>
-          <img src="../../public/icons/toilet.png" alt="logo toilet" />
+          <img src="/icons/toilet.png" alt="logo toilet" />
           Toilettes
         </p>
         <p
           className={`card-tag ${!activity.air_conditioning && "condition-missing"}`}
         >
           <img
-            src="../../public/icons/air-conditionning.png"
+            src="/icons/air-conditionning.png"
             alt="logo air conditionning"
           />
           Clim
@@ -69,10 +69,7 @@ function CardActivity({ activity }: CardActivityType) {
       </div>
       <div className="nb-participant">
         <p>
-          <img
-            src="../../public/icons/participants.png"
-            alt="logo participants"
-          />
+          <img src="/icons/participants.png" alt="logo participants" />
           {`${activity.nb_participant}/${activity.nb_places} Participants`}
         </p>
         <p>{`${nbAvailablePlaces < 0 ? "0" : nbAvailablePlaces} ${nbAvailablePlaces <= 1 ? "place restante" : "places restantes"}`}</p>
@@ -93,8 +90,7 @@ function CardActivity({ activity }: CardActivityType) {
         <button type="button">
           {nbAvailablePlaces === 0 ? (
             <>
-              <img src="../../public/icons/bell.png" alt="logo alert" />
-              Alerte
+              <img src="/icons/bell.png" alt="logo alert" />
             </>
           ) : (
             <>Réserver &gt;</>

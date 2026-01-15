@@ -4,8 +4,6 @@ import "../styles/Activity.css";
 import { useParams } from "react-router";
 import Pagination from "../components/Pagination";
 
-const LIMIT = 10;
-
 function Activity() {
   const { page } = useParams();
   const currentPage = Math.max(1, Number(page) || 1);
@@ -14,6 +12,8 @@ function Activity() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    const LIMIT = 10;
+
     fetch(
       `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}`,
     )
