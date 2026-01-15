@@ -52,7 +52,6 @@ function Filters() {
 
   const isFree = filters.price === 0;
 
-  console.log(filters.price);
   console.log(filteredActivities);
 
   const resetFilters = () => {
@@ -122,7 +121,7 @@ function Filters() {
             X
           </button>
           <button type="button" className="close-btn" onClick={resetFilters}>
-            Tout efface
+            Tout effacer
           </button>
         </div>
         <div className="container">
@@ -130,9 +129,10 @@ function Filters() {
             <legend className="filter-title">Équipements</legend>
             <div className="flex-clmn">
               {EQUIPMENT_OPTIONS.map((e) => (
-                <label key={e.key} className="flex-spacing">
+                <label key={e.key} className="flex-spacing ttls">
                   {e.label}
                   <input
+                    className="checkbox-pointers"
                     type="checkbox"
                     name="equipment"
                     value={e.key}
@@ -148,9 +148,10 @@ function Filters() {
             <div className="flex-clmn">
               {LEVEL_OPTIONS.map((e) => {
                 return (
-                  <label key={e.key} className="flex-spacing">
+                  <label key={e.key} className="flex-spacing ttls">
                     {e.label}
                     <input
+                      className="checkbox-pointers"
                       type="radio"
                       name="level"
                       value={e.key}
@@ -165,23 +166,31 @@ function Filters() {
           <fieldset className="">
             <legend className="filter-title">Budget</legend>
             <div className="flex-clmn">
-              <label className="flex-spacing">
+              <label className="flex-spacing ttls">
                 Gratuit
                 <input
+                  className="checkbox-pointers"
                   type="checkbox"
                   name="price"
                   checked={isFree}
                   onChange={handleCheckbox}
                 />
               </label>
-              <label className="flex-spacing">
-                Payent
+              <span className={`price-tag ${isFree && "slider-disabled"}`}>
+                {filters.price}€
+              </span>
+              <label
+                className={`flex-spacing ttls ${isFree && "slider-disabled"}`}
+              >
+                Payant
                 <input
+                  className={`slider ${isFree && "slider-disabled"}`}
+                  id="myRange"
                   type="range"
                   name="price"
+                  min={0}
                   max={100}
                   value={filters.price ?? 0}
-                  disabled={isFree}
                   onChange={(e) => {
                     setFilters((prev) => {
                       const value = Number(e.target.value);
@@ -193,15 +202,17 @@ function Filters() {
                     });
                   }}
                 />
+                <span> 100€</span>
               </label>
             </div>
           </fieldset>
           <fieldset>
             <legend className="filter-title">Type de Sport</legend>
             <div className="flex-clmn">
-              <label className="flex-spacing">
+              <label className="flex-spacing ttls">
                 Handisport
                 <input
+                  className="checkbox-pointers"
                   type="checkbox"
                   name="disabled"
                   checked={filters.disabled}
@@ -213,7 +224,7 @@ function Filters() {
                 onClick={fetchData}
                 className="validate-btn"
               >
-                Validate
+                Validaer
               </button>
             </div>
           </fieldset>
