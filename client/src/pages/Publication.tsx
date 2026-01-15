@@ -186,7 +186,7 @@ function Publication() {
           </div>
           {showSportDropdown && filteredSports.length > 0 && (
             <ul className="combobox-dropdown">
-              {filteredSports.slice(0, 100).map((sport) => (
+              {filteredSports.slice(0, 250).map((sport) => (
                 <li key={sport.id}>
                   <button
                     type="button"
@@ -554,48 +554,48 @@ function Publication() {
               </label>
             </div>
           )}
-        </div>
 
-        {!isPublic && (
-          <div className="guests-section">
-            {guests.map((guest) => (
-              <div key={guest} className="guest-row">
+          {!isPublic && (
+            <div className="guests-section">
+              {guests.map((guest) => (
+                <div key={guest} className="guest-row added-guest">
+                  <div className="guest-input-display">
+                    <img src={ProfileIcon} alt="" width="22" height="22" />
+                    <span>{guest}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-remove-guest"
+                    onClick={() => handleRemoveGuest(guest)}
+                    aria-label={`Retirer ${guest}`}
+                  >
+                    <img src={RemoveIcon} alt="" width="20" height="20" />
+                  </button>
+                </div>
+              ))}
+
+              <div className="guest-row invite-row">
                 <div className="guest-input-display">
                   <img src={ProfileIcon} alt="" width="22" height="22" />
-                  <span>{guest}</span>
+                  <input
+                    type="text"
+                    value={guestInput}
+                    onChange={(e) => setGuestInput(e.target.value)}
+                    placeholder="Inviter des personnes"
+                  />
                 </div>
                 <button
                   type="button"
-                  className="btn-remove-guest"
-                  onClick={() => handleRemoveGuest(guest)}
-                  aria-label={`Retirer ${guest}`}
+                  className="btn-add-guest"
+                  onClick={handleAddGuest}
+                  aria-label="Ajouter une personne"
                 >
-                  <img src={RemoveIcon} alt="" width="20" height="20" />
+                  <img src={AddIcon} alt="" width="20" height="20" />
                 </button>
               </div>
-            ))}
-
-            <div className="guest-row">
-              <div className="guest-input-display">
-                <img src={ProfileIcon} alt="" width="22" height="22" />
-                <input
-                  type="text"
-                  value={guestInput}
-                  onChange={(e) => setGuestInput(e.target.value)}
-                  placeholder="Inviter des personnes"
-                />
-              </div>
-              <button
-                type="button"
-                className="btn-add-guest"
-                onClick={handleAddGuest}
-                aria-label="Ajouter une personne"
-              >
-                <img src={AddIcon} alt="" width="20" height="20" />
-              </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {error && <p className="error-message">{error}</p>}
 

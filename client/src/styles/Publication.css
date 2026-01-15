@@ -832,8 +832,17 @@ fieldset legend {
     height: 30px;
   }
 
+  .combobox {
+    width: 330px;
+  }
+
   .combobox .input-with-icon {
     width: 330px;
+  }
+
+  .combobox-dropdown button {
+    font-size: 14px;
+    padding: 12px 16px;
   }
 
   .publication-form > .input-with-icon {
@@ -1100,16 +1109,17 @@ fieldset legend {
 
   /* Guest section */
   .guests-section {
-    width: 668px;
+    flex: 1;
     gap: 8px;
+    flex-direction: column-reverse;
   }
 
   .guest-row {
-    justify-content: flex-start;
+    justify-content: space-between;
   }
 
-  .guest-input-display {
-    width: 250px;
+  .guest-row .guest-input-display {
+    flex: 1;
     height: 46px;
     box-sizing: border-box;
   }
