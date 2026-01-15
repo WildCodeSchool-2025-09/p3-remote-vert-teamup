@@ -6,15 +6,13 @@ const browse: RequestHandler = async (req, res, next) => {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
-    // Fetch all items
-    const { rows, total, totalPages } = await activityRepository.readAll(
+    const { activities, total, totalPages } = await activityRepository.readAll(
       page,
       limit,
     );
 
-    // Respond with the items in JSON format
     res.json({
-      activities: rows,
+      activities: activities,
       pagination: {
         page,
         limit,
@@ -23,7 +21,6 @@ const browse: RequestHandler = async (req, res, next) => {
       },
     });
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
