@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/variables.css";
 import "../styles/Publication.css";
+import AddIcon from "../assets/Icons/AddIcon.svg";
 import CalenderIcon from "../assets/Icons/CalenderIcon.svg";
 import ClockIcon from "../assets/Icons/ClockIcon.svg";
 import DurationIcon from "../assets/Icons/DurationIcon.svg";
 import LocationIcon from "../assets/Icons/LocationIcon.svg";
 import PeopleIcon from "../assets/Icons/PeopleIcon.svg";
 import PriceIcon from "../assets/Icons/PriceIcon.svg";
+import ProfileIcon from "../assets/Icons/ProfileIcon.svg";
+import RemoveIcon from "../assets/Icons/RemoveIcon.svg";
 import SearchIcon from "../assets/Icons/SearchIcon.svg";
 
 type Sport = {
@@ -440,41 +443,44 @@ function Publication() {
             </label>
           </div>
         ) : (
-          <fieldset className="fieldset-guests">
-            <legend>Liste des personnes</legend>
+          <div className="guests-section">
+            {guests.map((guest) => (
+              <div key={guest} className="guest-row">
+                <div className="guest-input-display">
+                  <img src={ProfileIcon} alt="" width="22" height="22" />
+                  <span>{guest}</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn-remove-guest"
+                  onClick={() => handleRemoveGuest(guest)}
+                  aria-label={`Retirer ${guest}`}
+                >
+                  <img src={RemoveIcon} alt="" width="20" height="20" />
+                </button>
+              </div>
+            ))}
 
-            <div className="guest-input-row">
-              <input
-                type="text"
-                value={guestInput}
-                onChange={(e) => setGuestInput(e.target.value)}
-                placeholder="Nom ou email"
-              />
+            <div className="guest-row">
+              <div className="guest-input-display">
+                <img src={ProfileIcon} alt="" width="22" height="22" />
+                <input
+                  type="text"
+                  value={guestInput}
+                  onChange={(e) => setGuestInput(e.target.value)}
+                  placeholder="Inviter des personnes"
+                />
+              </div>
               <button
                 type="button"
+                className="btn-add-guest"
                 onClick={handleAddGuest}
-                className="btn-invite"
+                aria-label="Ajouter une personne"
               >
-                Inviter
+                <img src={AddIcon} alt="" width="20" height="20" />
               </button>
             </div>
-
-            {guests.length > 0 && (
-              <ul className="guest-list">
-                {guests.map((guest) => (
-                  <li key={guest}>
-                    {guest}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveGuest(guest)}
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </fieldset>
+          </div>
         )}
 
         {error && <p className="error-message">{error}</p>}

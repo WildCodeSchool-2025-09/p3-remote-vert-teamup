@@ -229,11 +229,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 0 16px;
   border: 1px solid var(--input-color);
   border-radius: 10px;
   background-color: var(--light-color);
-  width: 300px;
+  width: 241px;
+  height: 37px;
   align-self: center;
 }
 
@@ -382,19 +383,22 @@ fieldset legend {
 }
 
 .btn-criteria {
-  padding: 14px 32px;
+  width: 109px;
+  height: 24px;
+  padding: 0;
   background-color: var(--button-color);
   color: var(--light-color);
   border: none;
-  border-radius: 25px;
-  font-family: var(--button-mobile);
-  font-size: var(--button-size);
-  font-weight: 100;
+  border-radius: 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
   cursor: pointer;
-  text-align: center;
   transition: opacity 0.2s;
   align-self: center;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-criteria:hover {
@@ -402,7 +406,9 @@ fieldset legend {
 }
 
 .btn-publish {
-  padding: 16px 24px;
+  width: 330px;
+  height: 32px;
+  padding: 0;
   background-color: var(--button-color);
   color: var(--light-color);
   border: none;
@@ -414,6 +420,7 @@ fieldset legend {
   margin-top: 8px;
   transition: opacity 0.2s;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  align-self: center;
 }
 
 .btn-publish:hover {
@@ -423,19 +430,6 @@ fieldset legend {
 .btn-publish:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn-invite {
-  padding: 12px 20px;
-  background-color: var(--button-color);
-  color: var(--dark-color);
-  border: none;
-  border-radius: 25px;
-  font-family: var(--button-mobile);
-  font-size: var(--button-size);
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
 .btn-validate {
@@ -452,56 +446,76 @@ fieldset legend {
   margin-top: 12px;
 }
 
-.guest-input-row {
+.guests-section {
   display: flex;
-  gap: 12px;
-  align-items: stretch;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.guest-input-row input {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1px solid var(--input-color);
-  border-radius: 25px;
-  font-family: var(--body-mobile);
-  font-size: var(--body-size);
-  background-color: var(--light-color);
-  color: var(--dark-color);
-  outline: none;
-}
-
-.guest-input-row input:focus {
-  border-color: var(--input-color);
-  box-shadow: 0 0 0 2px rgba(0, 189, 125, 0.2);
-}
-
-.guest-list {
+.guest-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
 }
 
-.guest-list li {
+.guest-input-display {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--neutral-color);
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-family: var(--tag-mobile);
-  font-size: var(--tag-size);
+  padding: 0 8px;
+  border: 1px solid var(--input-color);
+  border-radius: 10px;
+  background-color: var(--light-color);
+  width: 185px;
+  height: 37px;
+}
+
+.guest-input-display img {
+  flex-shrink: 0;
+}
+
+.guest-input-display span {
+  font-family: var(--body-mobile);
+  font-size: var(--body-size);
   color: var(--dark-color);
 }
 
-.guest-list button {
-  background: none;
+.guest-input-display input {
+  flex: 1;
   border: none;
+  background: transparent;
+  font-family: var(--body-mobile);
+  font-size: var(--body-size);
+  color: var(--dark-color);
+  outline: none;
+  min-width: 0;
+}
+
+.guest-input-display input::placeholder {
+  color: var(--dark-color);
+}
+
+.btn-add-guest,
+.btn-remove-guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 37px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
-  color: var(--refused-color);
+  flex-shrink: 0;
   padding: 0;
-  line-height: 1;
+}
+
+.btn-add-guest {
+  background-color: #00bd7d;
+}
+
+.btn-remove-guest {
+  background-color: #00bd7d;
 }
 
 .criteria-tags {
@@ -807,29 +821,18 @@ fieldset legend {
     min-width: 120px;
   }
 
-  .btn-criteria,
-  .btn-publish,
-  .btn-invite,
   .btn-validate {
     font-size: var(--button-desktop-size);
     padding: 16px 32px;
   }
 
   .btn-publish {
-    padding: 18px 32px;
+    font-size: var(--button-desktop-size);
   }
 
-  .guest-input-row {
-    gap: 16px;
-  }
-
-  .guest-input-row input {
+  .guest-input-display span,
+  .guest-input-display input {
     font-size: var(--body-desktop-size);
-  }
-
-  .guest-list li {
-    font-size: var(--tag-desktop-size);
-    padding: 10px 16px;
   }
 
   .criteria-summary {
