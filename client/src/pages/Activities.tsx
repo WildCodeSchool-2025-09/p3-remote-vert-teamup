@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import CardActivity from "../components/CardActivity";
+import ActivityCard from "../components/ActivityCard";
 import "../styles/Activity.css";
 import { useParams } from "react-router";
 import Pagination from "../components/Pagination";
 
-function Activity() {
+function Activities() {
   const { page } = useParams();
   const currentPage = Math.max(1, Number(page) || 1);
 
@@ -29,7 +29,7 @@ function Activity() {
       <h1>Activités disponibles</h1>
       <section className="cards-activity">
         {activities.map((activity) => (
-          <CardActivity key={activity.id} activity={activity} />
+          <ActivityCard key={activity.id} activity={activity} />
         ))}
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
@@ -37,4 +37,4 @@ function Activity() {
   );
 }
 
-export default Activity;
+export default Activities;

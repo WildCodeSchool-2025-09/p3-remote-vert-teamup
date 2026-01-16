@@ -1,18 +1,20 @@
-import "../styles/CardActivity.css";
+import "../styles/ActivityCard.css";
 
-function CardActivity({ activity }: CardActivityType) {
+type ActivityCardType = {
+  activity: Activity;
+};
+
+function ActivityCard({ activity }: ActivityCardType) {
   const price = Number(activity.price);
-  const date = new Date(activity.playing_at);
-  const formattedDate = date.toLocaleDateString("fr-FR", {
+  const playing_at = new Date(activity.playing_at);
+  const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
     month: "short",
   });
-  const resultFormattedDate =
-    formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
-  const nbAvailablePlaces = activity.nb_places - activity.nb_participant;
-  const widthProgressBar = (100 / activity.nb_places) * activity.nb_participant;
+  const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
+  const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
 
   return (
     <article className="card">
@@ -28,7 +30,10 @@ function CardActivity({ activity }: CardActivityType) {
       </div>
       <div className="important-info">
         <img src="/icons/calendar.png" alt="icon-calendar" />
-        <p>{resultFormattedDate}</p>
+        <p>
+          {formattedPlayingAt.charAt(0).toUpperCase() +
+            formattedPlayingAt.slice(1)}
+        </p>
         <img src="/icons/clock.png" alt="icon-clock" />
         <p>{activity.playing_time.slice(0, 5).replace(":", "h")}</p>
         <img src="/icons/pin.png" alt="icon-pin" />
@@ -36,10 +41,10 @@ function CardActivity({ activity }: CardActivityType) {
       </div>
       <div className="card-tags">
         <p className="card-tag">
-          {activity.level === "All" && "Tous niveaux"}
-          {activity.level === "begginer" && "Débutant"}
+          {activity.level === "all" && "Tous niveaux"}
+          {activity.level === "beginner" && "Débutant"}
           {activity.level === "amateur" && "Intermédiaire"}
-          {activity.level === "advance" && "Confirmé"}
+          {activity.level === "advanced" && "Confirmé"}
         </p>
         <p className={`card-tag ${!activity.disabled && "condition-missing"}`}>
           <img src="/icons/disabled.png" alt="logo disabled" />
@@ -70,13 +75,13 @@ function CardActivity({ activity }: CardActivityType) {
       <div className="nb-participant">
         <p>
           <img src="/icons/participants.png" alt="logo participants" />
-          {`${activity.nb_participant}/${activity.nb_places} Participants`}
+          {`${activity.nb_participant}/${activity.nb_spots} Participants`}
         </p>
-        <p>{`${nbAvailablePlaces < 0 ? "0" : nbAvailablePlaces} ${nbAvailablePlaces <= 1 ? "place restante" : "places restantes"}`}</p>
+        <p>{`${nbAvailableSpots < 0 ? "0" : nbAvailableSpots} ${nbAvailableSpots <= 1 ? "place restante" : "places restantes"}`}</p>
       </div>
       <div className="bar">
         <div
-          className={`progress-bar ${activity.nb_participant >= activity.nb_places / 2 && "almost-full"} ${nbAvailablePlaces === 0 && "full"}`}
+          className={`progress-bar ${activity.nb_participant >= activity.nb_spots / 2 && "almost-full"} ${nbAvailableSpots === 0 && "full"}`}
           style={{ "--size": `${widthProgressBar}%` } as React.CSSProperties}
         >
           {" "}
@@ -88,7 +93,7 @@ function CardActivity({ activity }: CardActivityType) {
           <p>{activity.username}</p>
         </div>
         <button type="button">
-          {nbAvailablePlaces === 0 ? (
+          {nbAvailableSpots === 0 ? (
             <>
               <img src="/icons/bell.png" alt="logo alert" />
             </>
@@ -97,9 +102,9 @@ function CardActivity({ activity }: CardActivityType) {
           )}
         </button>
       </div>
-      <div className={nbAvailablePlaces === 0 ? "activity-full" : ""}> </div>
+      <div className={nbAvailableSpots === 0 ? "activity-full" : ""}> </div>
     </article>
   );
 }
 
-export default CardActivity;
+export default ActivityCard;

@@ -46,7 +46,7 @@ class ActivityRepository {
     const totalActivity = totalResult[0].total_activity as number;
 
     return {
-      activities: activities as CardActivity[],
+      activities: activities as Activity[],
       total: totalActivity,
       totalPages: Math.ceil(totalActivity / limit),
     };

@@ -7,7 +7,7 @@ class ActivitySeeder extends AbstractSeeder {
   }
 
   run() {
-    const levels = ["begginer", "amateur", "advance", "All"];
+    const levels = ["beginner", "amateur", "advanced", "all"];
     const city = [
       "Paris",
       "Bordeaux",
@@ -33,7 +33,7 @@ class ActivitySeeder extends AbstractSeeder {
         playing_at: futureDate.toISOString().split("T")[0],
         playing_time: time,
         playing_duration: this.faker.number.int({ min: 20, max: 180 }),
-        nb_places: this.faker.number.int({ min: 1, max: 22 }),
+        nb_spots: this.faker.number.int({ min: 1, max: 22 }),
         auto_validation: this.faker.datatype.boolean(),
         price: this.faker.datatype.boolean({ probability: 0.1 })
           ? this.faker.number.float({ min: 1, max: 30, fractionDigits: 2 })
