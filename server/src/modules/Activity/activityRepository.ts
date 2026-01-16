@@ -1,34 +1,6 @@
 import type { RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
-
-import type { Result, Rows } from "../../../database/client";
-
-type CardActivity = {
-  id: number;
-  address: string;
-  city: string;
-  zip_code: string;
-  description: string;
-  playing_at: string;
-  playing_time: string;
-  playing_duration: number;
-  nb_places: number;
-  auto_validation: boolean;
-  price: string;
-  visibility: boolean;
-  level: string;
-  disabled: boolean;
-  locker: boolean;
-  shower: boolean;
-  air_conditioning: boolean;
-  toilet: boolean;
-  user_id: number;
-  sport_id: number;
-  username: string;
-  user_picture: string;
-  name: string;
-  nb_participant: number;
-};
+import type { Rows } from "../../../database/client";
 
 class ActivityRepository {
   async readAll(page: number, limit: number) {
