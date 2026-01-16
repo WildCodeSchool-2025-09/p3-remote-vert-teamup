@@ -12,13 +12,14 @@ class ParticipationSeeder extends AbstractSeeder {
   }
 
   run() {
-    const randomUser = Math.floor(Math.random() * 10);
     const statusArray = ["inviting", "accepted", "refused"];
 
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
+      const randomActivity = Math.floor(Math.random() * 22);
+
       const fakeUser = {
-        user_id: this.getRef(`user_${randomUser}`).insertId,
-        activity_id: this.getRef(`activity_${i}`).insertId,
+        user_id: this.getRef(`user_${i}`).insertId,
+        activity_id: this.getRef(`activity_${randomActivity}`).insertId,
         status: statusArray[Math.floor(statusArray.length * Math.random())],
         created_at: this.faker.date.soon(),
         updated_at: this.faker.date.future(),

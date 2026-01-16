@@ -1,9 +1,16 @@
-import SearchBar from "./components/SearchBar";
-import "./styles/reset.css";
-import "./styles/variables.css";
+import { Outlet } from "react-router";
+import "./styles/Reset.css";
+import "./styles/Variables.css";
+import "./styles/App.css";
 
 function App() {
-  return <SearchBar />;
+  return (
+    <>
+      <main>
+        <Outlet />
+      </main>
+    </>
+  );
 }
 
 export default App;

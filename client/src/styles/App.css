@@ -1,0 +1,30 @@
+body {
+  background-color: var(--light-color);
+}
+
+h1 {
+  font-family: var(--heading-font);
+  font-size: var(--heading-size);
+}
+
+h2 {
+  font-family: var(--title-font);
+  font-size: var(--title-size);
+}
+
+button {
+  font-family: var(--button-mobile);
+  font-size: var(--button-size);
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: var(--heading-desktop-size);
+  }
+  h2 {
+    font-size: var(--title-desktop-size);
+  }
+  button {
+    font-size: var(--button-desktop-size);
+  }
+}
