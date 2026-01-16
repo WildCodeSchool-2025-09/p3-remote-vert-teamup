@@ -6,7 +6,7 @@ class UserSeeder extends AbstractSeeder {
   }
 
   run() {
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
       const fakeUser = {
         email: this.faker.internet.email(),
         username: this.faker.internet.username(),
