@@ -23,6 +23,26 @@ class ActivityRepository {
       totalPages: Math.ceil(totalActivity / limit),
     };
   }
+  async readSome(sportName: string, sportCity: string, sportDate: string) {
+    // Execute the SQL SELECT query to retrieve all items from the "item" table
+    const [rows] = await databaseClient.query<Rows>(
+      "select activity.*, name from activity join sport on activity.sport_id = sport.id where name = ? and city = ? and playing_at like ?",
+      [sportName, sportCity, `${sportDate}%`],
+    );
+
+    // Return the array of items
+    return rows as Activity[];
+  }
+
+  async readAllThomas() {
+    // Execute the SQL SELECT query to retrieve all items from the "item" table
+    const [rows] = await databaseClient.query<Rows>(
+      "select activity.*, name from activity join sport on activity.sport_id = sport.id",
+    );
+
+    // Return the array of items
+    return rows as Activity[];
+  }
 }
 
 export default new ActivityRepository();
