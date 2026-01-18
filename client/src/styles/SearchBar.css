@@ -31,7 +31,7 @@ section.searchbar article input {
   height: 37px;
   padding-left: 30px;
   width: 100%;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
 }
 
@@ -95,7 +95,7 @@ section.searchbar article ul.dropdown button {
   width: 100%;
   border: none;
   background: none;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   text-align: start;
   padding-left: 4px;
@@ -109,7 +109,7 @@ section.searchbar article ul.dropdown-false li {
   width: 100%;
   border: none;
   background: none;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   padding-left: 4px;
   height: 30px;
@@ -150,7 +150,7 @@ section.searchbar article ul.dropdown-false li {
     color: var(--light-color);
     background: var(--button-color);
     font-size: var(--body-desktop-size);
-    font-family: var(--button-mobile);
+    font-family: var(--button-font);
     width: 132px;
     height: 45px;
     border-radius: 10px;
