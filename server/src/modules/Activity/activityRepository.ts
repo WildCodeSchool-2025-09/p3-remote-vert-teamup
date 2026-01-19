@@ -7,12 +7,23 @@ class ActivityRepository {
     const offset = (page - 1) * limit;
 
     const conditions = [];
+    const params = [];
     let query = "";
 
-    filters.name && conditions.push(`s.name = "${filters.name}"`);
-    filters.city && conditions.push(`a.city = "${filters.city}"`);
-    filters.playingAt &&
-      conditions.push(`a.playing_at = "${filters.playingAt}"`);
+    if (filters.name) {
+      conditions.push("s.name = ?");
+      params.push(filters.name);
+    }
+
+    if (filters.city) {
+      conditions.push("a.city = ?");
+      params.push(filters.city);
+    }
+
+    if (filters.playingAt) {
+      conditions.push("a.playing_at = ?");
+      params.push(filters.playingAt);
+    }
 
     if (conditions.length > 0) {
       query += `WHERE ${conditions.join(" AND ")}`;
@@ -26,11 +37,12 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id 
       ${query}
       GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
-      [limit, offset],
+      [...params, limit, offset],
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
       `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id ${query}`,
+      params,
     );
 
     const totalActivities = totalResult[0].total_activity as number;
