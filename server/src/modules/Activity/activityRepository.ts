@@ -23,6 +23,15 @@ class ActivityRepository {
       totalPages: Math.ceil(totalActivity / limit),
     };
   }
+
+  async readActivitiesPublicatedByUser(userID: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "select activity.*, name from activity join sport on activity.sport_id = sport.id join user on activity.user_id = user.id where user.id = ?",
+      [userID],
+    );
+
+    return rows as Activity[];
+  }
 }
 
 export default new ActivityRepository();

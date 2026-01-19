@@ -25,4 +25,20 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse };
+const browseActivitiesPublicatedByUser: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const userID = 7;
+    const activitiesPublicatedByUser =
+      await activityRepository.readActivitiesPublicatedByUser(userID);
+
+    res.json(activitiesPublicatedByUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, browseActivitiesPublicatedByUser };
