@@ -42,7 +42,7 @@ function Activities() {
         setTotalActivities(activities.pagination.totalActivities);
       });
   }, [currentPage, activityToPlay]);
-  console.log(activities);
+
   return (
     <>
       <SearchBar setActivityToPlay={setActivityToPlay} />
