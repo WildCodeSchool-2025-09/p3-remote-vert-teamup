@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import Publication from "./pages/Publication";
 import Activities from "./pages/Activities";
+import Publication from "./pages/Publication";
 
 // TODO: Activer quand l'US Login sera faite (route /login + token)
 // const requireAuth = () => {

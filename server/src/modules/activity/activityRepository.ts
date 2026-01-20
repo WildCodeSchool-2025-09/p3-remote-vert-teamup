@@ -49,7 +49,7 @@ class ActivityRepository {
         activity.toilet ?? null,
         activity.user_id,
         activity.sport_id,
-      ]
+      ],
     );
     return result;
   }
