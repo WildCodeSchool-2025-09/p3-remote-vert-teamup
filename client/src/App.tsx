@@ -1,10 +1,14 @@
+import { Outlet } from "react-router";
+import "./styles/Reset.css";
+import "./styles/Variables.css";
 import "./styles/App.css";
-import Filters from "./components/Filters/Filters";
 
 function App() {
   return (
     <>
-      <Filters />
+      <main>
+        <Outlet />
+      </main>
     </>
   );
 }

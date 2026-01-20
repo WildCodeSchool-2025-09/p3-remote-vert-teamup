@@ -1,4 +1,4 @@
-import "./Filters.css";
+import "../styles/SearchFilters.css";
 import { useState } from "react";
 
 type Filters = {
@@ -9,6 +9,16 @@ type Filters = {
   level: string | null;
   price: number | null;
   disabled: boolean;
+};
+
+type Prop = {
+  setActivityToPlay?: React.Dispatch<
+    React.SetStateAction<{
+      sport: string;
+      playingAt: string;
+      city: string;
+    }>
+  >;
 };
 
 type EquipmentOptionsType = {
@@ -45,14 +55,12 @@ const initialState = {
   disabled: false,
 };
 
-function Filters() {
+function Filters({ setActivityToPlay }: Prop) {
   const [filters, setFilters] = useState<Filters>(initialState);
-  const [filteredActivities, setFilteredActivities] = useState({});
+  // const [filteredActivities, setFilteredActivities] = useState({});
   const [prevPayedPrice, setPrevPayedPrice] = useState(30);
 
   const isFree = filters.price === 0;
-
-  console.log(filteredActivities);
 
   const resetFilters = () => {
     setFilters(initialState);
@@ -96,22 +104,30 @@ function Filters() {
   };
 
   const fetchData = () => {
-    const queryString = new URLSearchParams({
-      filters: JSON.stringify(filters),
-    }).toString();
-
-    fetch(`http://localhost:3310/api/activity/filters?${queryString}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Request Failed");
-        }
-        return res.json();
-      })
-      .then((data) => setFilteredActivities(data))
-      .catch((err) => {
-        console.log(err);
-      });
+    setActivityToPlay?.(
+      (prev: { sport: string; city: string; playingAt: string }) => {
+        return {
+          ...prev,
+          ...filters,
+        };
+      },
+    );
   };
+  // const queryString = new URLSearchParams({
+  //   filters: JSON.stringify(filters),
+  // }).toString();
+
+  // fetch(`http://localhost:3310/api/activity/filters?${queryString}`)
+  //   .then((res) => {
+  //     if (!res.ok) {
+  //       throw new Error("Request Failed");
+  //     }
+  //     return res.json();
+  //   })
+  //   .then((data) => setFilteredActivities(data))
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 
   return (
     <>

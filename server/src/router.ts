@@ -1,11 +1,10 @@
 import express from "express";
+import activityActions from "./modules/activity/activityActions";
+import sportAction from "./modules/sport/sportAction";
 
 const router = express.Router();
 
-import ActivityAction from "./modules/activity/activityAction";
-
-router.get("/api/activity/filters", ActivityAction.browse);
-
-/* ************************************************************************* */
+router.get("/api/activities", activityActions.browse);
+router.get("/api/sport", sportAction.browse);
 
 export default router;
