@@ -1,0 +1,121 @@
+.publication-page {
+  max-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.guests-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guest-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.guest-input-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border: 1px solid var(--input-color);
+  border-radius: 10px;
+  background-color: var(--light-color);
+  width: 185px;
+  height: 37px;
+  position: relative;
+
+  & > .username-accepted {
+    fill: var(--input-color);
+  }
+
+  & > .username-refused {
+    fill: var(--refused-color);
+  }
+}
+
+.error-detected {
+  border-radius: 10px 10px 0 0;
+  border: 1px solid var(--refused-color);
+}
+
+.guest-input-display span {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  color: var(--dark-color);
+}
+
+.guest-input-display input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  color: var(--dark-color);
+  outline: none;
+  min-width: 0;
+}
+
+.guest-input-display input::placeholder {
+  color: var(--dark-color);
+}
+
+.btn-add-guest,
+.btn-remove-guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 37px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.btn-add-guest {
+  background-color: #00bd7d;
+}
+
+.btn-remove-guest {
+  background-color: #00bd7d;
+}
+
+.error-message {
+  color: var(--refused-color);
+  font-family: var(--body-font);
+  font-size: var(--tag-size);
+  text-align: center;
+  line-height: 0;
+  padding: 12px;
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--refused-color);
+  border-radius: 0 0 10px 10px;
+  width: 185px;
+  height: 5px;
+  position: absolute;
+  top: 100%;
+  left: -1px;
+}
+
+.btn-publish {
+  width: 330px;
+  height: 32px;
+  padding: 0;
+  background-color: var(--button-color);
+  color: var(--light-color);
+  border: none;
+  border-radius: 10px;
+  font-family: var(--button-font);
+  font-size: var(--button-size);
+  cursor: pointer;
+  margin-top: 1.5rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
