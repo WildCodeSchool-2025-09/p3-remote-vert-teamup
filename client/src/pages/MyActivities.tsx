@@ -18,10 +18,6 @@ function Activites() {
     }
   };
   const { data, loading, error } = useApiGet(getUrlByTab(selectedTab));
-  if (loading) return <p>Chargement…</p>;
-  if (error) return <p>Erreur</p>;
-  if (!data) return null;
-
   return (
     <main id="main-activites">
       <h1>MES ACTIVITÉS</h1>
@@ -30,10 +26,11 @@ function Activites() {
         setSelectedTab={setSelectedTab}
       />
       <section>
-        <ul>
-          {!loading &&
-            !error &&
-            data.map((activity) => (
+        {loading && <p>Chargement…</p>}
+        {error && <p>{error}</p>}
+        {!loading && !error && data && (
+          <ul>
+            {data.map((activity) => (
               <li key={activity.id}>
                 <div>{activity.description}</div>
                 <div>
@@ -43,7 +40,8 @@ function Activites() {
                 <div>{activity.playing_at}</div>
               </li>
             ))}
-        </ul>
+          </ul>
+        )}
       </section>
     </main>
   );

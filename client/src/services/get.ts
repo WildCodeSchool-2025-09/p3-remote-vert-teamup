@@ -31,6 +31,9 @@ export function useApiGet(url: string) {
   const [data, setData] = useState<UseDataType[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
+    new AbortController();
+    setLoading(true);
+    setError(null);
     fetch(url)
       .then((res) => res.json())
       .then((data) => setData(data))
