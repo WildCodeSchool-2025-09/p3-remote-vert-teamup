@@ -5,7 +5,7 @@ const router = express.Router();
 import activityActions from "./modules/activity/activityActions";
 
 router.get(
-  "/api/publication",
+  "/api/publications",
   activityActions.browseActivitiesPublicatedByUser,
 );
 
