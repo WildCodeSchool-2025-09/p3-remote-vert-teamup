@@ -3,80 +3,73 @@ import "../styles/SearchBar.css";
 import { useMediaQuery } from "react-responsive";
 
 type SearchBarProps = {
-  setActivityToPlay: React.Dispatch<
-    React.SetStateAction<{
-      sport: string;
-      playingAt: string;
-      city: string;
-    }>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 };
 
-function SearchBar({ setActivityToPlay }: SearchBarProps) {
-  const [filteredCities, setFilteredCities] = useState<City[]>([]);
-  const [filteredSports, setFilteredSports] = useState<Sport[]>([]);
-  const [apiErrorSport, setApiErrorSport] = useState(false);
-  const [apiErrorCity, setApiErrorCity] = useState(false);
-  const [emptyInputSport, setEmptyInputSport] = useState(false);
-  const [emptyInputCity, setEmptyInputCity] = useState(false);
+function SearchBar({ setFilters }: SearchBarProps) {
+  const [cities, setCities] = useState<City[]>([]);
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [error, setError] = useState({
+    sport: false,
+    city: false,
+  });
   const [emptyInputPlayingAt, setEmptyInputPlayingAt] = useState(false);
-  const today = new Date();
-  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
-  const [activitiesOnDropdown, setActivitiesOnDropdown] = useState({
+  const [activitiesOnDropdown, setActivitiesOnDropdown] = useState<Filters>({
     sport: "",
     playingAt: "",
     city: "",
   });
 
+  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
+
   function searchSport(e: React.ChangeEvent<HTMLInputElement>) {
     setActivitiesOnDropdown((prev) => ({ ...prev, sport: e.target.value }));
-    emptyInputSport && setEmptyInputSport(false);
 
     if (e.target.value.length > 0) {
       fetch(`${import.meta.env.VITE_API_URL}/api/sport?name=${e.target.value}`)
         .then((response) => response.json())
-        .then((data) => {
-          setFilteredSports(data);
-          setApiErrorSport(data.length === 0);
+        .then((sports) => {
+          setSports(sports);
+          setError((prev) => ({ ...prev, sport: sports.length === 0 }));
         });
     } else {
-      setActivityToPlay((prev) => ({ ...prev, sport: "" }));
-      setFilteredSports([]);
-      setApiErrorSport(false);
+      setSports([]);
+      setError((prev) => ({ ...prev, sport: false }));
+      setFilters((prev) => ({ ...prev, sport: "" }));
     }
   }
 
   function selectSport(sport: string) {
-    setActivityToPlay((prev) => ({ ...prev, sport: sport }));
+    setFilters((prev) => ({ ...prev, sport: sport }));
     setActivitiesOnDropdown((prev) => ({ ...prev, sport: sport }));
-    setFilteredSports([]);
+    setSports([]);
   }
 
   function searchCity(e: React.ChangeEvent<HTMLInputElement>) {
     setActivitiesOnDropdown((prev) => ({ ...prev, city: e.target.value }));
-    emptyInputCity && setEmptyInputCity(false);
+
     if (e.target.value.length > 2) {
       fetch(`https://geo.api.gouv.fr/communes?nom=${e.target.value}`)
         .then((response) => response.json())
-        .then((data) => {
-          setFilteredCities(data);
-          setApiErrorCity(data.length === 0);
+        .then((cities) => {
+          setCities(cities);
+          setError((prev) => ({ ...prev, city: cities.length === 0 }));
         });
     } else {
-      setFilteredCities([]);
-      setApiErrorCity(false);
-      setActivityToPlay((prev) => ({ ...prev, city: "" }));
+      setCities([]);
+      setError((prev) => ({ ...prev, city: false }));
+      setFilters((prev) => ({ ...prev, city: "" }));
     }
   }
 
   function selectCity(city: string) {
-    setActivityToPlay((prev) => ({ ...prev, city: city }));
+    setFilters((prev) => ({ ...prev, city: city }));
     setActivitiesOnDropdown((prev) => ({ ...prev, city: city }));
-    setFilteredCities([]);
+    setCities([]);
   }
 
   function searchPlayingAt(e: React.ChangeEvent<HTMLInputElement>) {
-    setActivityToPlay((prev) => ({ ...prev, playingAt: e.target.value }));
+    setFilters((prev) => ({ ...prev, playingAt: e.target.value }));
     emptyInputPlayingAt && setEmptyInputPlayingAt(false);
   }
 
@@ -85,7 +78,7 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
       <section className="searchbar">
         <article>
           <svg
-            className={`${apiErrorSport ? "error-svg" : ""}`}
+            className={`${error.sport ? "error-svg" : ""}`}
             aria-hidden="true"
             viewBox="0 0 24 24"
           >
@@ -95,28 +88,24 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
             </g>
           </svg>
           <input
-            className={`${apiErrorSport ? "error-input" : ""} ${filteredSports.length > 0 ? "bottom-border" : ""}`}
+            className={`${error.sport ? "error-input" : ""} ${sports.length > 0 ? "bottom-border" : ""}`}
             type="text"
             placeholder="Rechercher une activité..."
             required
             value={activitiesOnDropdown.sport}
             onChange={searchSport}
-            onBlur={() => setFilteredSports([])}
+            onBlur={() => setSports([])}
           />
           <ul
-            className={`${apiErrorSport || emptyInputSport ? "dropdown-false" : filteredSports.length > 0 && "dropdown"}`}
+            className={`${error.sport ? "dropdown-false" : sports.length > 0 && "dropdown"}`}
           >
-            {emptyInputSport ? (
-              <li className="error-li">
-                <p>Veuillez remplir ce champs</p>
-              </li>
-            ) : apiErrorSport ? (
+            {error.sport ? (
               <li className="error-li">
                 <p>Ce sport n'existe pas</p>
               </li>
             ) : (
               activitiesOnDropdown.sport.length > 0 &&
-              filteredSports.map((sport) => (
+              sports.map((sport) => (
                 <li key={sport.name}>
                   <button
                     type="button"
@@ -131,7 +120,7 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
         </article>
         <article>
           <svg
-            className={`${apiErrorCity ? "error-svg" : ""}`}
+            className={`${error.city ? "error-svg" : ""}`}
             aria-hidden="true"
             viewBox="0 0 24 24"
           >
@@ -142,27 +131,23 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
             </g>
           </svg>
           <input
-            className={`${apiErrorCity ? "error-input" : ""} ${filteredCities.length > 0 ? "bottom-border" : ""}`}
+            className={`${error.city ? "error-input" : ""} ${cities.length > 0 ? "bottom-border" : ""}`}
             type="text"
             placeholder="Ville ?"
             required
             value={activitiesOnDropdown.city}
             onChange={searchCity}
-            onBlur={() => setFilteredCities([])}
+            onBlur={() => setCities([])}
           />
           <ul
-            className={`${apiErrorCity || emptyInputCity ? "dropdown-false" : filteredCities.length > 0 && "dropdown"}`}
+            className={`${error.city ? "dropdown-false" : cities.length > 0 && "dropdown"}`}
           >
-            {emptyInputCity ? (
-              <li className="error-li">
-                <p>Veuillez remplir ce champs</p>
-              </li>
-            ) : apiErrorCity ? (
+            {error.city ? (
               <li className="error-li">
                 <p>Cette ville n'existe pas</p>
               </li>
             ) : (
-              filteredCities?.map((city) => (
+              cities?.map((city) => (
                 <li key={city.code}>
                   <button
                     type="button"
@@ -180,7 +165,7 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
           <input
             type="date"
             required
-            min={today.toISOString().split("T")[0]}
+            min={new Date().toISOString().split("T")[0]}
             onChange={searchPlayingAt}
           />
           <ul className={`${emptyInputPlayingAt && "dropdown-false"}`}>

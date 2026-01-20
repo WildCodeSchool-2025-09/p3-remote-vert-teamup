@@ -7,7 +7,7 @@ const browse: RequestHandler = async (req, res, next) => {
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
     const filters: Filters = {
-      name: req.query.name as string,
+      sport: req.query.sport as string,
       city: req.query.city as string,
       playingAt: req.query.playingAt as string,
     };

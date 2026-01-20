@@ -11,7 +11,7 @@ function Activities() {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
-  const [activityToPlay, setActivityToPlay] = useState({
+  const [filters, setFilters] = useState({
     sport: "",
     playingAt: "",
     city: "",
@@ -20,20 +20,15 @@ function Activities() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (
-      !activityToPlay.sport &&
-      !activityToPlay.city &&
-      !activityToPlay.playingAt
-    )
-      return;
+    if (!filters.sport && !filters.city && !filters.playingAt) return;
     navigate("/activities/page/1");
-  }, [activityToPlay, navigate]);
+  }, [filters, navigate]);
 
   useEffect(() => {
     const LIMIT = 10;
 
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&name=${activityToPlay.sport}&city=${activityToPlay.city}&playingAt=${activityToPlay.playingAt}`,
+      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&sport=${filters.sport}&city=${filters.city}&playingAt=${filters.playingAt}`,
     )
       .then((response) => response.json())
       .then((activities) => {
@@ -41,11 +36,11 @@ function Activities() {
         setTotalPages(activities.pagination.totalPages);
         setTotalActivities(activities.pagination.totalActivities);
       });
-  }, [currentPage, activityToPlay]);
+  }, [currentPage, filters]);
 
   return (
     <>
-      <SearchBar setActivityToPlay={setActivityToPlay} />
+      <SearchBar setFilters={setFilters} />
       <div className="header-activity">
         <h1>Activités disponibles</h1>
         {totalActivities === 0 ? (

@@ -9,21 +9,17 @@ type Sport = {
 
 class SportRepository {
   async readSome(sportName: string) {
-    // Execute the SQL SELECT query to retrieve all items from the "item" table
     const [rows] = await databaseClient.query<Rows>(
-      "select name from sport where name like ?",
+      "SELECT name FROM sport WHERE name LIKE ?",
       [`${sportName}%`],
     );
 
-    // Return the array of items
     return rows as Sport[];
   }
 
   async readAll() {
-    // Execute the SQL SELECT query to retrieve all items from the "item" table
-    const [rows] = await databaseClient.query<Rows>("select name from sport");
+    const [rows] = await databaseClient.query<Rows>("SELECT name FROM sport");
 
-    // Return the array of items
     return rows as Sport[];
   }
 }

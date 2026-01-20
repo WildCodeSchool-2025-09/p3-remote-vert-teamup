@@ -10,9 +10,9 @@ class ActivityRepository {
     const params = [];
     let query = "";
 
-    if (filters.name) {
+    if (filters.sport) {
       conditions.push("s.name = ?");
-      params.push(filters.name);
+      params.push(filters.sport);
     }
 
     if (filters.city) {
