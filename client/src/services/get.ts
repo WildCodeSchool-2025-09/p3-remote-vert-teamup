@@ -30,15 +30,13 @@ export function useApiGet(url: string) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<UseDataType[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
-      .then((json: UseDataType[]) => setData(json))
-      .catch((err: unknown) => handleError(err, setError))
+      .then((data) => setData(data))
+      .catch((err) => handleError(err, setError))
       .finally(() => setLoading(false));
   }, [url]);
-
   return { loading, data, error };
 }
 
