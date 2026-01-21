@@ -3,7 +3,8 @@ import activityRepository from "./activityRepository";
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    const items = await activityRepository.readAll();
+    const userId = 5;
+    const items = await activityRepository.readAll(userId);
     res.json(items);
   } catch (err) {
     next(err);
