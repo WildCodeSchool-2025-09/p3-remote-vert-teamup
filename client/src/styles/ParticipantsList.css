@@ -1,0 +1,67 @@
+ul {
+  font-family: var(--body-font);
+  background-color: var(--neutral-color);
+  box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5);
+}
+
+ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  font-size: var(--body-size);
+}
+
+ul li img {
+  width: 32px;
+  height: 32px;
+  border-radius: 32px;
+}
+
+ul li div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
+ul li p.refused,
+ul li p.accepted,
+ul li p.pending {
+  color: var(--light-color);
+  width: 75px;
+  height: 18px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul li p.refused,
+ul li button.btn-refused {
+  background-color: var(--refused-color);
+}
+
+ul li p.accepted,
+ul li button.btn-accepted {
+  background-color: var(--input-color);
+}
+
+ul li p.pending {
+  background-color: var(--accent-color);
+}
+
+ul li button {
+  border: none;
+  background-color: var(--refused-color);
+  color: var(--light-color);
+  width: 75px;
+  height: 18px;
+  border-radius: 6px;
+}
+
+@media (min-width: 1024px) {
+  ul li {
+    font-size: var(--body-desktop-size);
+  }
+}
