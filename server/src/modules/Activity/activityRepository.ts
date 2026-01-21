@@ -7,16 +7,42 @@ class ActivityRepository {
     const offset = (page - 1) * limit;
 
     const conditions = [];
-    let query = "";
+    const params = [];
 
-    filters.name && conditions.push(`s.name = "${filters.name}"`);
-    filters.city && conditions.push(`a.city = "${filters.city}"`);
-    filters.playingAt &&
-      conditions.push(`a.playing_at = "${filters.playingAt}"`);
-
-    if (conditions.length > 0) {
-      query += `WHERE ${conditions.join(" AND ")}`;
+    if (filters.name) {
+      conditions.push("s.name = ?");
+      params.push(filters.name);
     }
+    if (filters.city) {
+      conditions.push("a.city = ?");
+      params.push(filters.city);
+    }
+    if (filters.playingAt) {
+      conditions.push("a.playing_at = ?");
+      params.push(filters.playingAt);
+    }
+
+    filters.locker && conditions.push("a.locker = 1");
+    filters.shower && conditions.push("a.shower = 1");
+    filters.toilet && conditions.push("a.toilet = 1");
+    filters.air_conditioning && conditions.push("a.air_conditioning = 1");
+
+    if (filters.level) {
+      conditions.push("(a.level IS NULL OR a.level = ?)");
+      params.push(filters.level);
+    }
+    if (filters.price !== null && filters.price !== undefined) {
+      conditions.push("(a.price IS NULL OR a.price <= ?)");
+      params.push(filters.price);
+    }
+
+    filters.disabled && conditions.push("a.disabled = 1");
+
+    const query =
+      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    console.log(filters);
+    console.log("conditions:", conditions);
 
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name, 
@@ -26,11 +52,12 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id 
       ${query}
       GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
-      [limit, offset],
+      [...params, limit, offset],
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
       `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id ${query}`,
+      [...params],
     );
 
     const totalActivities = totalResult[0].total_activity as number;
@@ -44,47 +71,3 @@ class ActivityRepository {
 }
 
 export default new ActivityRepository();
-
-// type Filters = {
-//   locker: boolean;
-//   shower: boolean;
-//   toilet: boolean;
-//   air_conditioning: boolean;
-//   level: string | null;
-//   price: number | null;
-//   disabled: boolean;
-// };
-
-// class ItemRepository {
-//   async readAll(filters: Filters) {
-//     const { locker, shower, toilet, air_conditioning, level, price, disabled } =
-//       filters;
-
-//     const [rows] = await databaseClient.query<Rows>(
-//       `
-//         SELECT * FROM activity
-//         WHERE
-//         (? = 0 OR locker = 1)
-//         AND (? = 0 OR shower = 1)
-//         AND (? = 0 OR toilet = 1)
-//         AND (? = 0 OR air_conditioning = 1)
-//         AND (? IS NULL OR level = ?)
-//         AND (? IS NULL OR price <= ?)
-//         AND (? = 0 OR disabled = 1)
-//         `,
-//       [
-//         locker ? 1 : 0,
-//         shower ? 1 : 0,
-//         toilet ? 1 : 0,
-//         air_conditioning ? 1 : 0,
-//         level,
-//         level,
-//         price,
-//         price,
-//         disabled ? 1 : 0,
-//       ],
-//     );
-
-//     return rows;
-//   }
-// }

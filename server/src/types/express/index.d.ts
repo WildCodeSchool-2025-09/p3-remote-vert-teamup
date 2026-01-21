@@ -42,4 +42,11 @@ type Filters = {
   name: string;
   city: string;
   playingAt: string;
+  locker: boolean;
+  shower: boolean;
+  toilet: boolean;
+  air_conditioning: boolean;
+  level: string | null;
+  price: number | null;
+  disabled: boolean;
 };

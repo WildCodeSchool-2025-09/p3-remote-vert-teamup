@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "../styles/SearchBar.css";
 import { useMediaQuery } from "react-responsive";
-import SearchFilters from "./SearchFilters";
 
 type SearchBarProps = {
   setActivityToPlay: React.Dispatch<
@@ -198,7 +197,6 @@ function SearchBar({ setActivityToPlay }: SearchBarProps) {
           </button>
         )}
       </section>
-      <SearchFilters setActivityToPlay={setActivityToPlay} />
     </>
   );
 }

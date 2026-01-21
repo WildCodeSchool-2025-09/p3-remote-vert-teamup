@@ -22,10 +22,14 @@
     margin: 1.5rem 0 2rem 8rem;
   }
   .cards-activity {
-    width: 80%;
-    grid-template-columns: repeat(auto-fit, 320px);
-    margin-left: 8rem;
+    /* width: 80%; */
+    /* grid-template-columns: repeat(auto-fit, 320px); */
     justify-content: start;
+  }
+
+  .flx-activitypg {
+    display: flex;
+    justify-content: space-around;
   }
 
   .header-activity {

@@ -57,13 +57,16 @@ const initialState = {
 
 function Filters({ setActivityToPlay }: Prop) {
   const [filters, setFilters] = useState<Filters>(initialState);
-  // const [filteredActivities, setFilteredActivities] = useState({});
   const [prevPayedPrice, setPrevPayedPrice] = useState(30);
 
   const isFree = filters.price === 0;
 
   const resetFilters = () => {
     setFilters(initialState);
+    setActivityToPlay?.((prev) => ({
+      ...prev,
+      filters,
+    }));
   };
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,30 +107,13 @@ function Filters({ setActivityToPlay }: Prop) {
   };
 
   const fetchData = () => {
-    setActivityToPlay?.(
-      (prev: { sport: string; city: string; playingAt: string }) => {
-        return {
-          ...prev,
-          ...filters,
-        };
-      },
-    );
+    setActivityToPlay?.((prev) => {
+      return {
+        ...prev,
+        ...filters,
+      };
+    });
   };
-  // const queryString = new URLSearchParams({
-  //   filters: JSON.stringify(filters),
-  // }).toString();
-
-  // fetch(`http://localhost:3310/api/activity/filters?${queryString}`)
-  //   .then((res) => {
-  //     if (!res.ok) {
-  //       throw new Error("Request Failed");
-  //     }
-  //     return res.json();
-  //   })
-  //   .then((data) => setFilteredActivities(data))
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 
   return (
     <>
