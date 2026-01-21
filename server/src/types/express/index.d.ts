@@ -37,3 +37,9 @@ type Activity = {
   name: string;
   nb_participant: number;
 };
+
+type Filters = {
+  sport: string;
+  city: string;
+  playingAt: string;
+};

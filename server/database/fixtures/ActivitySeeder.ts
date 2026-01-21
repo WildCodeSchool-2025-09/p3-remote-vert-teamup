@@ -25,7 +25,7 @@ class ActivitySeeder extends AbstractSeeder {
       const minutes = futureDate.getMinutes().toString().padStart(2, "0");
       const time = `${hours}:${minutes}`;
 
-      const fakeUser = {
+      const fakeActivity = {
         address: this.faker.location.streetAddress(),
         city: this.faker.helpers.arrayElement(city),
         description: this.faker.lorem.words(10),
@@ -52,7 +52,7 @@ class ActivitySeeder extends AbstractSeeder {
         refName: `activity_${i}`,
       };
 
-      this.insert(fakeUser);
+      this.insert(fakeActivity);
     }
   }
 }

@@ -28,8 +28,3 @@ type Activity = {
   name: string;
   nb_participant: number;
 };
-
-type Sport = {
-  id: number;
-  name: string;
-};

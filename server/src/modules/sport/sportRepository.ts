@@ -7,6 +7,14 @@ interface Sport extends RowDataPacket {
 }
 
 class SportRepository {
+  async readSome(sportName: string) {
+    const [rows] = await databaseClient.query<Sport[]>(
+      "SELECT id, name FROM sport WHERE name LIKE ?",
+      [`${sportName}%`],
+    );
+    return rows;
+  }
+
   async readAll() {
     const query = "SELECT id, name FROM sport ORDER BY name";
     const [rows] = await databaseClient.query<Sport[]>(query);
