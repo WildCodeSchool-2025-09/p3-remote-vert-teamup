@@ -1,7 +1,7 @@
 import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
-class ActivityRepository {
+class userRepository {
   async readAllParticipants(activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT user.username, user.picture, demand.status FROM user 
@@ -14,8 +14,8 @@ class ActivityRepository {
       [activityId, activityId],
     );
 
-    return rows as Activity[];
+    return rows as Participant[];
   }
 }
 
-export default new ActivityRepository();
+export default new userRepository();
