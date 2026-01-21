@@ -1,8 +1,9 @@
 .card {
   background-color: var(--light-color);
   border-radius: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px 0px;
   position: relative;
+  overflow: hidden;
   animation: scale 0.5s cubic-bezier(0.5, 0, 0.5, 1) both, appear 0.5s linear
     both;
 }
@@ -37,7 +38,6 @@
 
 .card-header {
   height: 7rem;
-  border-radius: 6px 6px 0 0;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -401,6 +401,23 @@
   }
 }
 
+.dropdown-participation {
+  font-family: var(--button-font);
+  font-size: var(--button-size);
+  border: none;
+  background-color: var(--button-color);
+  color: var(--light-color);
+  height: 2rem;
+  width: 11rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  z-index: 1;
+  margin: 1rem auto;
+}
+
 @media (min-width: 1024px) {
   .card-footer {
     padding: 0 0.5rem 1rem 0.5rem;
@@ -431,6 +448,11 @@
       }
     }
   }
+
+  .dropdown-participation {
+    font-size: var(--button-desktop-size);
+    width: 13rem;
+  }
 }
 
 .activity-full {
@@ -440,5 +462,4 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 10px;
 }
