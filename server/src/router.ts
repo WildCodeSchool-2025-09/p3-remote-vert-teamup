@@ -7,6 +7,6 @@ import userActions from "./modules/User/userActions";
 
 router.get("/api/activities", activityActions.browse);
 
-router.get("/api/publication", userActions.validateUsername);
+router.get("/api/publication", userActions.readByUsername);
 
 export default router;

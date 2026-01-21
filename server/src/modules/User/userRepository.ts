@@ -4,11 +4,11 @@ import type { Rows } from "../../../database/client";
 class UserRepository {
   async checkUsername(username: string) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT username FROM user WHERE username = ?",
+      "SELECT id, username FROM user WHERE username = ?",
       [username],
     );
 
-    return rows[0];
+    return rows[0] as User[];
   }
 }
 

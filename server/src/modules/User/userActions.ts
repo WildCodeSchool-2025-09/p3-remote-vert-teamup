@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import userRepository from "./userRepository";
 
-const validateUsername: RequestHandler = async (req, res, next) => {
+const readByUsername: RequestHandler = async (req, res, next) => {
   try {
     const { username } = req.query;
 
@@ -15,16 +15,16 @@ const validateUsername: RequestHandler = async (req, res, next) => {
       res.sendStatus(StatusCodes.NO_CONTENT);
     }
 
-    const usernameExist = await userRepository.checkUsername(username);
+    const user = await userRepository.checkUsername(username);
 
-    if (!usernameExist) {
+    if (!user) {
       res.sendStatus(StatusCodes.NOT_FOUND);
     }
 
-    res.sendStatus(StatusCodes.OK);
+    res.json(user).status(StatusCodes.OK);
   } catch (err) {
     next(err);
   }
 };
 
-export default { validateUsername };
+export default { readByUsername };
