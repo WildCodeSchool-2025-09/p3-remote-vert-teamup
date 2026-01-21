@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ActivityCard from "../components/ActivityCard";
+import "../styles/ActivitiesPublicated.css";
 
 function ActivitiesPublicated() {
   const [activitiesPublicated, setActivitiesPublicated] = useState<Activity[]>(
@@ -9,15 +10,16 @@ function ActivitiesPublicated() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/publications`)
       .then((response) => response.json())
-      .then((data) => setActivitiesPublicated(data));
+      .then((activities) => setActivitiesPublicated(activities));
   }, []);
 
   return (
-    <div className="cards-activity">
+    <div className="cards-activities-publicated">
       {activitiesPublicated.map((activityPublicated) => (
         <ActivityCard
           activity={activityPublicated}
           key={activityPublicated.id}
+          publicatedRoad={true}
         />
       ))}
     </div>
