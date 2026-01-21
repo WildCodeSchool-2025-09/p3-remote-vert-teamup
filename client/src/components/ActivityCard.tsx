@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
@@ -12,6 +13,8 @@ function ActivityCard({ activity }: ActivityCardType) {
     day: "2-digit",
     month: "short",
   });
+
+  console.log("From ActivityCard:", activity);
 
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
@@ -98,7 +101,13 @@ function ActivityCard({ activity }: ActivityCardType) {
               <img src="/icons/bell.png" alt="logo alert" />
             </>
           ) : (
-            <>Réserver &gt;</>
+            <>
+              {activity.auto_validation ? (
+                <Link to={"/myactivity/upcoming"}>Réserver &gt;</Link>
+              ) : (
+                <Link to={"/myactivity/awaiting"}>Réserver &gt;</Link>
+              )}
+            </>
           )}
         </button>
       </div>

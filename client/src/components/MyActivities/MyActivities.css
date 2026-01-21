@@ -1,0 +1,6 @@
+.myact-navigation {
+  display: flex;
+  justify-content: center;
+  margin: 3rem;
+  gap: 1rem;
+}
