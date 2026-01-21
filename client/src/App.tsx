@@ -1,9 +1,16 @@
 import { Outlet } from "react-router";
-import "./styles/reset.css";
-import "./styles/variables.css";
+import "./styles/Reset.css";
+import "./styles/Variables.css";
+import "./styles/App.css";
 
 function App() {
-  return <Outlet />;
+  return (
+    <>
+      <main>
+        <Outlet />
+      </main>
+    </>
+  );
 }
 
 export default App;

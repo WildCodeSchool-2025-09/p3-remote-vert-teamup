@@ -1,14 +1,12 @@
 import express from "express";
+import activityActions from "./modules/Activity/activityActions";
+import sportAction from "./modules/sport/sportAction";
 
 const router = express.Router();
 
-/* ************************************************************************* */
-// Define Your API Routes Here
-/* ************************************************************************* */
-
-// Define item-related routes
-import activityActions from "./modules/item/activityActions";
 router.get("/api/venir", activityActions.browse);
-/* ************************************************************************* */
+router.get("/api/activities", activityActions.browse);
+router.get("/api/sport", sportAction.browse);
+router.get("/api/venir", activityActions.browse);
 
 export default router;
