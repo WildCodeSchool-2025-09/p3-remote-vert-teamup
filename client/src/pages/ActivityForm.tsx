@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router";
 import "../styles/variables.css";
 import "../styles/ActivityForm.css";
 import AddIcon from "../assets/Icons/AddIcon.svg";
@@ -13,6 +15,7 @@ import RemoveIcon from "../assets/Icons/RemoveIcon.svg";
 import SearchIcon from "../assets/Icons/SearchIcon.svg";
 
 function ActivityForm() {
+  const navigate = useNavigate();
   const [sports, setSports] = useState<Sport[]>([]);
   const [sportId, setSportId] = useState("");
   const [sportSearch, setSportSearch] = useState("");
@@ -43,7 +46,6 @@ function ActivityForm() {
   const [handisport, setHandisport] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
@@ -100,13 +102,15 @@ function ActivityForm() {
     setIsSubmitting(true);
 
     const activityData = {
+      user_id: 1, // TODO: remplacer après authentification !
       sport_id: Number(sportId),
       address: addressRef.current?.value || "",
       city: cityRef.current?.value || "",
       zip_code: zipCodeRef.current?.value || "",
-      playing_at: `${date} ${time}:00`,
+      playing_at: date,
+      playing_time: `${time}:00`,
       playing_duration: Number(durationRef.current?.value) || 0,
-      nb_places: Number(nbPlacesRef.current?.value) || 0,
+      nb_spots: Number(nbPlacesRef.current?.value) || 0,
       description: descriptionRef.current?.value || null,
       price: isFree ? 0 : Number(price),
       visibility: isPublic,
@@ -133,24 +137,14 @@ function ActivityForm() {
         throw new Error(data.error || "Erreur lors de la publication");
       }
 
-      setSuccess(true);
+      toast.success("Activité créée avec succès !");
+      setTimeout(() => navigate("/activities/page/1"), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (success) {
-    return (
-      <main className="publication-page">
-        <section className="publication-success">
-          <h2>Annonce publiée !</h2>
-          <p>Votre activité a été créée avec succès.</p>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="publication-page">
@@ -724,6 +718,7 @@ function ActivityForm() {
           </button>
         </div>
       </dialog>
+      <Toaster position="top-center" />
     </main>
   );
 }
