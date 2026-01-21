@@ -16,14 +16,14 @@ class DemandSeeder extends AbstractSeeder {
     const statusArray = ["pending", "accepted", "refused"];
 
     for (let i = 0; i < 10; i += 1) {
-      const fakeUser = {
+      const fakeDemand = {
         user_id: this.getRef(`user_${randomUser}`).insertId,
         activity_id: this.getRef(`activity_${i}`).insertId,
         status: statusArray[Math.floor(statusArray.length * Math.random())],
         created_at: this.faker.date.soon(),
         updated_at: this.faker.date.future(),
       };
-      this.insert(fakeUser);
+      this.insert(fakeDemand);
     }
   }
 }

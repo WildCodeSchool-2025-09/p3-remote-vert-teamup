@@ -6,17 +6,21 @@ const browse: RequestHandler = async (req, res, next) => {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
-    const { activities, total, totalPages } = await activityRepository.readAll(
-      page,
-      limit,
-    );
+    const filters: Filters = {
+      sport: req.query.sport as string,
+      city: req.query.city as string,
+      playingAt: req.query.playingAt as string,
+    };
+
+    const { activities, totalActivities, totalPages } =
+      await activityRepository.readAll(page, limit, filters);
 
     res.json({
       activities: activities,
       pagination: {
         page,
         limit,
-        total,
+        totalActivities,
         totalPages,
       },
     });
