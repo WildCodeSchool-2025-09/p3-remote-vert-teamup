@@ -1,10 +1,152 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import "../styles/variables.css";
 import "../styles/Publication.css";
+import CalenderIcon from "../assets/Icons/CalenderIcon.svg";
+import ClockIcon from "../assets/Icons/ClockIcon.svg";
+import DurationIcon from "../assets/Icons/DurationIcon.svg";
+import LocationIcon from "../assets/Icons/LocationIcon.svg";
+import PeopleIcon from "../assets/Icons/PeopleIcon.svg";
+import PriceIcon from "../assets/Icons/PriceIcon.svg";
+import SearchIcon from "../assets/Icons/SearchIcon.svg";
+
+type Sport = {
+  id: number;
+  name: string;
+};
 
 function Publication() {
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [sportId, setSportId] = useState("");
+  const [sportSearch, setSportSearch] = useState("");
+  const [showSportDropdown, setShowSportDropdown] = useState(false);
+  const comboboxRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const [address, setAddress] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [city, setCity] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [duration, setDuration] = useState("");
+  const [nbPlaces, setNbPlaces] = useState("");
+  const [description, setDescription] = useState("");
+  const [isFree, setIsFree] = useState(true);
+  const [price, setPrice] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+  const [autoValidation, setAutoValidation] = useState(false);
+  const [locker, setLocker] = useState(false);
+  const [shower, setShower] = useState(false);
+  const [toilet, setToilet] = useState(false);
+  const [airConditioning, setAirConditioning] = useState(false);
+  const [level, setLevel] = useState<
+    "begginer" | "amateur" | "advance" | "All"
+  >("All");
+  const [handisport, setHandisport] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [guestInput, setGuestInput] = useState("");
   const [guests, setGuests] = useState<User[]>([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/sports")
+      .then((res) => res.json())
+      .then((data) => setSports(data))
+      .catch(() => setError("Impossible de charger les sports"));
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        comboboxRef.current &&
+        !comboboxRef.current.contains(e.target as Node)
+      ) {
+        setShowSportDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredSports = sports.filter((sport) =>
+    sport.name.toLowerCase().includes(sportSearch.toLowerCase()),
+  );
+
+  const handleSelectSport = (sport: Sport) => {
+    setSportId(String(sport.id));
+    setSportSearch(sport.name);
+    setShowSportDropdown(false);
+  };
+
+  const openModal = () => {
+    modalRef.current?.showModal();
+  };
+
+  const closeModal = () => {
+    modalRef.current?.close();
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === modalRef.current) {
+      closeModal();
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+
+    const playingAt = `${date} ${time}:00`;
+
+    const activityData = {
+      sport_id: Number(sportId),
+      address,
+      city,
+      zip_code: zipCode,
+      playing_at: playingAt,
+      playing_duration: Number(duration),
+      nb_places: Number(nbPlaces),
+      description: description || null,
+      price: isFree ? 0 : Number(price),
+      visibility: isPublic,
+      auto_validation: isPublic ? autoValidation : false,
+      level,
+      locker,
+      shower,
+      toilet,
+      air_conditioning: airConditioning,
+    };
+
+    try {
+      const response = await fetch("/api/activity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(activityData),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la publication");
+      }
+
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <main className="publication-page">
+        <section className="publication-success">
+          <h2>Annonce publiée !</h2>
+          <p>Votre activité a été créée avec succès.</p>
+        </section>
+      </main>
+    );
+  }
 
   const addGuest = async () => {
     try {
@@ -36,82 +178,615 @@ function Publication() {
     }
   };
 
-  console.log(guests);
-
   const removeGuest = (guest: User) => {
     setGuests(guests.filter((g) => g !== guest));
   };
 
   return (
     <main className="publication-page">
-      <div className="guests-section">
-        {guests.map((guest) => (
-          <div key={guest.id} className="guest-row added-guest">
-            <div className="guest-input-display">
-              <svg
-                className="username-accepted"
-                width="22"
-                height="22"
-                viewBox="0 0 32 32"
-              >
-                <title>icon profile</title>
-                <g id="about">
-                  <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+      <h1>Publier une annonce</h1>
+      <p className="required-fields">*Champs obligatoires</p>
 
-                  <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
-                </g>
-              </svg>
-              <span>{guest.username}</span>
-            </div>
-            <button
-              type="button"
-              className="btn-remove-guest"
-              onClick={() => removeGuest(guest)}
-              aria-label={`Retirer ${guest}`}
-            >
-              <img src="./icons/remove.png" alt="" width="20" height="20" />
-            </button>
-          </div>
-        ))}
-
-        <div className="guest-row">
-          <div className={`guest-input-display ${error && "error-detected"}`}>
-            <svg
-              className={`username-accepted ${error && "username-refused"}`}
-              width="22"
-              height="22"
-              viewBox="0 0 32 32"
-            >
-              <title>icon profile</title>
-              <g id="about">
-                <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
-
-                <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
-              </g>
-            </svg>
+      <form className="publication-form" onSubmit={handleSubmit}>
+        <div className="combobox" ref={comboboxRef}>
+          <div className="input-with-icon">
+            <img src={SearchIcon} alt="" width="24" height="24" />
             <input
               type="text"
-              value={guestInput}
-              onFocus={() => setError("")}
-              onChange={(e) => setGuestInput(e.target.value)}
-              placeholder="Inviter des personnes"
+              placeholder="Sport *"
+              value={sportSearch}
+              onChange={(e) => {
+                setSportSearch(e.target.value);
+                setSportId("");
+                setShowSportDropdown(true);
+              }}
+              onFocus={() => setShowSportDropdown(true)}
+              required={!sportId}
             />
-            {error && <p className="error-message">{error}</p>}
           </div>
-          <button
-            type="button"
-            className="btn-add-guest"
-            onClick={addGuest}
-            aria-label="Ajouter une personne"
-          >
-            <img src="./icons/add.png" alt="" width="20" height="20" />
+          {showSportDropdown && filteredSports.length > 0 && (
+            <ul className="combobox-dropdown">
+              {filteredSports.slice(0, 250).map((sport) => (
+                <li key={sport.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectSport(sport)}
+                  >
+                    {sport.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <input type="hidden" name="sportId" value={sportId} />
+        </div>
+
+        <div className="input-with-icon">
+          <img src={LocationIcon} alt="" width="24" height="24" />
+          <input
+            type="text"
+            placeholder="Adresse *"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="field-row">
+          <div className="input-with-icon">
+            <img src={LocationIcon} alt="" width="24" height="24" />
+            <input
+              type="text"
+              placeholder="Code postal *"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-with-icon">
+            <img src={LocationIcon} alt="" width="24" height="24" />
+            <input
+              type="text"
+              placeholder="Ville *"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="field-row field-row-3">
+          <div className="input-with-icon date-input-wrapper">
+            <img src={CalenderIcon} alt="" width="24" height="24" />
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+            {!date && <span className="date-placeholder">Date *</span>}
+          </div>
+
+          <div className="input-with-icon time-input-wrapper">
+            <img src={ClockIcon} alt="" width="24" height="24" />
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              required
+            />
+            {!time && <span className="time-placeholder">Heure *</span>}
+          </div>
+
+          <div className="input-with-icon">
+            <img src={DurationIcon} alt="" width="24" height="24" />
+            <input
+              type="number"
+              placeholder="Durée *"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              required
+              min="1"
+            />
+          </div>
+        </div>
+
+        <div className="places-budget-description-row">
+          <div className="places-budget-column">
+            <div className="input-with-icon">
+              <img src={PeopleIcon} alt="" width="24" height="24" />
+              <input
+                type="number"
+                placeholder="Nombre de places *"
+                value={nbPlaces}
+                onChange={(e) => setNbPlaces(e.target.value)}
+                required
+                min="1"
+              />
+            </div>
+
+            <div className="budget-row">
+              <span className="budget-label">Budget * :</span>
+              <div className="radio-options">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="pricing"
+                    checked={isFree}
+                    onChange={() => setIsFree(true)}
+                  />
+                  Gratuit
+                </label>
+
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="pricing"
+                    checked={!isFree}
+                    onChange={() => setIsFree(false)}
+                  />
+                  Payant
+                </label>
+              </div>
+
+              <div
+                className={`price-input-wrapper ${isFree ? "disabled" : ""}`}
+              >
+                <img src={PriceIcon} alt="" width="20" height="20" />
+                <input
+                  type="number"
+                  placeholder="Prix (€)"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  min="0"
+                  step="0.01"
+                  disabled={isFree}
+                  required={!isFree}
+                />
+              </div>
+            </div>
+          </div>
+
+          <textarea
+            placeholder="Description ..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+          />
+        </div>
+
+        {(locker ||
+          shower ||
+          toilet ||
+          airConditioning ||
+          level !== "All" ||
+          handisport) && (
+          <div className="criteria-tags">
+            {level !== "All" && (
+              <span className="criteria-tag">
+                {level === "begginer"
+                  ? "Débutant"
+                  : level === "amateur"
+                    ? "Intermédiaire"
+                    : "Confirmé"}
+                <button type="button" onClick={() => setLevel("All")}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {locker && (
+              <span className="criteria-tag">
+                Vestiaires
+                <button type="button" onClick={() => setLocker(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {shower && (
+              <span className="criteria-tag">
+                Douches
+                <button type="button" onClick={() => setShower(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {toilet && (
+              <span className="criteria-tag">
+                Toilettes
+                <button type="button" onClick={() => setToilet(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {airConditioning && (
+              <span className="criteria-tag">
+                Climatisation
+                <button type="button" onClick={() => setAirConditioning(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+            {handisport && (
+              <span className="criteria-tag">
+                Handisport
+                <button type="button" onClick={() => setHandisport(false)}>
+                  ✕
+                </button>
+              </span>
+            )}
+          </div>
+        )}
+
+        <button type="button" className="btn-criteria" onClick={openModal}>
+          Ajouter des critères
+        </button>
+
+        <section className="criteria-desktop">
+          <header className="criteria-desktop-header">
+            <h3>Critères supplémentaires</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setLocker(false);
+                setShower(false);
+                setToilet(false);
+                setAirConditioning(false);
+                setLevel("All");
+                setHandisport(false);
+              }}
+            >
+              Effacer filtres
+            </button>
+          </header>
+          <div className="criteria-desktop-columns">
+            <fieldset className="criteria-desktop-column">
+              <legend>Équipements</legend>
+              <label>
+                Vestiaires
+                <input
+                  type="checkbox"
+                  checked={locker}
+                  onChange={(e) => setLocker(e.target.checked)}
+                />
+              </label>
+              <label>
+                Douches
+                <input
+                  type="checkbox"
+                  checked={shower}
+                  onChange={(e) => setShower(e.target.checked)}
+                />
+              </label>
+              <label>
+                Toilettes
+                <input
+                  type="checkbox"
+                  checked={toilet}
+                  onChange={(e) => setToilet(e.target.checked)}
+                />
+              </label>
+              <label>
+                Climatisation
+                <input
+                  type="checkbox"
+                  checked={airConditioning}
+                  onChange={(e) => setAirConditioning(e.target.checked)}
+                />
+              </label>
+            </fieldset>
+            <fieldset className="criteria-desktop-column">
+              <legend>Niveau</legend>
+              <label>
+                Tout niveau
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "All"}
+                  onChange={() => setLevel("All")}
+                />
+              </label>
+              <label>
+                Débutant
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "begginer"}
+                  onChange={() => setLevel("begginer")}
+                />
+              </label>
+              <label>
+                Intermédiaire
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "amateur"}
+                  onChange={() => setLevel("amateur")}
+                />
+              </label>
+              <label>
+                Confirmé
+                <input
+                  type="radio"
+                  name="levelDesktop"
+                  checked={level === "advance"}
+                  onChange={() => setLevel("advance")}
+                />
+              </label>
+            </fieldset>
+            <fieldset className="criteria-desktop-column">
+              <legend>Type de sport</legend>
+              <label>
+                Handisport
+                <input
+                  type="checkbox"
+                  checked={handisport}
+                  onChange={(e) => setHandisport(e.target.checked)}
+                />
+              </label>
+            </fieldset>
+          </div>
+        </section>
+
+        <div className="status-row">
+          <div className="status-box">
+            <span className="status-label">Status * :</span>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="visibility"
+                checked={isPublic}
+                onChange={() => setIsPublic(true)}
+              />
+              Public
+            </label>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="visibility"
+                checked={!isPublic}
+                onChange={() => setIsPublic(false)}
+              />
+              Privée
+            </label>
+          </div>
+
+          {isPublic && (
+            <div className="status-box">
+              <span className="status-label">Réservation automatique * :</span>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="autoValidation"
+                  checked={autoValidation}
+                  onChange={() => setAutoValidation(true)}
+                />
+                Oui
+              </label>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="autoValidation"
+                  checked={!autoValidation}
+                  onChange={() => setAutoValidation(false)}
+                />
+                Non
+              </label>
+            </div>
+          )}
+
+          {!isPublic && (
+            <div className="guests-section">
+              {guests.map((guest) => (
+                <div key={guest.id} className="guest-row added-guest">
+                  <div className="guest-input-display">
+                    <svg
+                      className="username-accepted"
+                      width="22"
+                      height="22"
+                      viewBox="0 0 32 32"
+                    >
+                      <title>icon profile</title>
+                      <g id="about">
+                        <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+
+                        <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
+                      </g>
+                    </svg>
+                    <span>{guest.username}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-remove-guest"
+                    onClick={() => removeGuest(guest)}
+                    aria-label={`Retirer ${guest}`}
+                  >
+                    <img
+                      src="./icons/remove.png"
+                      alt=""
+                      width="20"
+                      height="20"
+                    />
+                  </button>
+                </div>
+              ))}
+
+              <div className="guest-row">
+                <div
+                  className={`guest-input-display ${error && "error-detected"}`}
+                >
+                  <svg
+                    className={`username-accepted ${error && "username-refused"}`}
+                    width="22"
+                    height="22"
+                    viewBox="0 0 32 32"
+                  >
+                    <title>icon profile</title>
+                    <g id="about">
+                      <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+
+                      <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
+                    </g>
+                  </svg>
+                  <input
+                    type="text"
+                    value={guestInput}
+                    onFocus={() => setError("")}
+                    onChange={(e) => setGuestInput(e.target.value)}
+                    placeholder="Inviter des personnes"
+                  />
+                  {error && <p className="error-message">{error}</p>}
+                </div>
+                <button
+                  type="button"
+                  className="btn-add-guest"
+                  onClick={addGuest}
+                  aria-label="Ajouter une personne"
+                >
+                  <img src="./icons/add.png" alt="" width="20" height="20" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {error && <p className="error-message">{error}</p>}
+
+        <button type="submit" className="btn-publish" disabled={isSubmitting}>
+          {isSubmitting ? "Publication..." : "Publier"}
+        </button>
+      </form>
+
+      <dialog
+        className="modal-criteria"
+        ref={modalRef}
+        onClick={handleBackdropClick}
+        onKeyDown={(e) => e.key === "Escape" && closeModal()}
+      >
+        <div className="modal-content">
+          <div className="modal-header">
+            <button type="button" className="modal-close" onClick={closeModal}>
+              ✕
+            </button>
+            <button
+              type="button"
+              className="modal-clear"
+              onClick={() => {
+                setLocker(false);
+                setShower(false);
+                setToilet(false);
+                setAirConditioning(false);
+                setLevel("All");
+                setHandisport(false);
+              }}
+            >
+              Tout effacer
+            </button>
+          </div>
+
+          <fieldset className="criteria-fieldset">
+            <legend>Équipements</legend>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Vestiaires
+                <input
+                  type="checkbox"
+                  checked={locker}
+                  onChange={(e) => setLocker(e.target.checked)}
+                />
+              </label>
+              <label className="criteria-label">
+                Douches
+                <input
+                  type="checkbox"
+                  checked={shower}
+                  onChange={(e) => setShower(e.target.checked)}
+                />
+              </label>
+              <label className="criteria-label">
+                Toilettes
+                <input
+                  type="checkbox"
+                  checked={toilet}
+                  onChange={(e) => setToilet(e.target.checked)}
+                />
+              </label>
+              <label className="criteria-label">
+                Climatisation
+                <input
+                  type="checkbox"
+                  checked={airConditioning}
+                  onChange={(e) => setAirConditioning(e.target.checked)}
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <hr className="criteria-divider" />
+
+          <fieldset className="criteria-fieldset">
+            <legend>Niveau</legend>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Tout niveau
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "All"}
+                  onChange={() => setLevel("All")}
+                />
+              </label>
+              <label className="criteria-label">
+                Débutant
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "begginer"}
+                  onChange={() => setLevel("begginer")}
+                />
+              </label>
+              <label className="criteria-label">
+                Intermédiaire
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "amateur"}
+                  onChange={() => setLevel("amateur")}
+                />
+              </label>
+              <label className="criteria-label">
+                Confirmé
+                <input
+                  type="radio"
+                  name="level"
+                  checked={level === "advance"}
+                  onChange={() => setLevel("advance")}
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <hr className="criteria-divider" />
+
+          <fieldset className="criteria-fieldset">
+            <legend>Type de sport</legend>
+            <div className="criteria-group">
+              <label className="criteria-label">
+                Handisport
+                <input
+                  type="checkbox"
+                  checked={handisport}
+                  onChange={(e) => setHandisport(e.target.checked)}
+                />
+              </label>
+            </div>
+          </fieldset>
+
+          <button type="button" className="btn-validate" onClick={closeModal}>
+            Valider
           </button>
         </div>
-      </div>
-
-      <button type="submit" className="btn-publish">
-        Publier
-      </button>
+      </dialog>
     </main>
   );
 }
