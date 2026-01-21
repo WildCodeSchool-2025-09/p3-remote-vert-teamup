@@ -3,7 +3,7 @@ import "../styles/Publication.css";
 
 function Publication() {
   const [guestInput, setGuestInput] = useState("");
-  const [guests, setGuests] = useState<string[]>([]);
+  const [guests, setGuests] = useState<User[]>([]);
   const [error, setError] = useState("");
 
   const addGuest = async () => {
@@ -13,8 +13,10 @@ function Publication() {
       );
 
       if (response.status === 200) {
-        if (!guests.includes(guestInput)) {
-          setGuests((prev) => [...prev, guestInput]);
+        const user = await response.json();
+
+        if (!guests.some((guest) => guest.id === user.id)) {
+          setGuests((prev) => [...prev, user]);
           setGuestInput("");
           setError("");
         } else {
@@ -34,7 +36,9 @@ function Publication() {
     }
   };
 
-  const removeGuest = (guest: string) => {
+  console.log(guests);
+
+  const removeGuest = (guest: User) => {
     setGuests(guests.filter((g) => g !== guest));
   };
 
@@ -42,10 +46,22 @@ function Publication() {
     <main className="publication-page">
       <div className="guests-section">
         {guests.map((guest) => (
-          <div key={guest} className="guest-row added-guest">
+          <div key={guest.id} className="guest-row added-guest">
             <div className="guest-input-display">
-              <img src="./icons/profile.png" alt="" width="22" height="22" />
-              <span>{guest}</span>
+              <svg
+                className="username-accepted"
+                width="22"
+                height="22"
+                viewBox="0 0 32 32"
+              >
+                <title>icon profile</title>
+                <g id="about">
+                  <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+
+                  <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
+                </g>
+              </svg>
+              <span>{guest.username}</span>
             </div>
             <button
               type="button"
