@@ -11,7 +11,7 @@ type Filters = {
   disabled: boolean;
 };
 
-type Prop = {
+type SearchFilterProps = {
   setActivityToPlay?: React.Dispatch<
     React.SetStateAction<{
       sport: string;
@@ -26,7 +26,7 @@ type EquipmentOptionsType = {
   label: string;
 };
 
-const EQUIPMENT_OPTIONS: EquipmentOptionsType[] = [
+const equipmentOptions: EquipmentOptionsType[] = [
   { key: "locker", label: "Vestiaires" },
   { key: "shower", label: "Douches" },
   { key: "toilet", label: "Toilettes" },
@@ -38,7 +38,7 @@ type LevelOptionsType = {
   label: string;
 };
 
-const LEVEL_OPTIONS: LevelOptionsType[] = [
+const levelOptions: LevelOptionsType[] = [
   { key: "all", label: "Tout Niveu" },
   { key: "amateur", label: "Débutant" },
   { key: "begginer", label: "Intermédiaire" },
@@ -55,24 +55,24 @@ const initialState = {
   disabled: false,
 };
 
-function Filters({ setActivityToPlay }: Prop) {
-  const [filters, setFilters] = useState<Filters>(initialState);
+function SearchFilters({ setActivityToPlay }: SearchFilterProps) {
+  const [optionalFilters, setOptionalFilters] = useState<Filters>(initialState);
   const [prevPayedPrice, setPrevPayedPrice] = useState(30);
 
-  const isFree = filters.price === 0;
+  const isFree = optionalFilters.price === 0;
 
   const resetFilters = () => {
-    setFilters(initialState);
+    setOptionalFilters(initialState);
     setActivityToPlay?.((prev) => ({
       ...prev,
-      filters,
+      optionalFilters,
     }));
   };
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, value } = e.target;
 
-    setFilters((prev) => {
+    setOptionalFilters((prev) => {
       if (name === "equipment") {
         return {
           ...prev,
@@ -110,7 +110,7 @@ function Filters({ setActivityToPlay }: Prop) {
     setActivityToPlay?.((prev) => {
       return {
         ...prev,
-        ...filters,
+        ...optionalFilters,
       };
     });
   };
@@ -130,7 +130,7 @@ function Filters({ setActivityToPlay }: Prop) {
           <fieldset className="equipment">
             <legend className="filter-title">Équipements</legend>
             <div className="flex-clmn">
-              {EQUIPMENT_OPTIONS.map((e) => (
+              {equipmentOptions.map((e) => (
                 <label key={e.key} className="flex-spacing ttls">
                   {e.label}
                   <input
@@ -138,7 +138,7 @@ function Filters({ setActivityToPlay }: Prop) {
                     type="checkbox"
                     name="equipment"
                     value={e.key}
-                    checked={filters[e.key] as boolean}
+                    checked={optionalFilters[e.key] as boolean}
                     onChange={handleCheckbox}
                   />
                 </label>
@@ -148,7 +148,7 @@ function Filters({ setActivityToPlay }: Prop) {
           <fieldset className="equipment">
             <legend className="filter-title">Niveau</legend>
             <div className="flex-clmn">
-              {LEVEL_OPTIONS.map((e) => {
+              {levelOptions.map((e) => {
                 return (
                   <label key={e.key} className="flex-spacing ttls">
                     {e.label}
@@ -157,7 +157,7 @@ function Filters({ setActivityToPlay }: Prop) {
                       type="radio"
                       name="level"
                       value={e.key}
-                      checked={filters.level === e.key}
+                      checked={optionalFilters.level === e.key}
                       onChange={handleCheckbox}
                     />
                   </label>
@@ -179,7 +179,7 @@ function Filters({ setActivityToPlay }: Prop) {
                 />
               </label>
               <span className={`price-tag ${isFree && "slider-disabled"}`}>
-                {filters.price}€
+                {optionalFilters.price}€
               </span>
               <label
                 className={`flex-spacing ttls ${isFree && "slider-disabled"}`}
@@ -192,9 +192,9 @@ function Filters({ setActivityToPlay }: Prop) {
                   name="price"
                   min={0}
                   max={100}
-                  value={filters.price ?? 0}
+                  value={optionalFilters.price ?? 0}
                   onChange={(e) => {
-                    setFilters((prev) => {
+                    setOptionalFilters((prev) => {
                       const value = Number(e.target.value);
                       setPrevPayedPrice(value === 0 ? 30 : value);
                       return {
@@ -217,7 +217,7 @@ function Filters({ setActivityToPlay }: Prop) {
                   className="checkbox-pointers"
                   type="checkbox"
                   name="disabled"
-                  checked={filters.disabled}
+                  checked={optionalFilters.disabled}
                   onChange={handleCheckbox}
                 />
               </label>
@@ -236,4 +236,4 @@ function Filters({ setActivityToPlay }: Prop) {
   );
 }
 
-export default Filters;
+export default SearchFilters;

@@ -7,6 +7,7 @@ const browse: RequestHandler = async (req, res, next) => {
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
     const filtersInString = req.query.filters as string;
+
     const filters: Filters = JSON.parse(filtersInString);
 
     console.log(filters);

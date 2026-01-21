@@ -38,11 +38,7 @@ class ActivityRepository {
 
     filters.disabled && conditions.push("a.disabled = 1");
 
-    const query =
-      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-
-    console.log(filters);
-    console.log("conditions:", conditions);
+    const query = conditions.length > 0 && `WHERE ${conditions.join(" AND ")}`;
 
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name, 
