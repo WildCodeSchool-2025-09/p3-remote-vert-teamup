@@ -17,7 +17,7 @@ class ParticipationSeeder extends AbstractSeeder {
     for (let i = 0; i < 50; i += 1) {
       const randomActivity = Math.floor(Math.random() * 22);
 
-      const fakeUser = {
+      const fakeParticipation = {
         user_id: this.getRef(`user_${i}`).insertId,
         activity_id: this.getRef(`activity_${randomActivity}`).insertId,
         status: statusArray[Math.floor(statusArray.length * Math.random())],
@@ -25,7 +25,7 @@ class ParticipationSeeder extends AbstractSeeder {
         updated_at: this.faker.date.future(),
       };
 
-      this.insert(fakeUser);
+      this.insert(fakeParticipation);
     }
   }
 }

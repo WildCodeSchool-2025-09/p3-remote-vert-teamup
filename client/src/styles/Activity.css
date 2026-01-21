@@ -1,5 +1,13 @@
-h1 {
-  margin: 1.5rem 0 1rem 2rem;
+.header-activity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 1rem 1rem 2rem;
+
+  & p {
+    font-family: var(--body-font);
+    font-size: var(--tag-size);
+  }
 }
 
 .cards-activity {
@@ -14,8 +22,17 @@ h1 {
     margin: 1.5rem 0 2rem 8rem;
   }
   .cards-activity {
-    width: 65%;
-    grid-template-columns: repeat(5, minmax(320px, 2fr));
+    width: 80%;
+    grid-template-columns: repeat(auto-fit, 320px);
     margin-left: 8rem;
+    justify-content: start;
+  }
+
+  .header-activity {
+    width: 80%;
+
+    & p {
+      font-size: var(--tag-desktop-size);
+    }
   }
 }
