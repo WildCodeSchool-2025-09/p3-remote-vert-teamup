@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/variables.css";
-import "../styles/Publication.css";
+import "../styles/ActivityForm.css";
 import AddIcon from "../assets/Icons/AddIcon.svg";
 import CalenderIcon from "../assets/Icons/CalenderIcon.svg";
 import ClockIcon from "../assets/Icons/ClockIcon.svg";
@@ -12,12 +12,7 @@ import ProfileIcon from "../assets/Icons/ProfileIcon.svg";
 import RemoveIcon from "../assets/Icons/RemoveIcon.svg";
 import SearchIcon from "../assets/Icons/SearchIcon.svg";
 
-type Sport = {
-  id: number;
-  name: string;
-};
-
-function Publication() {
+function ActivityForm() {
   const [sports, setSports] = useState<Sport[]>([]);
   const [sportId, setSportId] = useState("");
   const [sportSearch, setSportSearch] = useState("");
@@ -51,9 +46,9 @@ function Publication() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch("/api/sports")
+    fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
       .then((res) => res.json())
-      .then((data) => setSports(data))
+      .then((sports) => setSports(sports))
       .catch(() => setError("Impossible de charger les sports"));
   }, []);
 
@@ -105,19 +100,17 @@ function Publication() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const createActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
-    const playingAt = `${date} ${time}:00`;
 
     const activityData = {
       sport_id: Number(sportId),
       address,
       city,
       zip_code: zipCode,
-      playing_at: playingAt,
+      playing_at: `${date} ${time}:00`,
       playing_duration: Number(duration),
       nb_places: Number(nbPlaces),
       description: description || null,
@@ -132,11 +125,14 @@ function Publication() {
     };
 
     try {
-      const response = await fetch("/api/activity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(activityData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/activity`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(activityData),
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -167,7 +163,7 @@ function Publication() {
       <h1>Publier une annonce</h1>
       <p className="required-fields">*Champs obligatoires</p>
 
-      <form className="publication-form" onSubmit={handleSubmit}>
+      <form className="publication-form" onSubmit={createActivity}>
         <div className="combobox" ref={comboboxRef}>
           <div className="input-with-icon">
             <img src={SearchIcon} alt="" width="24" height="24" />
@@ -738,4 +734,4 @@ function Publication() {
   );
 }
 
-export default Publication;
+export default ActivityForm;
