@@ -1,9 +1,9 @@
 import express from "express";
+import activityActions from "./modules/activity/activityActions";
+import sportAction from "./modules/sport/sportAction";
+import userActions from "./modules/user/userActions";
 
 const router = express.Router();
-
-import activityActions from "./modules/activity/activityActions";
-import userActions from "./modules/user/userActions";
 
 router.get(
   "/api/publications",
@@ -11,6 +11,7 @@ router.get(
 );
 
 router.get("/api/activities", activityActions.browse);
+router.get("/api/sport", sportAction.browse);
 
 router.get("/api/participants", userActions.browseParticipants);
 

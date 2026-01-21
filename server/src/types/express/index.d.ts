@@ -43,3 +43,9 @@ type Participant = {
   picture: string;
   status: string;
 };
+
+type Filters = {
+  sport: string;
+  city: string;
+  playingAt: string;
+};
