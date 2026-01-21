@@ -37,3 +37,8 @@ type Activity = {
   name: string;
   nb_participant: number;
 };
+
+type User = {
+  id: number;
+  username: string;
+};
