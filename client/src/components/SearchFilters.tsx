@@ -58,12 +58,8 @@ const initialState = {
 function SearchFilters({ setFilters }: SearchFilterProps) {
   const [optionalFilters, setOptionalFilters] = useState<Filters>(initialState);
   const [prevPayedPrice, setPrevPayedPrice] = useState(15);
-  // const [isFree, setIsFree] = useState(true);
 
-  const isFree = optionalFilters.price === 0 && optionalFilters.price !== null;
-  // setIsFree(optionalFilters.price === 0);
-
-  console.log(isFree);
+  const isFree = optionalFilters.price === 0;
 
   const resetFilters = () => {
     setOptionalFilters(initialState);
@@ -94,7 +90,6 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
       if (name === "price") {
         return {
           ...prev,
-          isFree: checked,
           price: checked ? 0 : prevPayedPrice,
         };
       }
@@ -118,8 +113,6 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
       };
     });
   };
-
-  console.log(optionalFilters);
 
   return (
     <>
