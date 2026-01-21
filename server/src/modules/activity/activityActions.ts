@@ -4,8 +4,8 @@ import activityRepository from "./activityRepository";
 const add: RequestHandler = async (req, res, next) => {
   try {
     const activity = req.body;
-    const result = await activityRepository.create(activity);
-    res.status(201).json(result);
+    const activityId = await activityRepository.create(activity);
+    res.status(201).json({ activityId });
   } catch (err) {
     next(err);
   }

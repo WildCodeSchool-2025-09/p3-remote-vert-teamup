@@ -1,4 +1,4 @@
-import type { RowDataPacket } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
@@ -26,7 +26,7 @@ interface ActivityInput {
 
 class ActivityRepository {
   async create(activity: ActivityInput) {
-    const [result] = await databaseClient.query(
+    const [result] = await databaseClient.query<ResultSetHeader>(
       `INSERT INTO activity (description, address, city, zip_code, playing_at, playing_time, playing_duration, nb_spots, auto_validation, price, visibility, level, disabled, locker, shower, air_conditioning, toilet, user_id, sport_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -51,7 +51,7 @@ class ActivityRepository {
         activity.sport_id,
       ],
     );
-    return result;
+    return result.insertId;
   }
 
   async readAll(page: number, limit: number) {

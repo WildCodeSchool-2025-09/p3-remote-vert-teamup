@@ -17,16 +17,16 @@ function ActivityForm() {
   const [sportId, setSportId] = useState("");
   const [sportSearch, setSportSearch] = useState("");
   const [showSportDropdown, setShowSportDropdown] = useState(false);
-  const comboboxRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDialogElement>(null);
-  const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [city, setCity] = useState("");
+  const sportDropdownRef = useRef<HTMLDivElement>(null);
+  const criteriaModalRef = useRef<HTMLDialogElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+  const zipCodeRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState("");
-  const [nbPlaces, setNbPlaces] = useState("");
-  const [description, setDescription] = useState("");
+  const durationRef = useRef<HTMLInputElement>(null);
+  const nbPlacesRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [isFree, setIsFree] = useState(true);
   const [price, setPrice] = useState("");
   const [isPublic, setIsPublic] = useState(true);
@@ -53,51 +53,45 @@ function ActivityForm() {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const hideSportDropdown = (e: MouseEvent) => {
       if (
-        comboboxRef.current &&
-        !comboboxRef.current.contains(e.target as Node)
+        sportDropdownRef.current &&
+        !sportDropdownRef.current.contains(e.target as Node)
       ) {
         setShowSportDropdown(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", hideSportDropdown);
+    return () => document.removeEventListener("mousedown", hideSportDropdown);
   }, []);
 
   const filteredSports = sports.filter((sport) =>
     sport.name.toLowerCase().includes(sportSearch.toLowerCase()),
   );
 
-  const handleSelectSport = (sport: Sport) => {
+  const selectSport = (sport: Sport) => {
     setSportId(String(sport.id));
     setSportSearch(sport.name);
     setShowSportDropdown(false);
   };
 
-  const handleAddGuest = () => {
+  const addGuest = () => {
     if (guestInput.trim() && !guests.includes(guestInput.trim())) {
       setGuests([...guests, guestInput.trim()]);
       setGuestInput("");
     }
   };
 
-  const handleRemoveGuest = (guest: string) => {
+  const removeGuest = (guest: string) => {
     setGuests(guests.filter((g) => g !== guest));
   };
 
-  const openModal = () => {
-    modalRef.current?.showModal();
+  const openCriteriaModal = () => {
+    criteriaModalRef.current?.showModal();
   };
 
-  const closeModal = () => {
-    modalRef.current?.close();
-  };
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === modalRef.current) {
-      closeModal();
-    }
+  const closeCriteriaModal = () => {
+    criteriaModalRef.current?.close();
   };
 
   const createActivity = async (e: React.FormEvent) => {
@@ -107,13 +101,13 @@ function ActivityForm() {
 
     const activityData = {
       sport_id: Number(sportId),
-      address,
-      city,
-      zip_code: zipCode,
+      address: addressRef.current?.value || "",
+      city: cityRef.current?.value || "",
+      zip_code: zipCodeRef.current?.value || "",
       playing_at: `${date} ${time}:00`,
-      playing_duration: Number(duration),
-      nb_places: Number(nbPlaces),
-      description: description || null,
+      playing_duration: Number(durationRef.current?.value) || 0,
+      nb_places: Number(nbPlacesRef.current?.value) || 0,
+      description: descriptionRef.current?.value || null,
       price: isFree ? 0 : Number(price),
       visibility: isPublic,
       auto_validation: isPublic ? autoValidation : false,
@@ -164,7 +158,7 @@ function ActivityForm() {
       <p className="required-fields">*Champs obligatoires</p>
 
       <form className="publication-form" onSubmit={createActivity}>
-        <div className="combobox" ref={comboboxRef}>
+        <div className="combobox" ref={sportDropdownRef}>
           <div className="input-with-icon">
             <img src={SearchIcon} alt="" width="24" height="24" />
             <input
@@ -184,10 +178,7 @@ function ActivityForm() {
             <ul className="combobox-dropdown">
               {filteredSports.slice(0, 250).map((sport) => (
                 <li key={sport.id}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectSport(sport)}
-                  >
+                  <button type="button" onClick={() => selectSport(sport)}>
                     {sport.name}
                   </button>
                 </li>
@@ -202,8 +193,7 @@ function ActivityForm() {
           <input
             type="text"
             placeholder="Adresse *"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            ref={addressRef}
             required
           />
         </div>
@@ -214,21 +204,14 @@ function ActivityForm() {
             <input
               type="text"
               placeholder="Code postal *"
-              value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
+              ref={zipCodeRef}
               required
             />
           </div>
 
           <div className="input-with-icon">
             <img src={LocationIcon} alt="" width="24" height="24" />
-            <input
-              type="text"
-              placeholder="Ville *"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-            />
+            <input type="text" placeholder="Ville *" ref={cityRef} required />
           </div>
         </div>
 
@@ -260,8 +243,7 @@ function ActivityForm() {
             <input
               type="number"
               placeholder="Durée *"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              ref={durationRef}
               required
               min="1"
             />
@@ -275,8 +257,7 @@ function ActivityForm() {
               <input
                 type="number"
                 placeholder="Nombre de places *"
-                value={nbPlaces}
-                onChange={(e) => setNbPlaces(e.target.value)}
+                ref={nbPlacesRef}
                 required
                 min="1"
               />
@@ -326,8 +307,7 @@ function ActivityForm() {
 
           <textarea
             placeholder="Description ..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            ref={descriptionRef}
             rows={4}
           />
         </div>
@@ -394,7 +374,11 @@ function ActivityForm() {
           </div>
         )}
 
-        <button type="button" className="btn-criteria" onClick={openModal}>
+        <button
+          type="button"
+          className="btn-criteria"
+          onClick={openCriteriaModal}
+        >
           Ajouter des critères
         </button>
 
@@ -562,7 +546,7 @@ function ActivityForm() {
                   <button
                     type="button"
                     className="btn-remove-guest"
-                    onClick={() => handleRemoveGuest(guest)}
+                    onClick={() => removeGuest(guest)}
                     aria-label={`Retirer ${guest}`}
                   >
                     <img src={RemoveIcon} alt="" width="20" height="20" />
@@ -583,7 +567,7 @@ function ActivityForm() {
                 <button
                   type="button"
                   className="btn-add-guest"
-                  onClick={handleAddGuest}
+                  onClick={addGuest}
                   aria-label="Ajouter une personne"
                 >
                   <img src={AddIcon} alt="" width="20" height="20" />
@@ -602,13 +586,19 @@ function ActivityForm() {
 
       <dialog
         className="modal-criteria"
-        ref={modalRef}
-        onClick={handleBackdropClick}
-        onKeyDown={(e) => e.key === "Escape" && closeModal()}
+        ref={criteriaModalRef}
+        onClick={(e) =>
+          e.target === criteriaModalRef.current && closeCriteriaModal()
+        }
+        onKeyDown={(e) => e.key === "Escape" && closeCriteriaModal()}
       >
         <div className="modal-content">
           <div className="modal-header">
-            <button type="button" className="modal-close" onClick={closeModal}>
+            <button
+              type="button"
+              className="modal-close"
+              onClick={closeCriteriaModal}
+            >
               ✕
             </button>
             <button
@@ -725,7 +715,11 @@ function ActivityForm() {
             </div>
           </fieldset>
 
-          <button type="button" className="btn-validate" onClick={closeModal}>
+          <button
+            type="button"
+            className="btn-validate"
+            onClick={closeCriteriaModal}
+          >
             Valider
           </button>
         </div>
