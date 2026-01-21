@@ -69,7 +69,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
     }));
   };
 
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, value } = e.target;
 
     setOptionalFilters((prev) => {
@@ -138,7 +138,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                     name="equipment"
                     value={e.key}
                     checked={optionalFilters[e.key] as boolean}
-                    onChange={handleCheckbox}
+                    onChange={updateCheckbox}
                   />
                 </label>
               ))}
@@ -157,7 +157,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                       name="level"
                       value={e.key}
                       checked={optionalFilters.level === e.key}
-                      onChange={handleCheckbox}
+                      onChange={updateCheckbox}
                     />
                   </label>
                 );
@@ -174,7 +174,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                   type="checkbox"
                   name="price"
                   checked={isFree}
-                  onChange={handleCheckbox}
+                  onChange={updateCheckbox}
                 />
               </label>
               <span className={`price-tag ${isFree && "slider-disabled"}`}>
@@ -217,7 +217,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                   type="checkbox"
                   name="disabled"
                   checked={optionalFilters.disabled}
-                  onChange={handleCheckbox}
+                  onChange={updateCheckbox}
                 />
               </label>
               <button
