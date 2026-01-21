@@ -9,9 +9,9 @@ class ActivityRepository {
     const conditions = [];
     const params = [];
 
-    if (filters.name) {
+    if (filters.sport) {
       conditions.push("s.name = ?");
-      params.push(filters.name);
+      params.push(filters.sport);
     }
     if (filters.city) {
       conditions.push("a.city = ?");
@@ -38,7 +38,8 @@ class ActivityRepository {
 
     filters.disabled && conditions.push("a.disabled = 1");
 
-    const query = conditions.length > 0 && `WHERE ${conditions.join(" AND ")}`;
+    const query =
+      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name, 

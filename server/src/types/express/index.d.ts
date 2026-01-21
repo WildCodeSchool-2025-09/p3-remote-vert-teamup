@@ -39,7 +39,7 @@ type Activity = {
 };
 
 type Filters = {
-  name: string;
+  sport: string;
   city: string;
   playingAt: string;
   locker: boolean;

@@ -46,6 +46,7 @@ section.searchbar article input:focus {
 
 section.searchbar article input.error-input {
   border: 3px solid rgb(252, 66, 66);
+  border-radius: 8px 8px 0 0;
 }
 
 section.searchbar article img {
@@ -80,6 +81,8 @@ section.searchbar article ul.dropdown {
   width: 100%;
   z-index: 2;
   background: var(--light-color);
+  max-height: 250px;
+  overflow-y: scroll;
 }
 
 section.searchbar article ul.dropdown-false {

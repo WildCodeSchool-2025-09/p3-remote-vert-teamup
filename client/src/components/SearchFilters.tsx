@@ -12,7 +12,7 @@ type Filters = {
 };
 
 type SearchFilterProps = {
-  setActivityToPlay?: React.Dispatch<
+  setFilters?: React.Dispatch<
     React.SetStateAction<{
       sport: string;
       playingAt: string;
@@ -51,19 +51,23 @@ const initialState = {
   toilet: false,
   air_conditioning: false,
   level: null,
-  price: 30,
+  price: null,
   disabled: false,
 };
 
-function SearchFilters({ setActivityToPlay }: SearchFilterProps) {
+function SearchFilters({ setFilters }: SearchFilterProps) {
   const [optionalFilters, setOptionalFilters] = useState<Filters>(initialState);
-  const [prevPayedPrice, setPrevPayedPrice] = useState(30);
+  const [prevPayedPrice, setPrevPayedPrice] = useState(15);
+  // const [isFree, setIsFree] = useState(true);
 
-  const isFree = optionalFilters.price === 0;
+  const isFree = optionalFilters.price === 0 && optionalFilters.price !== null;
+  // setIsFree(optionalFilters.price === 0);
+
+  console.log(isFree);
 
   const resetFilters = () => {
     setOptionalFilters(initialState);
-    setActivityToPlay?.((prev) => ({
+    setFilters?.((prev) => ({
       ...prev,
       optionalFilters,
     }));
@@ -107,13 +111,15 @@ function SearchFilters({ setActivityToPlay }: SearchFilterProps) {
   };
 
   const fetchData = () => {
-    setActivityToPlay?.((prev) => {
+    setFilters?.((prev) => {
       return {
         ...prev,
         ...optionalFilters,
       };
     });
   };
+
+  console.log(optionalFilters);
 
   return (
     <>
@@ -196,7 +202,7 @@ function SearchFilters({ setActivityToPlay }: SearchFilterProps) {
                   onChange={(e) => {
                     setOptionalFilters((prev) => {
                       const value = Number(e.target.value);
-                      setPrevPayedPrice(value === 0 ? 30 : value);
+                      setPrevPayedPrice(value === 0 ? 15 : value);
                       return {
                         ...prev,
                         price: value,
@@ -204,7 +210,7 @@ function SearchFilters({ setActivityToPlay }: SearchFilterProps) {
                     });
                   }}
                 />
-                <span> 100€</span>
+                <span className={`${isFree && "slider-disabled"}`}> 100€</span>
               </label>
             </div>
           </fieldset>

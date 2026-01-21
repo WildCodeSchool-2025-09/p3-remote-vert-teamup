@@ -12,7 +12,7 @@ function Activities() {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
-  const [activityToPlay, setActivityToPlay] = useState({
+  const [filters, setFilters] = useState({
     sport: "",
     playingAt: "",
     city: "",
@@ -21,20 +21,15 @@ function Activities() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (
-      !activityToPlay.sport &&
-      !activityToPlay.city &&
-      !activityToPlay.playingAt
-    )
-      return;
+    if (!filters.sport && !filters.city && !filters.playingAt) return;
     navigate("/activities/page/1");
-  }, [activityToPlay, navigate]);
+  }, [filters, navigate]);
 
   useEffect(() => {
     const LIMIT = 10;
 
     const queryString = new URLSearchParams({
-      filters: JSON.stringify(activityToPlay),
+      filters: JSON.stringify(filters),
     }).toString();
 
     fetch(
@@ -46,13 +41,13 @@ function Activities() {
         setTotalPages(activities.pagination.totalPages);
         setTotalActivities(activities.pagination.totalActivities);
       });
-  }, [currentPage, activityToPlay]);
-  console.log(activityToPlay);
+  }, [currentPage, filters]);
+
   return (
     <>
       <section className="flx-activitypg">
         <div className="activities-container">
-          <SearchBar setActivityToPlay={setActivityToPlay} />
+          <SearchBar setFilters={setFilters} />
           <div className="header-activity">
             <h1>Activités disponibles</h1>
             {totalActivities === 0 ? (
@@ -69,7 +64,7 @@ function Activities() {
             ))}
           </section>
         </div>
-        <SearchFilters setActivityToPlay={setActivityToPlay} />
+        <SearchFilters setFilters={setFilters} />
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
