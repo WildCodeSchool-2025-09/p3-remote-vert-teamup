@@ -18,23 +18,29 @@
 }
 
 @media (min-width: 1024px) {
+  .flx-activitypg {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    margin: 2rem;
+  }
+
+  .activities-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   h1 {
     margin: 1.5rem 0 2rem 8rem;
   }
   .cards-activity {
-    /* width: 80%; */
-    /* grid-template-columns: repeat(auto-fit, 320px); */
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 320px);
     justify-content: start;
-  }
-
-  .flx-activitypg {
-    display: flex;
-    justify-content: space-around;
   }
 
   .header-activity {
     width: 80%;
-
     & p {
       font-size: var(--tag-desktop-size);
     }

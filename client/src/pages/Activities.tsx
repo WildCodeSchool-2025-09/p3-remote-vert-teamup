@@ -51,7 +51,7 @@ function Activities() {
   return (
     <>
       <section className="flx-activitypg">
-        <div>
+        <div className="activities-container">
           <SearchBar setActivityToPlay={setActivityToPlay} />
           <div className="header-activity">
             <h1>Activités disponibles</h1>
