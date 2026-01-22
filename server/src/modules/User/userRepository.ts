@@ -2,10 +2,10 @@ import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
 class UserRepository {
-  async checkUsername(username: string) {
+  async checkEmail(email: string) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT id, username FROM user WHERE username = ?",
-      [username],
+      "SELECT id, email FROM user WHERE email = ?",
+      [email],
     );
 
     return rows[0] as User[];

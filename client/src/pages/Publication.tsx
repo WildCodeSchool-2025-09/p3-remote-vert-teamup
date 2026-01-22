@@ -43,7 +43,7 @@ function Publication() {
   const [handisport, setHandisport] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [guestInput, setGuestInput] = useState("");
+  const [guestInput, setGuestInput] = useState<string>("");
   const [guests, setGuests] = useState<User[]>([]);
   const [error, setError] = useState("");
 
@@ -151,7 +151,7 @@ function Publication() {
   const addGuest = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/publication?username=${guestInput}`,
+        `${import.meta.env.VITE_API_URL}/api/publication?email=${guestInput}`,
       );
 
       if (response.status === 200) {
@@ -167,9 +167,7 @@ function Publication() {
       } else if (response.status === 204) {
         setError("Veuillez remplir le champ");
       } else if (response.status === 404) {
-        setError("Username inexistant");
-      } else if (response.status === 400) {
-        setError("Username invalide");
+        setError("Email inexistant");
       } else {
         setError("Erreur serveur");
       }
@@ -179,8 +177,10 @@ function Publication() {
   };
 
   const removeGuest = (guest: User) => {
-    setGuests(guests.filter((g) => g !== guest));
+    setGuests((prev) => prev.filter((g) => g.id !== guest.id));
   };
+
+  const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
 
   return (
     <main className="publication-page">
@@ -283,7 +283,7 @@ function Publication() {
             <img src={DurationIcon} alt="" width="24" height="24" />
             <input
               type="number"
-              placeholder="Durée *"
+              placeholder="Durée*"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               required
@@ -530,7 +530,24 @@ function Publication() {
 
         <div className="status-row">
           <div className="status-box">
-            <span className="status-label">Status * :</span>
+            <span className="status-label tooltip">
+              <button
+                type="button"
+                className="btn-info"
+                onClick={() => {
+                  setOpenTooltipStatut((prev) => !prev);
+                }}
+              >
+                <img
+                  src="./icons/info.png"
+                  alt="bulle info"
+                  width="12"
+                  height="12"
+                />
+              </button>
+              Statut * :
+            </span>
+
             <label className="radio-label">
               <input
                 type="radio"
@@ -550,6 +567,16 @@ function Publication() {
               Privée
             </label>
           </div>
+          {openTooltipStatut && (
+            <p className="text-tooltip-status">
+              Public = tous les utilisateurs de l'app peuvent voir et
+              s'inscrirent à votre activité
+              <br />
+              <br />
+              Privée = seul les personnes que vous invitez peuvent voir et
+              participer à votre activité
+            </p>
+          )}
 
           {isPublic && (
             <div className="status-box">
@@ -593,7 +620,7 @@ function Publication() {
                         <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
                       </g>
                     </svg>
-                    <span>{guest.username}</span>
+                    <span>{guest.email}</span>
                   </div>
                   <button
                     type="button"
@@ -633,7 +660,7 @@ function Publication() {
                     value={guestInput}
                     onFocus={() => setError("")}
                     onChange={(e) => setGuestInput(e.target.value)}
-                    placeholder="Inviter des personnes"
+                    placeholder="Inviter des personnes (email)"
                   />
                   {error && <p className="error-message">{error}</p>}
                 </div>
@@ -649,8 +676,6 @@ function Publication() {
             </div>
           )}
         </div>
-
-        {error && <p className="error-message">{error}</p>}
 
         <button type="submit" className="btn-publish" disabled={isSubmitting}>
           {isSubmitting ? "Publication..." : "Publier"}
