@@ -2,30 +2,8 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
-interface ActivityInput {
-  description?: string;
-  address: string;
-  city: string;
-  zip_code: string;
-  playing_at: string;
-  playing_time: string;
-  playing_duration: number;
-  nb_spots: number;
-  auto_validation: boolean;
-  price?: number;
-  visibility: boolean;
-  level?: "beginner" | "amateur" | "advanced" | "all";
-  disabled?: boolean;
-  locker?: boolean;
-  shower?: boolean;
-  air_conditioning?: boolean;
-  toilet?: boolean;
-  user_id: number;
-  sport_id: number;
-}
-
 class ActivityRepository {
-  async create(activity: ActivityInput) {
+  async create(activity: ActivityForm) {
     const [result] = await databaseClient.query<ResultSetHeader>(
       `INSERT INTO activity (description, address, city, zip_code, playing_at, playing_time, playing_duration, nb_spots, auto_validation, price, visibility, level, disabled, locker, shower, air_conditioning, toilet, user_id, sport_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,

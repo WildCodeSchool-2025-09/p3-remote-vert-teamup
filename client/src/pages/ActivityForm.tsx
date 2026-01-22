@@ -19,8 +19,8 @@ function ActivityForm() {
   const [sports, setSports] = useState<Sport[]>([]);
   const [sportId, setSportId] = useState("");
   const [sportSearch, setSportSearch] = useState("");
-  const [showSportDropdown, setShowSportDropdown] = useState(false);
-  const sportDropdownRef = useRef<HTMLDivElement>(null);
+  const [showSportsDropdown, setShowSportsDropdown] = useState(false);
+  const sportsDropdownRef = useRef<HTMLDivElement>(null);
   const criteriaModalRef = useRef<HTMLDialogElement>(null);
   const addressRef = useRef<HTMLInputElement>(null);
   const zipCodeRef = useRef<HTMLInputElement>(null);
@@ -55,16 +55,16 @@ function ActivityForm() {
   }, []);
 
   useEffect(() => {
-    const hideSportDropdown = (e: MouseEvent) => {
+    const hideSportsDropdown = (e: MouseEvent) => {
       if (
-        sportDropdownRef.current &&
-        !sportDropdownRef.current.contains(e.target as Node)
+        sportsDropdownRef.current &&
+        !sportsDropdownRef.current.contains(e.target as Node)
       ) {
-        setShowSportDropdown(false);
+        setShowSportsDropdown(false);
       }
     };
-    document.addEventListener("mousedown", hideSportDropdown);
-    return () => document.removeEventListener("mousedown", hideSportDropdown);
+    document.addEventListener("mousedown", hideSportsDropdown);
+    return () => document.removeEventListener("mousedown", hideSportsDropdown);
   }, []);
 
   const filteredSports = sports.filter((sport) =>
@@ -74,7 +74,7 @@ function ActivityForm() {
   const selectSport = (sport: Sport) => {
     setSportId(String(sport.id));
     setSportSearch(sport.name);
-    setShowSportDropdown(false);
+    setShowSportsDropdown(false);
   };
 
   const addGuest = () => {
@@ -138,7 +138,7 @@ function ActivityForm() {
       }
 
       toast.success("Activité créée avec succès !");
-      setTimeout(() => navigate("/activities/page/1"), 2000);
+      setTimeout(() => navigate("/myactivities/publications"), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
@@ -152,7 +152,7 @@ function ActivityForm() {
       <p className="required-fields">*Champs obligatoires</p>
 
       <form className="publication-form" onSubmit={createActivity}>
-        <div className="combobox" ref={sportDropdownRef}>
+        <div className="combobox" ref={sportsDropdownRef}>
           <div className="input-with-icon">
             <img src={SearchIcon} alt="" width="24" height="24" />
             <input
@@ -162,13 +162,13 @@ function ActivityForm() {
               onChange={(e) => {
                 setSportSearch(e.target.value);
                 setSportId("");
-                setShowSportDropdown(true);
+                setShowSportsDropdown(true);
               }}
-              onFocus={() => setShowSportDropdown(true)}
+              onFocus={() => setShowSportsDropdown(true)}
               required={!sportId}
             />
           </div>
-          {showSportDropdown && filteredSports.length > 0 && (
+          {showSportsDropdown && filteredSports.length > 0 && (
             <ul className="combobox-dropdown">
               {filteredSports.slice(0, 250).map((sport) => (
                 <li key={sport.id}>

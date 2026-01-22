@@ -18,7 +18,7 @@ body:has(.publication-page) {
 }
 
 .required-fields {
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--tag-size);
   color: var(--dark-color);
   margin-bottom: 20px;
@@ -59,7 +59,7 @@ body:has(.publication-page) {
   border: none;
   background: transparent;
   text-align: left;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   cursor: pointer;
@@ -103,7 +103,7 @@ body:has(.publication-page) {
   flex: 1;
   border: none;
   background: transparent;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   outline: none;
@@ -187,7 +187,7 @@ body:has(.publication-page) {
   left: 52px;
   top: 50%;
   transform: translateY(-50%);
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   pointer-events: none;
@@ -226,7 +226,7 @@ body:has(.publication-page) {
 }
 
 .budget-label {
-  font-family: var(--body-highlight-mobile);
+  font-family: var(--body-highlight-font);
   font-size: var(--body-size);
   color: var(--dark-color);
 }
@@ -250,7 +250,7 @@ body:has(.publication-page) {
 }
 
 .status-label {
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
 }
@@ -259,7 +259,7 @@ body:has(.publication-page) {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   cursor: pointer;
@@ -318,7 +318,7 @@ body:has(.publication-page) {
   min-width: 0;
   border: none;
   background: transparent;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   outline: none;
@@ -336,7 +336,7 @@ body:has(.publication-page) {
   padding: 14px 18px;
   border: 1px solid var(--input-color);
   border-radius: 20px;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   background-color: var(--light-color);
   color: var(--dark-color);
@@ -364,7 +364,7 @@ fieldset {
 }
 
 fieldset legend {
-  font-family: var(--body-highlight-mobile);
+  font-family: var(--body-highlight-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   margin-bottom: 4px;
@@ -382,7 +382,7 @@ fieldset legend {
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   cursor: pointer;
 }
@@ -406,7 +406,7 @@ fieldset legend {
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   cursor: pointer;
 }
@@ -512,7 +512,7 @@ fieldset legend {
 }
 
 .guest-input-display span {
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
 }
@@ -521,7 +521,7 @@ fieldset legend {
   flex: 1;
   border: none;
   background: transparent;
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
   outline: none;
@@ -602,7 +602,7 @@ fieldset legend {
 
 .error-message {
   color: var(--refused-color);
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   text-align: center;
   padding: 12px;
@@ -623,7 +623,7 @@ fieldset legend {
 }
 
 .publication-success p {
-  font-family: var(--body-mobile);
+  font-family: var(--body-font);
   font-size: var(--body-size);
   color: var(--dark-color);
 }
