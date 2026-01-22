@@ -7,7 +7,7 @@ function ActivitiesPublicated() {
   );
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/publications`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/me/publications`)
       .then((response) => response.json())
       .then((activitiesPublicated) =>
         setActivitiesPublicated(activitiesPublicated),
