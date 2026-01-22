@@ -1,11 +1,18 @@
-import { Link } from "react-router";
+// import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
   activity: Activity;
 };
 
+type NewParticipantType = {
+  activityId: number;
+  userId: number;
+};
+
 function ActivityCard({ activity }: ActivityCardType) {
+  const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
@@ -14,10 +21,75 @@ function ActivityCard({ activity }: ActivityCardType) {
     month: "short",
   });
 
-  console.log("From ActivityCard:", activity);
-
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
+
+  const makeReservation = async (
+    activity: Activity,
+    nbAvailableSpots: number,
+  ) => {
+    // Verify if the user is connected (when we will see connection)
+    const userId = Math.floor(Math.random() * 50);
+
+    const newParticipant = {
+      activityId: activity.id,
+      userId,
+    };
+
+    console.log(activity.auto_validation);
+
+    if (nbAvailableSpots === 0) {
+      // Create alert for when the nbSports will !== 0 (probably with useMemo!) and set mailing to inform user
+      return;
+    }
+
+    activity.auto_validation && insertUserToParticipation(newParticipant);
+    !activity.auto_validation && insrtUserToDemand(newParticipant);
+  };
+
+  const insertUserToParticipation = async (
+    newParticipant: NewParticipantType,
+  ) => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/participation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newParticipant),
+      })
+        .then((response) => response.json())
+        .then((participation) => {
+          console.log("Response in Participation Fetch", participation);
+          navigate("/myactivity/upcoming", {
+            state: participation,
+          });
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const insrtUserToDemand = async (newParticipant: NewParticipantType) => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/demand`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newParticipant),
+      })
+        .then((response) => response.json())
+        .then((demand) => {
+          console.log("Response in Participation Fetch", demand);
+          navigate("/myactivity/awaiting", {
+            state: demand,
+          });
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <article className="card">
@@ -95,19 +167,16 @@ function ActivityCard({ activity }: ActivityCardType) {
           <img src={activity.user_picture} alt="user" />
           <p>{activity.username}</p>
         </div>
-        <button type="button">
+        <button
+          type="button"
+          onClick={() => makeReservation(activity, nbAvailableSpots)}
+        >
           {nbAvailableSpots === 0 ? (
             <>
               <img src="/icons/bell.png" alt="logo alert" />
             </>
           ) : (
-            <>
-              {activity.auto_validation ? (
-                <Link to={"/myactivity/upcoming"}>Réserver &gt;</Link>
-              ) : (
-                <Link to={"/myactivity/awaiting"}>Réserver &gt;</Link>
-              )}
-            </>
+            <>Reserve</>
           )}
         </button>
       </div>

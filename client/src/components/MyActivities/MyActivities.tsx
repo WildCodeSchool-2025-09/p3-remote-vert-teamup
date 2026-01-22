@@ -1,13 +1,18 @@
 import { Link, Outlet } from "react-router";
-import "./MyActivities.css";
+import "../../styles/MyActivities.css";
 
 function MyActivity() {
   return (
     <>
-      <section className="myact-navigation">
-        <Link to="/myactivity/upcoming">A venir</Link>
-        <Link to="/myactivity/published">Publier</Link>
-        <Link to="/myactivity/awaiting">En Attent</Link>
+      <section className="section-myact">
+        <div className="container-myact">
+          <h1 className="title-mc">Mes Activités</h1>
+          <div className="navigation-myact">
+            <Link to="/myactivity/upcoming">A venir</Link>
+            <Link to="/myactivity/published">Publier</Link>
+            <Link to="/myactivity/awaiting">En Attent</Link>
+          </div>
+        </div>
       </section>
       <Outlet />
     </>
