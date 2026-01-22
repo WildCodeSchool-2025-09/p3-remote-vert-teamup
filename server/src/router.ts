@@ -3,13 +3,12 @@ import sportActions from "./modules/sport/sportActions";
 
 const router = express.Router();
 
-import userActions from "./modules/User/userActions";
 import activityActions from "./modules/activity/activityActions";
+import userActions from "./modules/user/userActions";
 
 router.get("/api/sports", sportActions.browse);
-router.post("/api/activity", activityActions.add);
+router.post("/api/activity/publish", activityActions.add);
 router.get("/api/activities", activityActions.browse);
-
-router.get("/api/publication", userActions.readUserByEmail);
+router.get("/api/user", userActions.readUserByEmail);
 
 export default router;

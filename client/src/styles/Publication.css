@@ -80,8 +80,8 @@
 .input-with-icon {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 4px;
+  padding: 12px 8px;
   border: 1px solid var(--input-color);
   border-radius: 10px;
   background-color: var(--light-color);
@@ -596,7 +596,7 @@ fieldset legend {
   background-color: var(--input-color);
 }
 
-.error-message {
+.error-message-add-guest {
   color: var(--refused-color);
   font-family: var(--body-font);
   font-size: var(--tag-size);
@@ -623,6 +623,16 @@ fieldset legend {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.error-message {
+  color: var(--refused-color);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  text-align: center;
+  padding: 12px;
+  background-color: rgba(230, 57, 70, 0.1);
+  border-radius: 12px;
 }
 
 .criteria-desktop {

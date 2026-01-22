@@ -46,6 +46,8 @@ function Publication() {
   const [guestInput, setGuestInput] = useState<string>("");
   const [guests, setGuests] = useState<User[]>([]);
   const [error, setError] = useState("");
+  const [errorAddGuest, setErrorAddGuest] = useState("");
+  const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
 
   useEffect(() => {
     fetch("/api/sports")
@@ -96,32 +98,37 @@ function Publication() {
     setError("");
     setIsSubmitting(true);
 
-    const playingAt = `${date} ${time}:00`;
+    const guestIds = guests.map((guest) => guest.id);
 
-    const activityData = {
-      sport_id: Number(sportId),
-      address,
-      city,
-      zip_code: zipCode,
-      playing_at: playingAt,
-      playing_duration: Number(duration),
-      nb_places: Number(nbPlaces),
-      description: description || null,
-      price: isFree ? 0 : Number(price),
-      visibility: isPublic,
-      auto_validation: isPublic ? autoValidation : false,
-      level,
-      locker,
-      shower,
-      toilet,
-      air_conditioning: airConditioning,
+    const createActivity = {
+      activity: {
+        sport_id: Number(sportId),
+        address,
+        city,
+        zip_code: zipCode,
+        playing_at: date,
+        playing_time: time,
+        playing_duration: Number(duration),
+        nb_spots: Number(nbPlaces),
+        description: description || null,
+        price: isFree ? 0 : Number(price),
+        visibility: isPublic,
+        auto_validation: isPublic ? autoValidation : false,
+        level,
+        locker,
+        shower,
+        toilet,
+        air_conditioning: airConditioning,
+        user_id: 1,
+      },
+      guestIds,
     };
 
     try {
-      const response = await fetch("/api/activity", {
+      const response = await fetch("/api/activity/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(activityData),
+        body: JSON.stringify(createActivity),
       });
 
       if (!response.ok) {
@@ -151,7 +158,7 @@ function Publication() {
   const addGuest = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/publication?email=${guestInput}`,
+        `${import.meta.env.VITE_API_URL}/api/user?email=${guestInput}`,
       );
 
       if (response.status === 200) {
@@ -160,27 +167,25 @@ function Publication() {
         if (!guests.some((guest) => guest.id === user.id)) {
           setGuests((prev) => [...prev, user]);
           setGuestInput("");
-          setError("");
+          setErrorAddGuest("");
         } else {
-          setError("Déjà invité");
+          setErrorAddGuest("Déjà invité");
         }
       } else if (response.status === 204) {
-        setError("Veuillez remplir le champ");
+        setErrorAddGuest("Veuillez remplir le champ");
       } else if (response.status === 404) {
-        setError("Email inexistant");
+        setErrorAddGuest("Email inexistant");
       } else {
-        setError("Erreur serveur");
+        setErrorAddGuest("Erreur serveur");
       }
     } catch {
-      setError("Impossible de contacter le serveur");
+      setErrorAddGuest("Impossible de contacter le serveur");
     }
   };
 
   const removeGuest = (guest: User) => {
     setGuests((prev) => prev.filter((g) => g.id !== guest.id));
   };
-
-  const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
 
   return (
     <main className="publication-page">
@@ -640,10 +645,10 @@ function Publication() {
 
               <div className="guest-row">
                 <div
-                  className={`guest-input-display ${error && "error-detected"}`}
+                  className={`guest-input-display ${errorAddGuest && "error-detected"}`}
                 >
                   <svg
-                    className={`username-accepted ${error && "username-refused"}`}
+                    className={`username-accepted ${errorAddGuest && "username-refused"}`}
                     width="22"
                     height="22"
                     viewBox="0 0 32 32"
@@ -658,11 +663,13 @@ function Publication() {
                   <input
                     type="text"
                     value={guestInput}
-                    onFocus={() => setError("")}
+                    onFocus={() => setErrorAddGuest("")}
                     onChange={(e) => setGuestInput(e.target.value)}
                     placeholder="Inviter des personnes (email)"
                   />
-                  {error && <p className="error-message">{error}</p>}
+                  {errorAddGuest && (
+                    <p className="error-message-add-guest">{errorAddGuest}</p>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -676,6 +683,8 @@ function Publication() {
             </div>
           )}
         </div>
+
+        {error && <p className="error-message">{error}</p>}
 
         <button type="submit" className="btn-publish" disabled={isSubmitting}>
           {isSubmitting ? "Publication..." : "Publier"}

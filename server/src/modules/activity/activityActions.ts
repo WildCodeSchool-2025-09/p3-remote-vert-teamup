@@ -1,11 +1,29 @@
 import type { RequestHandler } from "express";
+import { StatusCodes } from "http-status-codes";
+import participationRepository from "../participation/participationRepository";
 import activityRepository from "./activityRepository";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const activity = req.body;
-    const result = await activityRepository.create(activity);
-    res.status(201).json(result);
+    const { activity, guestIds } = req.body;
+
+    const activityId = await activityRepository.create(activity);
+
+    if (!activity.visibility && guestIds.length === 0) {
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+        error: "Une activité privée doit avoir au moins un participant",
+      });
+      return;
+    }
+
+    if (!activity.visibility) {
+      guestIds.map(async (guestId: number) => {
+        await participationRepository.create(guestId, activityId);
+      });
+    }
+
+    res.status(StatusCodes.CREATED).json();
+    return;
   } catch (err) {
     next(err);
   }
