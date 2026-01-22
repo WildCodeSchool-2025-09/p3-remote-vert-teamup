@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
 import Activities from "./pages/Activities";
-import Publications from "./pages/ActivitiesPublicated";
+import ActivitiesPublicated from "./pages/ActivitiesPublicated";
 import MyActivities from "./pages/MyActivities";
 
 const router = createBrowserRouter([
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "publications",
-            element: <Publications />,
+            element: <ActivitiesPublicated />,
           },
         ],
       },

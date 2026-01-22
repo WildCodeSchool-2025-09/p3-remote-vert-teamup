@@ -29,15 +29,11 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-const browseActivitiesPublicatedByUser: RequestHandler = async (
-  req,
-  res,
-  next,
-) => {
+const browseByCreator: RequestHandler = async (req, res, next) => {
   try {
     const userID = 10;
     const activitiesPublicatedByUser =
-      await activityRepository.readActivitiesPublicatedByUser(userID);
+      await activityRepository.readByCreator(userID);
 
     res.json(activitiesPublicatedByUser);
   } catch (err) {
@@ -45,4 +41,4 @@ const browseActivitiesPublicatedByUser: RequestHandler = async (
   }
 };
 
-export default { browse, browseActivitiesPublicatedByUser };
+export default { browse, browseByCreator };
