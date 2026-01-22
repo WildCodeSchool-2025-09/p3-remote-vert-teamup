@@ -6,11 +6,6 @@ type ActivityCardType = {
   activity: Activity;
 };
 
-type NewParticipantType = {
-  activityId: number;
-  userId: number;
-};
-
 function ActivityCard({ activity }: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
@@ -28,7 +23,12 @@ function ActivityCard({ activity }: ActivityCardType) {
     activity: Activity,
     nbAvailableSpots: number,
   ) => {
-    // Verify if the user is connected (when we will see connection)
+    //  !User navigate to sign up (To implement when we will see connection)
+
+    if (nbAvailableSpots === 0) {
+      // button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
+    }
+
     const userId = Math.floor(Math.random() * 50);
 
     const newParticipant = {
@@ -36,58 +36,29 @@ function ActivityCard({ activity }: ActivityCardType) {
       userId,
     };
 
-    console.log(activity.auto_validation);
+    const endpointUrl = activity.auto_validation
+      ? "/api/participation"
+      : "/api/demand";
+    const navigateUrl = activity.auto_validation
+      ? "/myactivity/upcoming"
+      : "/myactivity/awaiting";
 
-    if (nbAvailableSpots === 0) {
-      // Create alert for when the nbSports will !== 0 (probably with useMemo!) and set mailing to inform user
-      return;
-    }
-
-    activity.auto_validation && insertUserToParticipation(newParticipant);
-    !activity.auto_validation && insrtUserToDemand(newParticipant);
-  };
-
-  const insertUserToParticipation = async (
-    newParticipant: NewParticipantType,
-  ) => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/participation`, {
+      await fetch(`${import.meta.env.VITE_API_URL}${endpointUrl}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newParticipant),
       })
-        .then((response) => response.json())
-        .then((participation) => {
-          console.log("Response in Participation Fetch", participation);
-          navigate("/myactivity/upcoming", {
-            state: participation,
+        .then((res) => res.json())
+        .then((insertStatus) => {
+          navigate(navigateUrl, {
+            state: insertStatus,
           });
         });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const insrtUserToDemand = async (newParticipant: NewParticipantType) => {
-    try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/demand`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newParticipant),
-      })
-        .then((response) => response.json())
-        .then((demand) => {
-          console.log("Response in Participation Fetch", demand);
-          navigate("/myactivity/awaiting", {
-            state: demand,
-          });
-        });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 

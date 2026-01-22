@@ -8,7 +8,7 @@ class ParticipationRepository {
         VALUES ('accepted', ${userId}, ${activityId})`,
     );
 
-    console.log("From REPO:", Result);
+    console.log("From Participate REPO:", Result);
 
     return Result;
   }

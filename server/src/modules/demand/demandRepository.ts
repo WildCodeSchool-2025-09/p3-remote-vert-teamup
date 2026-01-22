@@ -8,6 +8,8 @@ class DemandRepository {
             VALUES ('pending', ${userId}, ${activityId})`,
     );
 
+    console.log("From demand repo:", result);
+
     return result;
   }
 }

@@ -4,7 +4,6 @@ import ParticipationRepository from "./participateRepository";
 const add: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId } = req.body;
-    console.log("From BACKE", "userId:", userId, "activityId:", activityId);
 
     const response = await ParticipationRepository.create(userId, activityId);
 
