@@ -1,32 +1,10 @@
-import type { RowDataPacket } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
-interface ActivityInput {
-  description?: string;
-  address: string;
-  city: string;
-  zip_code: string;
-  playing_at: string;
-  playing_time: string;
-  playing_duration: number;
-  nb_spots: number;
-  auto_validation: boolean;
-  price?: number;
-  visibility: boolean;
-  level?: "beginner" | "amateur" | "advanced" | "all";
-  disabled?: boolean;
-  locker?: boolean;
-  shower?: boolean;
-  air_conditioning?: boolean;
-  toilet?: boolean;
-  user_id: number;
-  sport_id: number;
-}
-
 class ActivityRepository {
-  async create(activity: ActivityInput) {
-    const [result] = await databaseClient.query<Result>(
+  async create(activity: ActivityForm) {
+    const [result] = await databaseClient.query<ResultSetHeader>(
       `INSERT INTO activity (description, address, city, zip_code, playing_at, playing_time, playing_duration, nb_spots, auto_validation, price, visibility, level, disabled, locker, shower, air_conditioning, toilet, user_id, sport_id)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -54,24 +32,54 @@ class ActivityRepository {
     return result.insertId;
   }
 
-  async readAll(page: number, limit: number) {
+  async readAll(page: number, limit: number, filters: Filters) {
     const offset = (page - 1) * limit;
 
+    const conditions = [];
+    const params = [];
+    let query = "";
+
+    if (filters.sport) {
+      conditions.push("s.name = ?");
+      params.push(filters.sport);
+    }
+
+    if (filters.city) {
+      conditions.push("a.city = ?");
+      params.push(filters.city);
+    }
+
+    if (filters.playingAt) {
+      conditions.push("a.playing_at = ?");
+      params.push(filters.playingAt);
+    }
+
+    if (conditions.length > 0) {
+      query += `WHERE ${conditions.join(" AND ")}`;
+    }
+
     const [activities] = await databaseClient.query<Rows>(
-      "SELECT a.*, u.username, u.picture AS user_picture, s.name, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant FROM activity AS a JOIN user AS u ON u.id = a.user_id JOIN sport AS s ON s.id = a.sport_id LEFT JOIN participation AS p ON p.activity_id = a.id GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?",
-      [limit, offset],
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
+      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation AS p ON p.activity_id = a.id
+      ${query}
+      GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
-      "SELECT COUNT(*) AS total_activity FROM activity",
+      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id ${query}`,
+      params,
     );
 
-    const totalActivity = totalResult[0].total_activity as number;
+    const totalActivities = totalResult[0].total_activity as number;
 
     return {
       activities: activities as Activity[],
-      total: totalActivity,
-      totalPages: Math.ceil(totalActivity / limit),
+      totalActivities: totalActivities,
+      totalPages: Math.ceil(totalActivities / limit),
     };
   }
 }

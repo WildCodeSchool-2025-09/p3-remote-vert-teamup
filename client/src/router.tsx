@@ -1,16 +1,9 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
 import Activities from "./pages/Activities";
-import Publication from "./pages/Publication";
-
-// TODO: Activer quand l'US Login sera faite (route /login + token)
-// const requireAuth = () => {
-//   const token = localStorage.getItem("token");
-//   if (!token) {
-//     return redirect("/login");
-//   }
-//   return null;
-// };
+import ActivitiesPublicated from "./pages/ActivitiesPublicated";
+import ActivityForm from "./pages/ActivityForm";
+import MyActivities from "./pages/MyActivities";
 
 const router = createBrowserRouter([
   {
@@ -18,12 +11,21 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/publication",
-        element: <Publication />,
-        // loader: requireAuth, // TODO: activer après US Login
+        element: <ActivityForm />,
       },
       {
         path: "/activities/page/:page",
         element: <Activities />,
+      },
+      {
+        path: "myactivities",
+        element: <MyActivities />,
+        children: [
+          {
+            path: "publications",
+            element: <ActivitiesPublicated />,
+          },
+        ],
       },
     ],
   },

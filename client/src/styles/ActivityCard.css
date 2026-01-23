@@ -30,7 +30,7 @@
 @media (min-width: 1024px) {
   .card {
     &:hover {
-      border: 1px solid var(--accent-color);
+      box-shadow: 0 0px 16px 0 var(--accent-color);
     }
   }
 }
@@ -421,6 +421,7 @@
       width: 7.5rem;
       border-radius: 12px;
       cursor: pointer;
+      transition: transform 0.3s ease-in-out;
 
       &:hover {
         transform: scale(1.05);

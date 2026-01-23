@@ -42,3 +42,36 @@ type User = {
   id: number;
   email: string;
 };
+
+type Filters = {
+  sport: string;
+  city: string;
+  playingAt: string;
+};
+
+type ActivityForm = {
+  description?: string;
+  address: string;
+  city: string;
+  zip_code: string;
+  playing_at: string;
+  playing_time: string;
+  playing_duration: number;
+  nb_spots: number;
+  auto_validation: boolean;
+  price?: number;
+  visibility: boolean;
+  level?: "beginner" | "amateur" | "advanced" | "all";
+  disabled?: boolean;
+  locker?: boolean;
+  shower?: boolean;
+  air_conditioning?: boolean;
+  toilet?: boolean;
+  user_id: number;
+  sport_id: number;
+};
+
+type Sport = {
+  id: number;
+  name: string;
+};

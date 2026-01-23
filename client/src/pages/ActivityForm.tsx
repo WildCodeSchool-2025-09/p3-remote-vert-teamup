@@ -1,34 +1,24 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import "../styles/variables.css";
-import "../styles/Publication.css";
-import CalenderIcon from "../assets/Icons/CalenderIcon.svg";
-import ClockIcon from "../assets/Icons/ClockIcon.svg";
-import DurationIcon from "../assets/Icons/DurationIcon.svg";
-import LocationIcon from "../assets/Icons/LocationIcon.svg";
-import PeopleIcon from "../assets/Icons/PeopleIcon.svg";
-import PriceIcon from "../assets/Icons/PriceIcon.svg";
-import SearchIcon from "../assets/Icons/SearchIcon.svg";
+import "../styles/ActivityForm.css";
 
-type Sport = {
-  id: number;
-  name: string;
-};
-
-function Publication() {
+function ActivityForm() {
+  const navigate = useNavigate();
   const [sports, setSports] = useState<Sport[]>([]);
   const [sportId, setSportId] = useState("");
   const [sportSearch, setSportSearch] = useState("");
-  const [showSportDropdown, setShowSportDropdown] = useState(false);
-  const comboboxRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDialogElement>(null);
-  const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [city, setCity] = useState("");
+  const [showSportsDropdown, setShowSportsDropdown] = useState(false);
+  const sportsDropdownRef = useRef<HTMLDivElement>(null);
+  const criteriaModalRef = useRef<HTMLDialogElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+  const zipCodeRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState("");
-  const [nbPlaces, setNbPlaces] = useState("");
-  const [description, setDescription] = useState("");
+  const durationRef = useRef<HTMLInputElement>(null);
+  const nbPlacesRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [isFree, setIsFree] = useState(true);
   const [price, setPrice] = useState("");
   const [isPublic, setIsPublic] = useState(true);
@@ -42,58 +32,51 @@ function Publication() {
   >("All");
   const [handisport, setHandisport] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [guestInput, setGuestInput] = useState<string>("");
   const [guests, setGuests] = useState<User[]>([]);
-  const [error, setError] = useState("");
   const [errorAddGuest, setErrorAddGuest] = useState("");
   const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/sports")
+    fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
       .then((res) => res.json())
-      .then((data) => setSports(data))
+      .then((sports) => setSports(sports))
       .catch(() => setError("Impossible de charger les sports"));
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const hideSportsDropdown = (e: MouseEvent) => {
       if (
-        comboboxRef.current &&
-        !comboboxRef.current.contains(e.target as Node)
+        sportsDropdownRef.current &&
+        !sportsDropdownRef.current.contains(e.target as Node)
       ) {
-        setShowSportDropdown(false);
+        setShowSportsDropdown(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", hideSportsDropdown);
+    return () => document.removeEventListener("mousedown", hideSportsDropdown);
   }, []);
 
   const filteredSports = sports.filter((sport) =>
     sport.name.toLowerCase().includes(sportSearch.toLowerCase()),
   );
 
-  const handleSelectSport = (sport: Sport) => {
+  const selectSport = (sport: Sport) => {
     setSportId(String(sport.id));
     setSportSearch(sport.name);
-    setShowSportDropdown(false);
+    setShowSportsDropdown(false);
   };
 
-  const openModal = () => {
-    modalRef.current?.showModal();
+  const openCriteriaModal = () => {
+    criteriaModalRef.current?.showModal();
   };
 
-  const closeModal = () => {
-    modalRef.current?.close();
+  const closeCriteriaModal = () => {
+    criteriaModalRef.current?.close();
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === modalRef.current) {
-      closeModal();
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const createActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
@@ -102,15 +85,16 @@ function Publication() {
 
     const createActivity = {
       activity: {
+        user_id: 1, // TODO: remplacer après authentification !
         sport_id: Number(sportId),
-        address,
-        city,
-        zip_code: zipCode,
+        address: addressRef.current?.value || "",
+        city: cityRef.current?.value || "",
+        zip_code: zipCodeRef.current?.value || "",
         playing_at: date,
         playing_time: time,
-        playing_duration: Number(duration),
-        nb_spots: Number(nbPlaces),
-        description: description || null,
+        playing_duration: Number(durationRef.current?.value) || 0,
+        nb_spots: Number(nbPlacesRef.current?.value) || 0,
+        description: descriptionRef.current?.value || null,
         price: isFree ? 0 : Number(price),
         visibility: isPublic,
         auto_validation: isPublic ? autoValidation : false,
@@ -119,41 +103,36 @@ function Publication() {
         shower,
         toilet,
         air_conditioning: airConditioning,
-        user_id: 1,
       },
       guestIds,
     };
 
     try {
-      const response = await fetch("/api/activity/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(createActivity),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/activity/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(createActivity),
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Erreur lors de la publication");
       }
 
-      setSuccess(true);
+      navigate("/myactivities/publications", {
+        state: {
+          toast: "Activitée créée avec succès !",
+        },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (success) {
-    return (
-      <main className="publication-page">
-        <section className="publication-success">
-          <h2>Annonce publiée !</h2>
-          <p>Votre activité a été créée avec succès.</p>
-        </section>
-      </main>
-    );
-  }
 
   const addGuest = async () => {
     try {
@@ -192,10 +171,10 @@ function Publication() {
       <h1>Publier une annonce</h1>
       <p className="required-fields">*Champs obligatoires</p>
 
-      <form className="publication-form" onSubmit={handleSubmit}>
-        <div className="combobox" ref={comboboxRef}>
+      <form className="publication-form" onSubmit={createActivity}>
+        <div className="combobox" ref={sportsDropdownRef}>
           <div className="input-with-icon">
-            <img src={SearchIcon} alt="" width="24" height="24" />
+            <img src="./icons/search-input.svg" alt="" width="24" height="24" />
             <input
               type="text"
               placeholder="Sport *"
@@ -203,20 +182,17 @@ function Publication() {
               onChange={(e) => {
                 setSportSearch(e.target.value);
                 setSportId("");
-                setShowSportDropdown(true);
+                setShowSportsDropdown(true);
               }}
-              onFocus={() => setShowSportDropdown(true)}
+              onFocus={() => setShowSportsDropdown(true)}
               required={!sportId}
             />
           </div>
-          {showSportDropdown && filteredSports.length > 0 && (
+          {showSportsDropdown && filteredSports.length > 0 && (
             <ul className="combobox-dropdown">
               {filteredSports.slice(0, 250).map((sport) => (
                 <li key={sport.id}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectSport(sport)}
-                  >
+                  <button type="button" onClick={() => selectSport(sport)}>
                     {sport.name}
                   </button>
                 </li>
@@ -227,43 +203,40 @@ function Publication() {
         </div>
 
         <div className="input-with-icon">
-          <img src={LocationIcon} alt="" width="24" height="24" />
+          <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
           <input
             type="text"
             placeholder="Adresse *"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            ref={addressRef}
             required
           />
         </div>
 
         <div className="field-row">
           <div className="input-with-icon">
-            <img src={LocationIcon} alt="" width="24" height="24" />
+            <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
             <input
               type="text"
               placeholder="Code postal *"
-              value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
+              ref={zipCodeRef}
               required
             />
           </div>
 
           <div className="input-with-icon">
-            <img src={LocationIcon} alt="" width="24" height="24" />
-            <input
-              type="text"
-              placeholder="Ville *"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-            />
+            <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
+            <input type="text" placeholder="Ville *" ref={cityRef} required />
           </div>
         </div>
 
         <div className="field-row field-row-3">
           <div className="input-with-icon date-input-wrapper">
-            <img src={CalenderIcon} alt="" width="24" height="24" />
+            <img
+              src="./icons/calendar-input.svg"
+              alt=""
+              width="24"
+              height="24"
+            />
             <input
               type="date"
               value={date}
@@ -274,7 +247,7 @@ function Publication() {
           </div>
 
           <div className="input-with-icon time-input-wrapper">
-            <img src={ClockIcon} alt="" width="24" height="24" />
+            <img src="./icons/clock-input.svg" alt="" width="24" height="24" />
             <input
               type="time"
               value={time}
@@ -285,12 +258,16 @@ function Publication() {
           </div>
 
           <div className="input-with-icon">
-            <img src={DurationIcon} alt="" width="24" height="24" />
+            <img
+              src="./icons/duration-input.svg"
+              alt=""
+              width="24"
+              height="24"
+            />
             <input
               type="number"
               placeholder="Durée*"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              ref={durationRef}
               required
               min="1"
             />
@@ -300,12 +277,16 @@ function Publication() {
         <div className="places-budget-description-row">
           <div className="places-budget-column">
             <div className="input-with-icon">
-              <img src={PeopleIcon} alt="" width="24" height="24" />
+              <img
+                src="./icons/participants-input.svg"
+                alt=""
+                width="24"
+                height="24"
+              />
               <input
                 type="number"
                 placeholder="Nombre de places *"
-                value={nbPlaces}
-                onChange={(e) => setNbPlaces(e.target.value)}
+                ref={nbPlacesRef}
                 required
                 min="1"
               />
@@ -338,7 +319,12 @@ function Publication() {
               <div
                 className={`price-input-wrapper ${isFree ? "disabled" : ""}`}
               >
-                <img src={PriceIcon} alt="" width="20" height="20" />
+                <img
+                  src="./icons/price-input.svg"
+                  alt=""
+                  width="20"
+                  height="20"
+                />
                 <input
                   type="number"
                   placeholder="Prix (€)"
@@ -355,8 +341,7 @@ function Publication() {
 
           <textarea
             placeholder="Description ..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            ref={descriptionRef}
             rows={4}
           />
         </div>
@@ -423,7 +408,11 @@ function Publication() {
           </div>
         )}
 
-        <button type="button" className="btn-criteria" onClick={openModal}>
+        <button
+          type="button"
+          className="btn-criteria"
+          onClick={openCriteriaModal}
+        >
           Ajouter des critères
         </button>
 
@@ -693,13 +682,19 @@ function Publication() {
 
       <dialog
         className="modal-criteria"
-        ref={modalRef}
-        onClick={handleBackdropClick}
-        onKeyDown={(e) => e.key === "Escape" && closeModal()}
+        ref={criteriaModalRef}
+        onClick={(e) =>
+          e.target === criteriaModalRef.current && closeCriteriaModal()
+        }
+        onKeyDown={(e) => e.key === "Escape" && closeCriteriaModal()}
       >
         <div className="modal-content">
           <div className="modal-header">
-            <button type="button" className="modal-close" onClick={closeModal}>
+            <button
+              type="button"
+              className="modal-close"
+              onClick={closeCriteriaModal}
+            >
               ✕
             </button>
             <button
@@ -816,7 +811,11 @@ function Publication() {
             </div>
           </fieldset>
 
-          <button type="button" className="btn-validate" onClick={closeModal}>
+          <button
+            type="button"
+            className="btn-validate"
+            onClick={closeCriteriaModal}
+          >
             Valider
           </button>
         </div>
@@ -825,4 +824,4 @@ function Publication() {
   );
 }
 
-export default Publication;
+export default ActivityForm;
