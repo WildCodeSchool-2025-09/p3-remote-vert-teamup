@@ -1,14 +1,19 @@
-import { useState } from "react";
 import "../styles/ActivityCard.css";
 import ParticipantsList from "./ParticipantsList";
 
 type ActivityCardType = {
   activity: Activity;
   publicatedRoad?: boolean;
+  participantsListIsOpen?: boolean;
+  onClickListParticipant?: () => void;
 };
 
-function ActivityCard({ activity, publicatedRoad }: ActivityCardType) {
-  const [showParticpants, setShowParticipants] = useState(false);
+function ActivityCard({
+  activity,
+  publicatedRoad,
+  participantsListIsOpen,
+  onClickListParticipant,
+}: ActivityCardType) {
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
@@ -22,7 +27,9 @@ function ActivityCard({ activity, publicatedRoad }: ActivityCardType) {
 
   return (
     <>
-      <article className="card">
+      <article
+        className={`card ${participantsListIsOpen ? "card-important" : ""} ? `}
+      >
         <div className={`card-header ${activity.name}`}>
           <h2>{activity.name}</h2>
           <p className={`label-price ${price === 0 ? "free" : "paid"}`}>
@@ -118,13 +125,22 @@ function ActivityCard({ activity, publicatedRoad }: ActivityCardType) {
         )}
         <button
           type="button"
-          className="dropdown-participation"
-          onClick={() => setShowParticipants(!showParticpants)}
+          className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
+          onClick={onClickListParticipant}
         >
           {activity.visibility ? "Liste des participants" : "Liste des invités"}
+          <img
+            src="/icons/chevron.png"
+            alt=""
+            className={`${participantsListIsOpen ? "rotate" : ""}`}
+          />
         </button>
-        {showParticpants && (
-          <ParticipantsList id={activity.id} visibility={activity.visibility} />
+
+        {participantsListIsOpen && (
+          <ParticipantsList
+            activityId={activity.id}
+            visibility={activity.visibility}
+          />
         )}
       </article>
     </>
