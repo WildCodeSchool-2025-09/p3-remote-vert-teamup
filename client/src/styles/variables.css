@@ -29,6 +29,9 @@
 }
 
 :root {
+  --heading-mobile: "heading-mobile", sans-serif;
+  --title-mobile: "title-mobile", sans-serif;
+  --button-mobile: "button-mobile", sans-serif;
   --heading-font: "heading-mobile", sans-serif;
   --title-font: "title-mobile", sans-serif;
   --button-font: "button-mobile", sans-serif;
