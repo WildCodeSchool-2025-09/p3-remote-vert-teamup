@@ -1,16 +1,21 @@
 import type { RequestHandler } from "express";
 import userRepository from "./userRepository";
 
-const browseParticipants: RequestHandler = async (req, res, next) => {
+const readUser: RequestHandler = async (req, res, next) => {
   try {
-    const activityId = Number(req.query.id);
+    const email = req.query.email as string;
 
-    const participants = await userRepository.readAllParticipants(activityId);
+    const user = await userRepository.readUserbyEmail(email);
 
-    res.json(participants);
+    if (!user) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.json(user);
   } catch (err) {
     next(err);
   }
 };
 
-export default { browseParticipants };
+export default { readUser };
