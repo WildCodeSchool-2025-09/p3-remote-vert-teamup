@@ -52,9 +52,11 @@ function ActivityCard({ activity }: ActivityCardType) {
         body: JSON.stringify(newParticipant),
       })
         .then((res) => res.json())
-        .then((insertStatus) => {
+        .then(() => {
           navigate(navigateUrl, {
-            state: insertStatus,
+            state: {
+              newParticipant,
+            },
           });
         });
     } catch (err) {
