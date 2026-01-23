@@ -26,17 +26,17 @@ type EquipmentOptionsType = {
   label: string;
 };
 
+type LevelOptionsType = {
+  key: string;
+  label: string;
+};
+
 const equipmentOptions: EquipmentOptionsType[] = [
   { key: "locker", label: "Vestiaires" },
   { key: "shower", label: "Douches" },
   { key: "toilet", label: "Toilettes" },
   { key: "air_conditioning", label: "Climatisation" },
 ];
-
-type LevelOptionsType = {
-  key: string;
-  label: string;
-};
 
 const levelOptions: LevelOptionsType[] = [
   { key: "all", label: "Tout Niveu" },
@@ -69,24 +69,10 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
     }));
   };
 
-  const updateCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateFilters = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, value } = e.target;
 
     setOptionalFilters((prev) => {
-      if (name === "equipment") {
-        return {
-          ...prev,
-          [value]: checked,
-        };
-      }
-
-      if (name === "level") {
-        return {
-          ...prev,
-          level: value,
-        };
-      }
-
       if (name === "price") {
         return {
           ...prev,
@@ -94,18 +80,20 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
         };
       }
 
-      if (name === "disabled") {
-        return {
-          ...prev,
-          [name]: checked,
-        };
-      }
+      const updates: Record<string, Partial<Filters>> = {
+        equipment: { [value]: checked },
+        level: { level: value },
+        disabled: { disabled: checked },
+      };
 
-      return prev;
+      return {
+        ...prev,
+        ...updates[name],
+      };
     });
   };
 
-  const fetchData = () => {
+  const validateFilters = () => {
     setFilters?.((prev) => {
       return {
         ...prev,
@@ -138,7 +126,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                     name="equipment"
                     value={e.key}
                     checked={optionalFilters[e.key] as boolean}
-                    onChange={updateCheckbox}
+                    onChange={updateFilters}
                   />
                 </label>
               ))}
@@ -157,7 +145,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                       name="level"
                       value={e.key}
                       checked={optionalFilters.level === e.key}
-                      onChange={updateCheckbox}
+                      onChange={updateFilters}
                     />
                   </label>
                 );
@@ -174,7 +162,7 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                   type="checkbox"
                   name="price"
                   checked={isFree}
-                  onChange={updateCheckbox}
+                  onChange={updateFilters}
                 />
               </label>
               <span className={`price-tag ${isFree && "slider-disabled"}`}>
@@ -217,15 +205,15 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                   type="checkbox"
                   name="disabled"
                   checked={optionalFilters.disabled}
-                  onChange={updateCheckbox}
+                  onChange={updateFilters}
                 />
               </label>
               <button
                 type="button"
-                onClick={fetchData}
+                onClick={validateFilters}
                 className="validate-btn"
               >
-                Validaer
+                Valider
               </button>
             </div>
           </fieldset>
