@@ -416,6 +416,11 @@
   gap: 4px;
   z-index: 1;
   margin: 1rem auto;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -463,4 +468,20 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.card-important {
+  grid-row: span 2;
+}
+
+.dropdown-open {
+  box-shadow: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-participation img {
+  transition: all 0.2s ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }

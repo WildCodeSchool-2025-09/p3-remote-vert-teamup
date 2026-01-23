@@ -1,7 +1,18 @@
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 ul {
   font-family: var(--body-font);
   background-color: var(--neutral-color);
   box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5);
+  animation: opacity .8s ease-in-out both;
 }
 
 ul li {
@@ -60,8 +71,105 @@ ul li button {
   border-radius: 6px;
 }
 
+.btn-add-guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 37px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  background-color: var(--button-color);
+}
+
+.guest-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 0;
+
+  & input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--button-color);
+    border-radius: 10px;
+    background-color: var(--light-color);
+    width: 185px;
+    height: 37px;
+    position: relative;
+  }
+}
+
+.guest-input-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border: 1px solid var(--button-color);
+  border-radius: 10px;
+  background-color: var(--light-color);
+  width: 200px;
+  height: 37px;
+  position: relative;
+}
+
+.guest-input-display input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  color: var(--dark-color);
+  outline: none;
+  min-width: 0;
+}
+
+.guest-input-display input::placeholder {
+  color: var(--dark-color);
+}
+
+.username-accepted {
+  fill: var(--button-color);
+}
+
 @media (min-width: 1024px) {
-  ul li {
+  ul li,
+  .guest-input-display input {
     font-size: var(--body-desktop-size);
+  }
+
+  ul li button {
+    border: none;
+    background-color: var(--refused-color);
+    color: var(--light-color);
+    width: 75px;
+    height: 18px;
+    border-radius: 6px;
+  }
+
+  ul li p.refused,
+  ul li p.accepted,
+  ul li p.pending {
+    color: var(--light-color);
+    width: 106px;
+    height: 28px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  ul li p img {
+    width: 12px;
+    height: 12px;
+  }
+
+  ul li p img.vector {
+    width: 8px;
+    height: 8px;
   }
 }
