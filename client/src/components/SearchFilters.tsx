@@ -73,16 +73,17 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
     const { name, checked, value } = e.target;
 
     setOptionalFilters((prev) => {
-      if (name === "price") {
-        return {
-          ...prev,
-          price: checked ? 0 : prevPayedPrice,
-        };
-      }
+      // if (name === "price") {
+      //   return {
+      //     ...prev,
+      //     price: checked ? 0 : prevPayedPrice,
+      //   };
+      // }
 
       const updates: Record<string, Partial<Filters>> = {
         equipment: { [value]: checked },
         level: { level: value },
+        price: { price: checked ? 0 : prevPayedPrice },
         disabled: { disabled: checked },
       };
 
