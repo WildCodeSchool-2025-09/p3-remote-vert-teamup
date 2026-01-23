@@ -1,6 +1,16 @@
 import type { RequestHandler } from "express";
 import activityRepository from "./activityRepository";
 
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const activity = req.body;
+    const activityId = await activityRepository.create(activity);
+    res.status(201).json({ activityId });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const browse: RequestHandler = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
@@ -29,4 +39,4 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse };
+export default { add, browse };
