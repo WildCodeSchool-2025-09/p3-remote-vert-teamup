@@ -3,6 +3,7 @@ import ActivityCard from "../components/ActivityCard";
 import "../styles/ActivitiesPublicated.css";
 
 function ActivitiesPublicated() {
+  const [showParticpants, setShowParticipants] = useState<number | null>();
   const [activitiesPublicated, setActivitiesPublicated] = useState<Activity[]>(
     [],
   );
@@ -20,6 +21,14 @@ function ActivitiesPublicated() {
           activity={activityPublicated}
           key={activityPublicated.id}
           publicatedRoad={true}
+          participantsListIsOpen={showParticpants === activityPublicated.id}
+          onClickListParticipant={() =>
+            setShowParticipants(
+              showParticpants === activityPublicated.id
+                ? null
+                : activityPublicated.id,
+            )
+          }
         />
       ))}
     </div>
