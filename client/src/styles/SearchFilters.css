@@ -1,0 +1,129 @@
+.section {
+  margin: 0;
+}
+
+.reset-btns-container {
+  margin: 0 auto;
+  max-width: 75%;
+  margin-bottom: 2rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  line-height: 1;
+  color: inherit;
+  font-family: var(--body-highlight-mobile);
+}
+
+.cls-btn-size {
+  font-size: 1.5rem;
+}
+
+.container {
+  max-width: 65%;
+  margin: 0 auto;
+}
+
+.container > * {
+  margin-bottom: 2rem;
+}
+
+.flex-spacing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-spacing input {
+  margin-left: 5rem;
+}
+
+.flex-clmn {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 2.4rem;
+  border-bottom: 1px var(--dark-color) solid;
+}
+
+.checkbox-pointers {
+  cursor: pointer;
+}
+
+.filter-title {
+  color: var(--dark-color);
+  font-family: var(--heading-mobile);
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.ttls {
+  font-family: var(--body-highlight-mobile);
+}
+
+.price-tag {
+  margin: 0 auto;
+}
+
+.validate-btn {
+  margin: 2rem auto;
+  font-family: var(--button-font);
+  font-size: var(--button-size);
+  border: none;
+  background-color: var(--button-color);
+  color: var(--light-color);
+  height: 1.5rem;
+  width: 6rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Slider styling */
+
+.slider {
+  width: 75%;
+  height: 0.2rem;
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--refused-color);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--refused-color);
+  cursor: pointer;
+  border: none;
+}
+
+.slider-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.slider-disabled::-webkit-slider-thumb {
+  background: var(--neutral-color);
+}
+
+.slider-disabled::-moz-range-thumb {
+  background: var(--neutral-color);
+}
