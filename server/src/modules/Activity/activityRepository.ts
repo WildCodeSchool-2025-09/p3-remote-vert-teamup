@@ -3,11 +3,21 @@ import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
 class ActivityRepository {
-  async readAll(page: number, limit: number, filters: Filters) {
+  async readAll(
+    page: number,
+    limit: number,
+    filters: Filters,
+    // userId?: number,
+  ) {
     const offset = (page - 1) * limit;
 
     const conditions = [];
     const params = [];
+
+    // if (userId) {
+    //   conditions.push("p.user_id = ?");
+    //   params.push(userId);
+    // }
 
     if (filters.sport) {
       conditions.push("s.name = ?");
@@ -42,7 +52,7 @@ class ActivityRepository {
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, 
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, p.status
       COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
       FROM activity AS a JOIN user AS u ON u.id = a.user_id 
       JOIN sport AS s ON s.id = a.sport_id 

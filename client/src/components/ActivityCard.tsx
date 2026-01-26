@@ -28,23 +28,22 @@ function ActivityCard({ activity }: ActivityCardType) {
     if (nbAvailableSpots === 0) {
       // button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
+    console.log(activity);
 
     const userId = Math.floor(Math.random() * 50);
 
     const newParticipant = {
       activityId: activity.id,
       userId,
+      status: activity.auto_validation ? "accepted" : "request",
     };
 
-    const endpointUrl = activity.auto_validation
-      ? "/api/participation"
-      : "/api/demand";
     const navigateUrl = activity.auto_validation
       ? "/myactivity/upcoming"
       : "/myactivity/awaiting";
 
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}${endpointUrl}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/participation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,9 +51,10 @@ function ActivityCard({ activity }: ActivityCardType) {
         body: JSON.stringify(newParticipant),
       })
         .then((res) => res.json())
-        .then(() => {
+        .then((responseStatus) => {
           navigate(navigateUrl, {
             state: {
+              responseStatus,
               newParticipant,
             },
           });
@@ -63,6 +63,51 @@ function ActivityCard({ activity }: ActivityCardType) {
       console.error(err);
     }
   };
+
+  // const makeReservation = async (
+  //   activity: Activity,
+  //   nbAvailableSpots: number,
+  // ) => {
+  //   //  !User navigate to sign up (To implement when we will see connection)
+
+  //   if (nbAvailableSpots === 0) {
+  //     // button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
+  //   }
+
+  //   const userId = Math.floor(Math.random() * 50);
+
+  //   const newParticipant = {
+  //     activityId: activity.id,
+  //     userId,
+  //   };
+
+  //   const endpointUrl = activity.auto_validation
+  //     ? "/api/participation"
+  //     : "/api/demand";
+  //   const navigateUrl = activity.auto_validation
+  //     ? "/myactivity/upcoming"
+  //     : "/myactivity/awaiting";
+
+  //   try {
+  //     await fetch(`${import.meta.env.VITE_API_URL}${endpointUrl}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(newParticipant),
+  //     })
+  //       .then((res) => res.json())
+  //       .then(() => {
+  //         navigate(navigateUrl, {
+  //           state: {
+  //             newParticipant,
+  //           },
+  //         });
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <article className="card">

@@ -1,7 +1,21 @@
 import { Link, Outlet } from "react-router";
 import "../../styles/MyActivities.css";
+import { useEffect, useState } from "react";
 
 function MyActivity() {
+  const [myActivities, setMyActivities] = useState({});
+
+  // Backend query added, p.status and query (Where user_id = ?)
+  // fetch writen, have to recover userId from ActivityCard by navigate.
+
+  console.log(myActivities);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/activity`)
+      .then((res) => res.json())
+      .then((activities) => setMyActivities(activities));
+  }, []);
+
   return (
     <>
       <section className="section-myact">
