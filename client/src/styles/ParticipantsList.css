@@ -186,3 +186,30 @@ ul.participant-list li p img.vector {
     height: 8px;
   }
 }
+
+.error-message {
+  color: var(--refused-color);
+  font-family: var(--body-font);
+  font-size: var(--tag-size);
+  text-align: center;
+  line-height: 0;
+  padding: 12px;
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--refused-color);
+  border-radius: 10px;
+  margin: 0 auto 5px auto;
+  width: 185px;
+  height: 5px;
+  animation: error-message-display 0.5s both;
+}
+
+@keyframes error-message-display {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

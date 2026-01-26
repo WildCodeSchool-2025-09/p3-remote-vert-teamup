@@ -74,7 +74,8 @@ section.searchbar button.filter-button {
   margin-top: 4px;
 }
 
-section.searchbar article ul.dropdown {
+section.searchbar article ul.dropdown,
+section.searchbar article ul.dropdown-false {
   position: absolute;
   top: 100%;
   left: 0;
@@ -87,19 +88,18 @@ section.searchbar article ul.dropdown {
   overflow-y: auto;
   z-index: 2;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding-left: 10px;
 }
 
 section.searchbar article ul.dropdown-false {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 4px;
-  background-color: var(--neutral-color);
-  border: 1px solid rgb(252, 66, 66);
-  border-radius: 10px;
-  z-index: 2;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: var(--refused-color);
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--refused-color);
+}
+
+section.searchbar article ul.dropdown {
+  background-color: var(--light-color);
+  border: 1px solid var(--input-color);
 }
 
 section.searchbar article ul.dropdown button {
