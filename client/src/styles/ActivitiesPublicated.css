@@ -3,6 +3,7 @@
   grid-template-columns: 320px;
   gap: 1rem;
   justify-content: center;
+  margin-bottom: 6rem;
 }
 
 @media (min-width: 1024px) {
