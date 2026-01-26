@@ -1198,7 +1198,6 @@ fieldset legend {
   .guests-section {
     flex: 1;
     gap: 8px;
-    flex-direction: column-reverse;
   }
 
   .guest-row {
@@ -1214,6 +1213,11 @@ fieldset legend {
   .guest-input-display span,
   .guest-input-display input {
     font-size: var(--body-desktop-size);
+  }
+
+  .error-message-add-guest {
+    font-size: var(--tag-desktop-size);
+    width: 100.8%;
   }
 
   .btn-add-guest,
