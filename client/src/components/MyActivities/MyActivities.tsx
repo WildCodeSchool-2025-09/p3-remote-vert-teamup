@@ -1,20 +1,23 @@
 import { Link, Outlet } from "react-router";
 import "../../styles/MyActivities.css";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 function MyActivity() {
   const [myActivities, setMyActivities] = useState({});
 
-  // Backend query added, p.status and query (Where user_id = ?)
-  // fetch writen, have to recover userId from ActivityCard by navigate.
+  const location = useLocation();
 
-  console.log(myActivities);
+  const newParticipant = location.state ? location.state.newParticipant : {};
+
+  console.log(newParticipant);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activity`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities`)
       .then((res) => res.json())
       .then((activities) => setMyActivities(activities));
   }, []);
+  console.log("Received From Back", myActivities);
 
   return (
     <>
