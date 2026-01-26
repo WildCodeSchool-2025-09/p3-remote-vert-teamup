@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
 import Activities from "./pages/Activities";
-import ActivitiesPublicated from "./pages/ActivitiesPublicated";
 import ActivityForm from "./pages/ActivityForm";
 import MyActivities from "./pages/MyActivities";
+import MyActivitiesPublished from "./pages/MyActivitiesPublished";
 
 const router = createBrowserRouter([
   {
@@ -18,12 +18,12 @@ const router = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "myactivities",
+        path: "/my-activities",
         element: <MyActivities />,
         children: [
           {
-            path: "publications",
-            element: <ActivitiesPublicated />,
+            path: "published",
+            element: <MyActivitiesPublished />,
           },
         ],
       },

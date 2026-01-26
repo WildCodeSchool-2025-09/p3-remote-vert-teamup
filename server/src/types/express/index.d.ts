@@ -41,6 +41,16 @@ type Activity = {
 type User = {
   id: number;
   email: string;
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  born_at: string;
+  address: string;
+  city: string;
+  zip_code: string;
+  phone: string;
+  picture: string;
 };
 
 type Filters = {

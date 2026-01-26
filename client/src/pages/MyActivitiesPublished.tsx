@@ -1,18 +1,15 @@
 import { useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 
-function ActivitiesPublicated() {
+function MyActivitiesPublished() {
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state?.toast) {
       toast.success(location.state.toast);
-
-      navigate(location.pathname, { replace: true });
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location]);
 
   return (
     <>
@@ -21,4 +18,4 @@ function ActivitiesPublicated() {
   );
 }
 
-export default ActivitiesPublicated;
+export default MyActivitiesPublished;

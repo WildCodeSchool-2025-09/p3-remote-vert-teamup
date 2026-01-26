@@ -14,9 +14,9 @@ function ActivityForm() {
   const addressRef = useRef<HTMLInputElement>(null);
   const zipCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const durationRef = useRef<HTMLInputElement>(null);
+  const [playingAt, setPlayingAt] = useState("");
+  const [playingTime, setPlayingTime] = useState("");
+  const playingDurationRef = useRef<HTMLInputElement>(null);
   const nbPlacesRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [isFree, setIsFree] = useState(true);
@@ -34,15 +34,19 @@ function ActivityForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [guestInput, setGuestInput] = useState<string>("");
   const [guests, setGuests] = useState<User[]>([]);
-  const [errorAddGuest, setErrorAddGuest] = useState("");
   const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState({ addGuest: "", addActivity: "" });
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
       .then((res) => res.json())
       .then((sports) => setSports(sports))
-      .catch(() => setError("Impossible de charger les sports"));
+      .catch(() =>
+        setError((prev) => ({
+          ...prev,
+          addActivity: "Impossible de charger les sports",
+        })),
+      );
   }, []);
 
   useEffect(() => {
@@ -78,30 +82,30 @@ function ActivityForm() {
 
   const createActivity = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError((prev) => ({ ...prev, addActivity: "" }));
     setIsSubmitting(true);
 
     const guestIds = guests.map((guest) => guest.id);
 
-    const createActivity = {
+    const activityData = {
       activity: {
         user_id: 1, // TODO: remplacer après authentification !
         sport_id: Number(sportId),
         address: addressRef.current?.value || "",
         city: cityRef.current?.value || "",
         zip_code: zipCodeRef.current?.value || "",
-        playing_at: date,
-        playing_time: time,
-        playing_duration: Number(durationRef.current?.value) || 0,
+        playing_at: playingAt,
+        playing_time: playingTime,
+        playing_duration: Number(playingDurationRef.current?.value) || 0,
         nb_spots: Number(nbPlacesRef.current?.value) || 0,
         description: descriptionRef.current?.value || null,
         price: isFree ? 0 : Number(price),
         visibility: isPublic,
         auto_validation: isPublic ? autoValidation : false,
-        level,
-        locker,
-        shower,
-        toilet,
+        level: level,
+        locker: locker,
+        shower: shower,
+        toilet: toilet,
         air_conditioning: airConditioning,
       },
       guestIds,
@@ -109,11 +113,11 @@ function ActivityForm() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activity/publish`,
+        `${import.meta.env.VITE_API_URL}/api/activity`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(createActivity),
+          body: JSON.stringify(activityData),
         },
       );
 
@@ -122,13 +126,16 @@ function ActivityForm() {
         throw new Error(data.error || "Erreur lors de la publication");
       }
 
-      navigate("/myactivities/publications", {
+      navigate("/my-activities/published", {
         state: {
-          toast: "Activitée créée avec succès !",
+          toast: "Activité créée avec succès !",
         },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur inconnue");
+      setError((prev) => ({
+        ...prev,
+        addActivity: err instanceof Error ? err.message : "Erreur inconnue",
+      }));
     } finally {
       setIsSubmitting(false);
     }
@@ -137,7 +144,7 @@ function ActivityForm() {
   const addGuest = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user?email=${guestInput}`,
+        `${import.meta.env.VITE_API_URL}/api/users?email=${guestInput}`,
       );
 
       if (response.status === 200) {
@@ -146,19 +153,22 @@ function ActivityForm() {
         if (!guests.some((guest) => guest.id === user.id)) {
           setGuests((prev) => [...prev, user]);
           setGuestInput("");
-          setErrorAddGuest("");
+          setError((prev) => ({ ...prev, addGuest: "" }));
         } else {
-          setErrorAddGuest("Déjà invité");
+          setError((prev) => ({ ...prev, addGuest: "Déjà invité" }));
         }
       } else if (response.status === 204) {
-        setErrorAddGuest("Veuillez remplir le champ");
+        setError((prev) => ({
+          ...prev,
+          addGuest: "Veuillez remplir le champ",
+        }));
       } else if (response.status === 404) {
-        setErrorAddGuest("Email inexistant");
+        setError((prev) => ({ ...prev, addGuest: "Email inexistant" }));
       } else {
-        setErrorAddGuest("Erreur serveur");
+        setError((prev) => ({ ...prev, addGuest: "Erreur serveur" }));
       }
     } catch {
-      setErrorAddGuest("Impossible de contacter le serveur");
+      setError((prev) => ({ ...prev, addGuest: "Erreur inconnue" }));
     }
   };
 
@@ -239,22 +249,23 @@ function ActivityForm() {
             />
             <input
               type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
+              value={playingAt}
+              onChange={(e) => setPlayingAt(e.target.value)}
               required
             />
-            {!date && <span className="date-placeholder">Date *</span>}
+            {!playingAt && <span className="date-placeholder">Date *</span>}
           </div>
 
           <div className="input-with-icon time-input-wrapper">
             <img src="./icons/clock-input.svg" alt="" width="24" height="24" />
             <input
               type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
+              value={playingTime}
+              onChange={(e) => setPlayingTime(e.target.value)}
               required
             />
-            {!time && <span className="time-placeholder">Heure *</span>}
+            {!playingTime && <span className="time-placeholder">Heure *</span>}
           </div>
 
           <div className="input-with-icon">
@@ -267,7 +278,7 @@ function ActivityForm() {
             <input
               type="number"
               placeholder="Durée*"
-              ref={durationRef}
+              ref={playingDurationRef}
               required
               min="1"
             />
@@ -634,10 +645,10 @@ function ActivityForm() {
 
               <div className="guest-row">
                 <div
-                  className={`guest-input-display ${errorAddGuest && "error-detected"}`}
+                  className={`guest-input-display ${error.addGuest && "error-detected"}`}
                 >
                   <svg
-                    className={`username-accepted ${errorAddGuest && "username-refused"}`}
+                    className={`username-accepted ${error.addGuest && "username-refused"}`}
                     width="22"
                     height="22"
                     viewBox="0 0 32 32"
@@ -652,12 +663,14 @@ function ActivityForm() {
                   <input
                     type="text"
                     value={guestInput}
-                    onFocus={() => setErrorAddGuest("")}
+                    onFocus={() =>
+                      setError((prev) => ({ ...prev, addGuest: "" }))
+                    }
                     onChange={(e) => setGuestInput(e.target.value)}
                     placeholder="Inviter des personnes (email)"
                   />
-                  {errorAddGuest && (
-                    <p className="error-message-add-guest">{errorAddGuest}</p>
+                  {error.addGuest && (
+                    <p className="error-message-add-guest">{error.addGuest}</p>
                   )}
                 </div>
                 <button
@@ -673,7 +686,9 @@ function ActivityForm() {
           )}
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error.addActivity && (
+          <p className="error-message">{error.addActivity}</p>
+        )}
 
         <button type="submit" className="btn-publish" disabled={isSubmitting}>
           {isSubmitting ? "Publication..." : "Publier"}

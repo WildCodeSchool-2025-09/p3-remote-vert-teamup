@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import userRepository from "./userRepository";
 
-const readUserByEmail: RequestHandler = async (req, res, next) => {
+const readByEmail: RequestHandler = async (req, res, next) => {
   try {
     const email = req.query.email as string;
 
@@ -10,7 +10,7 @@ const readUserByEmail: RequestHandler = async (req, res, next) => {
       res.sendStatus(StatusCodes.NO_CONTENT);
     }
 
-    const user = await userRepository.checkEmail(email);
+    const user = await userRepository.readByEmail(email);
 
     if (!user) {
       res.sendStatus(StatusCodes.NOT_FOUND);
@@ -22,4 +22,4 @@ const readUserByEmail: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { readUserByEmail };
+export default { readByEmail };

@@ -634,6 +634,7 @@ fieldset legend {
   padding: 12px;
   background-color: rgba(230, 57, 70, 0.1);
   border-radius: 12px;
+  margin-top: 1rem;
 }
 
 .criteria-desktop {

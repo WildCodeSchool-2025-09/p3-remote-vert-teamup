@@ -9,16 +9,16 @@ const add: RequestHandler = async (req, res, next) => {
 
     const activityId = await activityRepository.create(activity);
 
-    if (!activity.visibility && guestIds.length === 0) {
-      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-        error: "Une activité privée doit avoir au moins un participant",
-      });
-      return;
-    }
-
     if (!activity.visibility) {
-      guestIds.map(async (guestId: number) => {
-        await participationRepository.create(guestId, activityId);
+      if (guestIds.length === 0) {
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+          error: "Une activité privée doit avoir au moins un participant",
+        });
+        return;
+      }
+
+      guestIds.map(async (userId: number) => {
+        await participationRepository.create(userId, activityId);
       });
     }
 
