@@ -47,4 +47,23 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browseByActivity, add, edit };
+const validate: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId } = req.body;
+    const existingRow = await participationRepository.validate(
+      userId,
+      activityId,
+    );
+
+    if (existingRow.length === 0) {
+      next();
+    } else {
+      res.sendStatus(409);
+      return;
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browseByActivity, add, edit, validate };
