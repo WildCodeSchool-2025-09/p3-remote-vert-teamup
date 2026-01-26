@@ -4,6 +4,7 @@ import "../styles/Activity.css";
 import { useNavigate, useParams } from "react-router";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
+import SearchFilters from "../components/SearchFilters";
 
 function Activities() {
   const { page } = useParams();
@@ -27,8 +28,12 @@ function Activities() {
   useEffect(() => {
     const LIMIT = 10;
 
+    const queryString = new URLSearchParams({
+      filters: JSON.stringify(filters),
+    }).toString();
+
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&sport=${filters.sport}&city=${filters.city}&playingAt=${filters.playingAt}`,
+      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
     )
       .then((response) => response.json())
       .then((activities) => {
@@ -40,21 +45,26 @@ function Activities() {
 
   return (
     <>
-      <SearchBar setFilters={setFilters} />
-      <div className="header-activity">
-        <h1>Activités disponibles</h1>
-        {totalActivities === 0 ? (
-          <p>Aucun résultat</p>
-        ) : totalActivities < 2 ? (
-          <p>{totalActivities} résultat</p>
-        ) : (
-          <p>{totalActivities} résultats</p>
-        )}
-      </div>
-      <section className="cards-activity">
-        {activities.map((activity) => (
-          <ActivityCard key={activity.id} activity={activity} />
-        ))}
+      <section className="flx-activitypg">
+        <div className="activities-container">
+          <SearchBar setFilters={setFilters} />
+          <div className="header-activity">
+            <h1>Activités disponibles</h1>
+            {totalActivities === 0 ? (
+              <p>Aucun résultat</p>
+            ) : totalActivities < 2 ? (
+              <p>{totalActivities} résultat</p>
+            ) : (
+              <p>{totalActivities} résultats</p>
+            )}
+          </div>
+          <section className="cards-activity">
+            {activities.map((activity) => (
+              <ActivityCard key={activity.id} activity={activity} />
+            ))}
+          </section>
+        </div>
+        <SearchFilters setFilters={setFilters} />
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>

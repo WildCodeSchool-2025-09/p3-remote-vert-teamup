@@ -18,19 +18,29 @@
 }
 
 @media (min-width: 1024px) {
+  .flx-activitypg {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    margin: 2rem;
+  }
+
+  .activities-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   h1 {
     margin: 1.5rem 0 2rem 8rem;
   }
   .cards-activity {
-    width: 80%;
+    width: 100%;
     grid-template-columns: repeat(auto-fit, 320px);
-    margin-left: 8rem;
     justify-content: start;
   }
 
   .header-activity {
     width: 80%;
-
     & p {
       font-size: var(--tag-desktop-size);
     }
