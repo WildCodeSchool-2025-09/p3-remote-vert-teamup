@@ -1,5 +1,17 @@
 body {
   background-color: var(--light-color);
+  width: 100vw;
+}
+
+#root {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+main {
+  height: 100%;
+  overflow-y: auto;
 }
 
 h1 {
