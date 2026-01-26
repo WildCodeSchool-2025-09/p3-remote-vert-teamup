@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "myactivities",
+        path: "/myactivities",
         element: <MyActivities />,
         children: [
           {
