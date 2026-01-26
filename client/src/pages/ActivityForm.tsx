@@ -147,7 +147,7 @@ function ActivityForm() {
   };
 
   return (
-    <main className="publication-page">
+    <section className="publication-page">
       <h1>Publier une annonce</h1>
       <p className="required-fields">*Champs obligatoires</p>
 
@@ -719,7 +719,7 @@ function ActivityForm() {
         </div>
       </dialog>
       <Toaster position="top-center" />
-    </main>
+    </section>
   );
 }
 

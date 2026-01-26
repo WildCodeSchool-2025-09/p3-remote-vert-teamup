@@ -16,7 +16,7 @@
   cursor: pointer;
   line-height: 1;
   color: inherit;
-  font-family: var(--body-highlight-mobile);
+  font-family: var(--body-highlight-font);
 }
 
 .cls-btn-size {
@@ -57,13 +57,13 @@
 
 .filter-title {
   color: var(--dark-color);
-  font-family: var(--heading-mobile);
+  font-family: var(--heading-font);
   font-weight: 700;
   font-size: 1.4rem;
 }
 
 .ttls {
-  font-family: var(--body-highlight-mobile);
+  font-family: var(--body-highlight-font);
 }
 
 .price-tag {
@@ -102,7 +102,7 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: red;
+  background: var(--refused-color);
   cursor: pointer;
 }
 
@@ -110,7 +110,7 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: red;
+  background: var(--refused-color);
   cursor: pointer;
   border: none;
 }
