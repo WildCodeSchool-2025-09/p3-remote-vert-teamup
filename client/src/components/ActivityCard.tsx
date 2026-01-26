@@ -68,27 +68,6 @@ function ActivityCard({ activity }: ActivityCardType) {
     } catch (err) {
       console.error(err);
     }
-
-    //   try {
-    //     await fetch(`${import.meta.env.VITE_API_URL}/api/participation`, {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(newParticipant),
-    //     })
-    //       .then((res) => res.json())
-    //       .then((responseStatus) => {
-    //         navigate(navigateUrl, {
-    //           state: {
-    //             responseStatus,
-    //             newParticipant,
-    //           },
-    //         });
-    //       });
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
   };
 
   return (

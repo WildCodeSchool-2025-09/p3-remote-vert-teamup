@@ -1,30 +1,48 @@
-import { Link, Outlet } from "react-router";
 import "../../styles/MyActivities.css";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { Link, Outlet } from "react-router";
+// import { useEffect } from "react";
+// import { useNavigate, useLocation } from "react-router";
 
 function MyActivity() {
-  const [myActivities, setMyActivities] = useState({});
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const userId = location.state?.newParticipant?.userId;
 
-  const location = useLocation();
+  // useEffect(() => {
+  //   if (!userId) return;
 
-  const newParticipant = location.state ? location.state.newParticipant : {};
+  //   fetch(`${import.meta.env.VITE_API_URL}/api/activities?userId=${userId}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const acceptedActivities = data.activities.filter(
+  //         (e) => e.status === "accepted",
+  //       );
+  //       const awaitingActivities = data.activities.filter(
+  //         (e) => e.status !== "accepted",
+  //       );
 
-  console.log(newParticipant);
+  //       console.log("acivities:", data);
 
-  // update activityRepository totalActivity cound to match global query.
-  // add userId to the url via params
-  //display activities according to their status
+  //       const userActivities =
+  //         acceptedActivities.length > 0
+  //           ? {
+  //               navigUrl: "/myactivity/upcoming",
+  //               userActivities: acceptedActivities,
+  //             }
+  //           : {
+  //               navigUrl: "/myactivity/awaiting",
+  //               userActivities: awaitingActivities,
+  //             };
 
-  useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?userId=${newParticipant.userId}`,
-    )
-      .then((res) => res.json())
-      .then((activities) => setMyActivities(activities));
-  }, [newParticipant.userId]);
+  //       console.log(userActivities);
 
-  console.log("Received From Back", myActivities);
+  //       navigate(userActivities.navigUrl, {
+  //         state: {
+  //           userActivities,
+  //         },
+  //       });
+  //     });
+  // }, [userId, navigate]);
 
   return (
     <>
