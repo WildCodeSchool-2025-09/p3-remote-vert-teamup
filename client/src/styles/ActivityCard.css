@@ -472,6 +472,7 @@
 
 .card-important {
   grid-row: span 2;
+  align-self: flex-start;
 }
 
 .dropdown-open {

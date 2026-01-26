@@ -28,7 +28,7 @@ function ActivityCard({
   return (
     <>
       <article
-        className={`card ${participantsListIsOpen ? "card-important" : ""} ? `}
+        className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >
         <div className={`card-header ${activity.name}`}>
           <h2>{activity.name}</h2>
@@ -123,18 +123,22 @@ function ActivityCard({
             </div>
           </>
         )}
-        <button
-          type="button"
-          className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
-          onClick={onClickListParticipant}
-        >
-          {activity.visibility ? "Liste des participants" : "Liste des invités"}
-          <img
-            src="/icons/chevron.png"
-            alt=""
-            className={`${participantsListIsOpen ? "rotate" : ""}`}
-          />
-        </button>
+        {publicatedRoad && (
+          <button
+            type="button"
+            className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
+            onClick={onClickListParticipant}
+          >
+            {activity.visibility
+              ? "Liste des participants"
+              : "Liste des invités"}
+            <img
+              src="/icons/chevron.png"
+              alt=""
+              className={`${participantsListIsOpen ? "rotate" : ""}`}
+            />
+          </button>
+        )}
 
         {participantsListIsOpen && (
           <ParticipantsList

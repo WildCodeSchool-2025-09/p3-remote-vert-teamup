@@ -85,7 +85,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   }
 
   return (
-    <ul>
+    <ul className="participant-list">
       {participants.map((participant) => (
         <li key={participant.username}>
           <div>

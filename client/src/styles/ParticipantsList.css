@@ -8,14 +8,17 @@
   }
 }
 
-ul {
+ul.participant-list {
   font-family: var(--body-font);
   background-color: var(--neutral-color);
   box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5);
   animation: opacity .8s ease-in-out both;
+  max-height: 190px;
+  overflow-y: auto;
+  margin-top: 0.5rem;
 }
 
-ul li {
+ul.participant-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,46 +26,46 @@ ul li {
   font-size: var(--body-size);
 }
 
-ul li img {
+ul.participant-list li img {
   width: 32px;
   height: 32px;
   border-radius: 32px;
 }
 
-ul li div {
+ul.participant-list li div {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 4px;
 }
 
-ul li p.refused,
-ul li p.accepted,
-ul li p.pending {
+ul.participant-list li p.refused,
+ul.participant-list li p.accepted,
+ul.participant-list li p.pending {
   color: var(--light-color);
   width: 75px;
   height: 18px;
   border-radius: 10px;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
-ul li p.refused,
-ul li button.btn-refused {
+ul.participant-list li p.refused,
+ul.participant-list li button.btn-refused {
   background-color: var(--refused-color);
 }
 
-ul li p.accepted,
-ul li button.btn-accepted {
+ul.participant-list li p.accepted,
+ul.participant-list li button.btn-accepted {
   background-color: var(--input-color);
 }
 
-ul li p.pending {
+ul.participant-list li p.pending {
   background-color: var(--accent-color);
 }
 
-ul li button {
+ul.participant-list li button {
   border: none;
   background-color: var(--refused-color);
   color: var(--light-color);
@@ -137,13 +140,23 @@ ul li button {
   fill: var(--button-color);
 }
 
+ul.participant-list li p img {
+  width: 12px;
+  height: 12px;
+}
+
+ul.participant-list li p img.vector {
+  width: 8px;
+  height: 8px;
+}
+
 @media (min-width: 1024px) {
-  ul li,
+  ul.participant-list li,
   .guest-input-display input {
     font-size: var(--body-desktop-size);
   }
 
-  ul li button {
+  ul.participant-list li button {
     border: none;
     background-color: var(--refused-color);
     color: var(--light-color);
@@ -152,9 +165,9 @@ ul li button {
     border-radius: 6px;
   }
 
-  ul li p.refused,
-  ul li p.accepted,
-  ul li p.pending {
+  ul.participant-list li p.refused,
+  ul.participant-list li p.accepted,
+  ul.participant-list li p.pending {
     color: var(--light-color);
     width: 106px;
     height: 28px;
@@ -163,12 +176,12 @@ ul li button {
     justify-content: space-evenly;
   }
 
-  ul li p img {
+  ul.participant-list li p img {
     width: 12px;
     height: 12px;
   }
 
-  ul li p img.vector {
+  ul.participant-list li p img.vector {
     width: 8px;
     height: 8px;
   }

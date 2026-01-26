@@ -35,18 +35,18 @@ section.searchbar article input {
   font-size: var(--body-size);
 }
 
-section.searchbar article input.bottom-border {
-  border-radius: 8px 8px 0 0;
-}
-
-section.searchbar article input:focus {
-  border: solid 3px var(--input-color);
+section.searchbar article input:not(.error-input):focus {
+  box-shadow: 0 0 0 2px rgba(0, 189, 125, 0.2);
   outline: none;
 }
 
 section.searchbar article input.error-input {
-  border: 3px solid rgb(252, 66, 66);
-  border-radius: 8px 8px 0 0;
+  border: 1px solid rgb(252, 66, 66);
+}
+
+section.searchbar article input.error-input:focus {
+  box-shadow: 0 0 0 2px rgba(252, 66, 66, 0.2);
+  outline: none;
 }
 
 section.searchbar article img {
@@ -76,22 +76,30 @@ section.searchbar button.filter-button {
 
 section.searchbar article ul.dropdown {
   position: absolute;
-  top: 37px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: var(--light-color);
   border: 1px solid var(--input-color);
-  width: 100%;
+  border-radius: 10px;
+  max-height: 380px;
+  overflow-y: auto;
   z-index: 2;
-  background: var(--light-color);
-  max-height: 250px;
-  overflow-y: scroll;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 section.searchbar article ul.dropdown-false {
   position: absolute;
-  top: 37px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: var(--neutral-color);
   border: 1px solid rgb(252, 66, 66);
-  width: 100%;
+  border-radius: 10px;
   z-index: 2;
-  background: var(--neutral-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 section.searchbar article ul.dropdown button {
