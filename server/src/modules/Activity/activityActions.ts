@@ -8,7 +8,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
     const filtersInString = req.query.filters as string;
 
-    const filters: Filters = JSON.parse(filtersInString);
+    const filters: Filters = filtersInString ? JSON.parse(filtersInString) : "";
 
     const { activities, totalActivities, totalPages } =
       await activityRepository.readAll(page, limit, filters);
