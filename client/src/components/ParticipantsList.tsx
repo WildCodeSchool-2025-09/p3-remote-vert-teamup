@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/ParticipantsList.css";
 
 type ParticipantsListProps = {
@@ -17,6 +17,7 @@ type Participant = {
 function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [inputGuest, setInputGuest] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`)
@@ -25,64 +26,105 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   }, [activityId]);
 
   async function addGuest() {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/user?email=${inputGuest}`,
-    );
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user?email=${inputGuest}`,
+      );
 
-    const user = await response.json();
+      if (response.status === 404) {
+        throw new Error("Cette personne n'existe pas");
+      }
 
-    const newGuest = {
-      userId: user.id,
-      activityId: activityId,
-      status: "inviting",
-    };
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'invitation");
+      }
 
-    const invitationResponse = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/me/invitation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const user = await response.json();
+
+      const newGuest = {
+        userId: user.id,
+        activityId: activityId,
+        status: "inviting",
+      };
+
+      const invitationResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/me/invitation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newGuest),
         },
-        body: JSON.stringify(newGuest),
-      },
-    );
+      );
 
-    const createdInvitation = await invitationResponse.json();
+      if (invitationResponse.status === 409) {
+        throw new Error("Cette personne a déjà été invitée");
+      }
 
-    const guestToAdd = {
-      id: createdInvitation.id,
-      userId: user.id,
-      username: user.username,
-      picture: user.picture,
-      status: "inviting",
-    };
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'invitation");
+      }
 
-    setParticipants((prev) => [...prev, guestToAdd]);
-    setInputGuest("");
+      const createdInvitation = await invitationResponse.json();
+
+      const guestToAdd = {
+        id: createdInvitation.id,
+        userId: user.id,
+        username: user.username,
+        picture: user.picture,
+        status: "inviting",
+      };
+
+      setParticipants((prev) => [...prev, guestToAdd]);
+    } catch (err) {
+      setInputGuest("");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
+    }
   }
 
   async function acceptOrRefuseRequest(id: number, newStatus: string) {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/participant/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participant/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
         },
-        body: JSON.stringify({ status: newStatus }),
-      },
-    );
+      );
 
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || "Erreur lors de la publication");
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'acceptation ou du refus");
+      }
+
+      setParticipants((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     }
-
-    setParticipants((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
-    );
   }
+
+  function changeInputGuest(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputGuest(e.target.value);
+    if (e.target.value.length !== 0) {
+      setError("");
+    }
+  }
+
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      errorRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [error]);
 
   return (
     <ul className="participant-list">
@@ -151,7 +193,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
                 type="text"
                 placeholder="Inviter des personnes"
                 value={inputGuest}
-                onChange={(e) => setInputGuest(e.target.value)}
+                onChange={(e) => changeInputGuest(e)}
               />
             </div>
             <button
@@ -163,6 +205,11 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
               <img src="/icons/add.png" alt="" width="20" height="20" />
             </button>
           </div>
+          {error && (
+            <p ref={errorRef} className="error-message">
+              {error}
+            </p>
+          )}
         </div>
       )}
     </ul>
