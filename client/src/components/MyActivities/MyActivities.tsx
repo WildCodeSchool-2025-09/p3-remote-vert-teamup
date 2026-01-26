@@ -12,11 +12,18 @@ function MyActivity() {
 
   console.log(newParticipant);
 
+  // update activityRepository totalActivity cound to match global query.
+  // add userId to the url via params
+  //display activities according to their status
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?userId=${newParticipant.userId}`,
+    )
       .then((res) => res.json())
       .then((activities) => setMyActivities(activities));
-  }, []);
+  }, [newParticipant.userId]);
+
   console.log("Received From Back", myActivities);
 
   return (

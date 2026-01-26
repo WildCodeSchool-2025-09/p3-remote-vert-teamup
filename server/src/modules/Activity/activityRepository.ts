@@ -9,7 +9,7 @@ class ActivityRepository {
     filters: Filters,
     userId?: number,
   ) {
-    console.log("USER ID FROM REPOSItoRu", userId);
+    // console.log("USER ID FROM REPOSItoRu", userId);
     const offset = (page - 1) * limit;
 
     const conditions = [];
@@ -60,11 +60,15 @@ class ActivityRepository {
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
-      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id ${query}`,
-      [...params],
+      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id 
+      ${userId ? "LEFT JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ?" : ""}
+      ${query}`,
+      userId ? [userId, ...params] : [...params],
     );
 
     const totalActivities = totalResult[0].total_activity as number;
+
+    console.log("Repo Activities", activities);
 
     return {
       activities: activities as Activity[],

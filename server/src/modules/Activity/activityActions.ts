@@ -7,11 +7,12 @@ const browse: RequestHandler = async (req, res, next) => {
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
     const filtersInString = req.query.filters as string;
-
     const filters: Filters = filtersInString ? JSON.parse(filtersInString) : "";
 
+    const userId = Number.parseInt(req.query.userId as string);
+
     const { activities, totalActivities, totalPages } =
-      await activityRepository.readAll(page, limit, filters);
+      await activityRepository.readAll(page, limit, filters, userId);
 
     res.json({
       activities: activities,

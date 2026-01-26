@@ -14,7 +14,7 @@ class ParticipationRepository {
         VALUES ('${newUser.status}', ${newUser.userId}, ${newUser.activityId})`,
     );
 
-    console.log("Participation Repo:", Result);
+    console.log("Participation Repo Results:", Result);
 
     return Result;
   }
