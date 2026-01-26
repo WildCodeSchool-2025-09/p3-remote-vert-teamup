@@ -7,17 +7,13 @@ class ActivityRepository {
     page: number,
     limit: number,
     filters: Filters,
-    // userId?: number,
+    userId?: number,
   ) {
+    console.log("USER ID FROM REPOSItoRu", userId);
     const offset = (page - 1) * limit;
 
     const conditions = [];
     const params = [];
-
-    // if (userId) {
-    //   conditions.push("p.user_id = ?");
-    //   params.push(userId);
-    // }
 
     if (filters.sport) {
       conditions.push("s.name = ?");
@@ -52,14 +48,15 @@ class ActivityRepository {
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, p.status
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name${userId ? ", up.status AS user_status" : ""},
       COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
       FROM activity AS a JOIN user AS u ON u.id = a.user_id 
       JOIN sport AS s ON s.id = a.sport_id 
-      LEFT JOIN participation AS p ON p.activity_id = a.id 
+      LEFT JOIN participation AS p ON p.activity_id = a.id
+      ${userId ? "LEFT JOIN participation AS up ON up.activity_id = a.id AND up.user_id = ?" : ""}
       ${query}
-      GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
-      [...params, limit, offset],
+      GROUP BY a.id ${userId ? ", up.status" : ""} ORDER BY a.id ASC LIMIT ? OFFSET ?`,
+      userId ? [userId, ...params, limit, offset] : [...params, limit, offset],
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
