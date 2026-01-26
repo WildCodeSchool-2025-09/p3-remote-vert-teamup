@@ -8,8 +8,9 @@ class ActivityRepository {
     limit: number,
     filters: Filters,
     userId?: number,
+    status?: string,
   ) {
-    // console.log("USER ID FROM REPOSItoRu", userId);
+    console.log("USER ID FROM REPOSItoRu", userId, status);
     const offset = (page - 1) * limit;
 
     const conditions = [];
@@ -44,11 +45,16 @@ class ActivityRepository {
 
     filters.disabled && conditions.push("a.disabled = 1");
 
+    if (status) {
+      conditions.push("up.status = ?");
+      params.push(status);
+    }
+
     const query =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name${userId ? ", up.status AS user_status" : ""},
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
       COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
       FROM activity AS a JOIN user AS u ON u.id = a.user_id 
       JOIN sport AS s ON s.id = a.sport_id 

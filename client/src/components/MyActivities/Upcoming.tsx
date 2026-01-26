@@ -1,17 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
+import ActivityCard from "../ActivityCard";
 
-export default function Upcoming() {
+function Upcoming() {
+  const [upcomingActivity, setUpcimingActivity] = useState<Activity[]>([]);
   const location = useLocation();
-  const userId = location.state?.newParticipant?.userId;
+  const newParticipant = location.state?.newParticipant || {};
+  const { userId, status } = newParticipant;
 
-  useEffect;
+  if (!newParticipant) {
+    return <div>Aucune donnée de participation n'est disponible.</div>;
+  }
+  console.log("Upcoming", upcomingActivity);
 
-  console.log("Upcoming", userId);
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?userId=${userId}&status=${status}`,
+    )
+      .then((res) => res.json())
+      .then((activity) => setUpcimingActivity(activity.activities));
+  }, [userId, status]);
 
   return (
-    <>
-      <h1>Upcoming</h1>
-    </>
+    <div>
+      {upcomingActivity.map((a) => (
+        <ActivityCard key={a.id} activity={a} />
+      ))}
+    </div>
   );
 }
+
+export default Upcoming;
