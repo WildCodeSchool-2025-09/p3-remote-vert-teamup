@@ -132,6 +132,10 @@ ul.participant-list li button {
   position: relative;
 }
 
+.guest-error {
+  border: 1px solid var(--refused-color);
+}
+
 .guest-input-display input {
   flex: 1;
   border: none;
@@ -149,6 +153,10 @@ ul.participant-list li button {
 
 .username-accepted {
   fill: var(--button-color);
+}
+
+.username-refused {
+  fill: var(--refused-color);
 }
 
 ul.participant-list li p img {

@@ -175,12 +175,14 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       {!visibility && (
         <div>
           <div className="guest-row">
-            <div className="guest-input-display">
+            <div
+              className={`guest-input-display ${error ? "guest-error" : ""}`}
+            >
               <svg
                 width="22"
                 height="22"
                 viewBox="0 0 32 32"
-                className="username-accepted"
+                className={`username-accepted ${error ? "username-refused" : ""}`}
               >
                 <title>icon profile</title>
                 <g id="about">
