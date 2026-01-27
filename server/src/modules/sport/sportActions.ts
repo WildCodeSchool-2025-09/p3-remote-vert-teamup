@@ -1,7 +1,18 @@
 import type { RequestHandler } from "express";
 import sportRepository from "./sportRepository";
 
+// Gets ALL sports
 const browse: RequestHandler = async (req, res, next) => {
+  try {
+    const sports = await sportRepository.readAll();
+    res.json(sports);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Searches sports by name
+const read: RequestHandler = async (req, res, next) => {
   try {
     const sportName = req.query.name as string;
 
@@ -17,4 +28,4 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse };
+export default { browse, read };

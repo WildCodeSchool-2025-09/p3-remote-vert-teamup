@@ -23,5 +23,9 @@ router.post(
   participationActions.validate,
   participationActions.add,
 );
+router.get("/api/sports", sportActions.browse);
+router.post("/api/activity", activityActions.add);
+router.get("/api/activities", activityActions.browse);
+router.get("/api/sport", sportActions.read);
 
 export default router;
