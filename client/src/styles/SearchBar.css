@@ -4,6 +4,7 @@ section.searchbar {
   flex-wrap: wrap;
   width: 85%;
   margin: auto;
+  margin-top: 1.75rem;
 }
 
 section.searchbar article {
