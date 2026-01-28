@@ -88,4 +88,15 @@ type Sport = {
 
 type User = {
   id: number;
+  email: string;
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  born_at: Date;
+  address: string;
+  city: string;
+  zip_code: string;
+  phone: string;
+  picture: string;
 };

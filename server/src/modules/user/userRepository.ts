@@ -8,7 +8,7 @@ class userRepository {
       [email],
     );
 
-    return rows[0] as User;
+    return rows[0] as Partial<User>;
   }
 }
 
