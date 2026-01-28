@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import App from "./App";
 import Activities from "./pages/Activities";
 import ActivityForm from "./pages/ActivityForm";
+import Invitations from "./pages/Invitations";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
       {
         path: "/activities/page/:page",
         element: <Activities />,
+      },
+      {
+        path: "/myactivities/invitations",
+        element: <Invitations />,
       },
     ],
   },
