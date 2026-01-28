@@ -15,6 +15,22 @@ class ParticipationRepository {
     );
     return rows;
   }
+
+  async editRefused(userId: number, activityId: number) {
+    const [result] = await databaseClient.query(
+      "UPDATE participation SET status = 'refused' WHERE user_id = ? AND activity_id = ?",
+      [userId, activityId],
+    );
+    return result;
+  }
+
+  async editAccepted(userId: number, activityId: number) {
+    const [result] = await databaseClient.query(
+      "UPDATE participation SET status = 'accepted' WHERE user_id = ? AND activity_id = ?",
+      [userId, activityId],
+    );
+    return result;
+  }
 }
 
 export default new ParticipationRepository();
