@@ -22,11 +22,7 @@ const verifyParticipation: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId } = req.body;
 
-    console.log("Participation recived from front", userId, activityId);
-
     const participant = await participateRepository.read(userId, activityId);
-
-    console.log("PARTICIPATION:", participant);
 
     if (participant) {
       res.json({

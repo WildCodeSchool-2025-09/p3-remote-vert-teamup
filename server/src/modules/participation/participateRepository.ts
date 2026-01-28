@@ -27,8 +27,6 @@ class ParticipationRepository {
       [usedId, activityId],
     );
 
-    console.log(rows);
-
     return rows[0];
   }
 }

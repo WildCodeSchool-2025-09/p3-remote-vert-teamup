@@ -12,9 +12,11 @@ function MyActivity() {
             <Link to="/myactivity/published">Publier</Link>
             <Link to="/myactivity/awaiting">En Attent</Link>
           </div>
+          <div className="cards-activity">
+            <Outlet />
+          </div>
         </div>
       </section>
-      <Outlet />
     </>
   );
 }

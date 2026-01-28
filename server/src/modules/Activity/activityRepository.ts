@@ -55,6 +55,7 @@ class ActivityRepository {
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name,
       COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
+      ${userId ? ", up.status AS user_participation_status" : ""}
       FROM activity AS a JOIN user AS u ON u.id = a.user_id 
       JOIN sport AS s ON s.id = a.sport_id 
       LEFT JOIN participation AS p ON p.activity_id = a.id

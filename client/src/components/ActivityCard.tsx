@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
   activity: Activity;
+  participantStatus?: string | null | undefined;
 };
 
-function ActivityCard({ activity }: ActivityCardType) {
+function ActivityCard({ activity, participantStatus }: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
-  const [alreadyParticipant, setAlreadyParticipant] = useState(false);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
@@ -19,8 +18,6 @@ function ActivityCard({ activity }: ActivityCardType) {
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
 
-  console.log(alreadyParticipant);
-
   const makeReservation = async (
     activity: Activity,
     nbAvailableSpots: number,
@@ -28,7 +25,7 @@ function ActivityCard({ activity }: ActivityCardType) {
     //  !User navigate to sign up (To implement when we will see connection)
 
     if (nbAvailableSpots === 0) {
-      // button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
+      // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
     // const userId = Math.floor(Math.random() * 50);
@@ -56,20 +53,13 @@ function ActivityCard({ activity }: ActivityCardType) {
         },
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to join activity");
-      }
-
       const responseStatus = await response.json();
 
-      console.log(
-        "Response From middl when user alreadyEnroled",
-        responseStatus,
-      );
-
-      if (responseStatus.alreadyClicked) {
-        setAlreadyParticipant(responseStatus.alreadyClicked);
-        return;
+      if (!response.ok) {
+        if (responseStatus.alreadyClicked) {
+          return;
+        }
+        throw new Error("Failed to join activity");
       }
 
       navigate(navigateUrl, {
@@ -168,7 +158,7 @@ function ActivityCard({ activity }: ActivityCardType) {
               <img src="/icons/bell.png" alt="logo alert" />
             </>
           ) : (
-            <>Reserve</>
+            <>{participantStatus ? participantStatus : "Reserve"}</>
           )}
         </button>
       </div>

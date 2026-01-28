@@ -6,14 +6,8 @@ function Upcoming() {
   const [upcomingActivity, setUpcimingActivity] = useState<Activity[]>([]);
   const location = useLocation();
   const newParticipant = location.state?.newParticipant || {};
+
   const { userId, status } = newParticipant;
-
-  // Implement middlwhare to verify if the user is already enrolled to the activity.
-  // Update reserve button functionality and waitlist mailing
-
-  if (!newParticipant) {
-    return <div>Aucune donnée de participation n'est disponible.</div>;
-  }
 
   useEffect(() => {
     if (!userId) {
@@ -28,8 +22,9 @@ function Upcoming() {
 
   return (
     <div>
+      <h1>A Venir</h1>
       {upcomingActivity.map((a) => (
-        <ActivityCard key={a.id} activity={a} />
+        <ActivityCard key={a.id} activity={a} participantStatus={status} />
       ))}
     </div>
   );
