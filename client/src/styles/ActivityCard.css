@@ -238,6 +238,7 @@
   padding: 0 0.5rem 0.5rem 0.5rem;
   font-family: var(--tag-font);
   font-size: var(--tag-size);
+  height: 3rem;
 
   & .card-tag {
     background-color: var(--neutral-color);
