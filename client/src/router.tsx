@@ -9,7 +9,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/teamup/myActivity",
+        path: "/my-activities",
         element: <MyActivities />,
       },
       {

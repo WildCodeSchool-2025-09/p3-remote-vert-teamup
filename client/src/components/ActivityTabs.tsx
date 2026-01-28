@@ -5,14 +5,7 @@ type SegmentedControlProps = {
   setSelectedTab: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function SegmentedControl({
-  selectedTab,
-  setSelectedTab,
-}: SegmentedControlProps) {
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setSelectedTab(newValue);
-  };
-
+function ActivityTabs({ selectedTab, setSelectedTab }: SegmentedControlProps) {
   return (
     <Box sx={{ marginTop: "1rem", marginBottom: "2rem" }}>
       <AppBar
@@ -25,7 +18,7 @@ function SegmentedControl({
       >
         <Tabs
           value={selectedTab}
-          onChange={handleChange}
+          onChange={(_, newValue) => setSelectedTab(newValue)}
           textColor="inherit"
           variant="standard"
           sx={{
@@ -71,4 +64,4 @@ function SegmentedControl({
   );
 }
 
-export default SegmentedControl;
+export default ActivityTabs;
