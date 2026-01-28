@@ -7,11 +7,14 @@ function MyActivities() {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   return (
     <>
-      <h1>MES ACTIVITÉS</h1>
-      <ActivityTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <section id="my-activities">
-        {selectedTab === 0 && <MyActivitiesIncoming />}
-      </section>
+      <div id="my-activities">
+        <h1>MES ACTIVITÉS</h1>
+        <ActivityTabs
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
+        <section>{selectedTab === 0 && <MyActivitiesIncoming />}</section>
+      </div>
     </>
   );
 }
