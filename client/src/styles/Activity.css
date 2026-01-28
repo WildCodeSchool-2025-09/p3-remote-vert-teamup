@@ -30,9 +30,6 @@
     align-items: center;
   }
 
-  h1 {
-    margin: 1.5rem 0 2rem 8rem;
-  }
   .cards-activity {
     width: 100%;
     grid-template-columns: repeat(auto-fit, 320px);
@@ -41,6 +38,11 @@
 
   .header-activity {
     width: 80%;
+
+    & > h1 {
+      margin: 1.5rem 0 2rem 8rem;
+    }
+
     & p {
       font-size: var(--tag-desktop-size);
     }
