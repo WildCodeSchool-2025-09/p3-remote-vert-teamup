@@ -31,6 +31,10 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
         `${import.meta.env.VITE_API_URL}/api/user?email=${inputGuest}`,
       );
 
+      if (inputGuest.length === 0) {
+        throw new Error("Veuillez remplir ce champ");
+      }
+
       if (response.status === 404) {
         throw new Error("Cette personne n'existe pas");
       }
@@ -174,15 +178,13 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       ))}
       {!visibility && (
         <div>
-          <div className="guest-row">
-            <div
-              className={`guest-input-display ${error ? "guest-error" : ""}`}
-            >
+          <div className="guest-line">
+            <div className={`guest-inviting ${error ? "guest-error" : ""}`}>
               <svg
                 width="22"
                 height="22"
                 viewBox="0 0 32 32"
-                className={`username-accepted ${error ? "username-refused" : ""}`}
+                className={`username-inviting ${error ? "username-refused" : ""}`}
               >
                 <title>icon profile</title>
                 <g id="about">
@@ -200,7 +202,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
             </div>
             <button
               type="button"
-              className="btn-add-guest"
+              className="btn-add-guest-y"
               aria-label="Ajouter une personne"
               onClick={() => addGuest()}
             >
@@ -208,7 +210,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
             </button>
           </div>
           {error && (
-            <p ref={errorRef} className="error-message">
+            <p ref={errorRef} className="error-text">
               {error}
             </p>
           )}
