@@ -85,7 +85,7 @@ ul.participant-list li button {
   border-radius: 6px;
 }
 
-.btn-add-guest {
+.btn-add-guest-y {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,7 +99,7 @@ ul.participant-list li button {
   background-color: var(--button-color);
 }
 
-.guest-row {
+.guest-line {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -119,7 +119,7 @@ ul.participant-list li button {
   }
 }
 
-.guest-input-display {
+.guest-inviting {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -136,7 +136,7 @@ ul.participant-list li button {
   border: 1px solid var(--refused-color);
 }
 
-.guest-input-display input {
+.guest-inviting input {
   flex: 1;
   border: none;
   background: transparent;
@@ -147,11 +147,11 @@ ul.participant-list li button {
   min-width: 0;
 }
 
-.guest-input-display input::placeholder {
+.guest-inviting input::placeholder {
   color: var(--dark-color);
 }
 
-.username-accepted {
+.username-inviting {
   fill: var(--button-color);
 }
 
@@ -169,7 +169,7 @@ ul.participant-list li p img.vector {
   height: 8px;
 }
 
-.error-message {
+.error-text {
   color: var(--refused-color);
   font-family: var(--body-font);
   font-size: var(--tag-size);
@@ -221,7 +221,7 @@ ul.participant-list li p img.vector {
     height: 8px;
   }
 
-  .error-message {
+  .error-text {
     font-size: var(--tag-desktop-size);
   }
 }
