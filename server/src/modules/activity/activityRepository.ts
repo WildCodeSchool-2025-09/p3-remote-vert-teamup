@@ -94,6 +94,20 @@ class ActivityRepository {
       totalPages: Math.ceil(totalActivities / limit),
     };
   }
+
+  async readAllByUserAndStatus(userId: number, status: string) {
+    // Execute the SQL SELECT query to retrieve all items from the "item" table
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT * 
+      FROM activity 
+      JOIN participation ON participation.activity_id = activity.id 
+      WHERE participation.user_id = ? 
+      AND activity.playing_at >= CURDATE() 
+      ORDER BY activity.playing_at ASC`,
+      [userId],
+    );
+    return rows as Activity[];
+  }
 }
 
 export default new ActivityRepository();

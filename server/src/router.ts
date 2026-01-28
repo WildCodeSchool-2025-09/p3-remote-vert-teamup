@@ -8,6 +8,7 @@ const router = express.Router();
 router.get("/api/sports", sportAction.browse);
 router.post("/api/activity", activityActions.add);
 router.get("/api/activities", activityActions.browse);
+router.get("/api/activities/me", activityActions.browseMine);
 router.get("/api/sport", sportAction.read);
 router.get("/api/participation", participationActions.browse);
 

@@ -35,4 +35,20 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, browse };
+const browseMine: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = 5;
+    const status = req.query.status as string;
+
+    const activities = await activityRepository.readAllByUserAndStatus(
+      userId,
+      status,
+    );
+
+    res.status(200).json(activities);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, browse, browseMine };
