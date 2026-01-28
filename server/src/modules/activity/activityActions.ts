@@ -41,7 +41,7 @@ const browseActivitiesPublicatedByUser: RequestHandler = async (
   next,
 ) => {
   try {
-    const userID = 6;
+    const userID = 1;
     const activitiesPublicatedByUser =
       await activityRepository.readActivitiesPublicatedByUser(userID);
 

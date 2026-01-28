@@ -83,6 +83,8 @@ ul.participant-list li button {
   width: 75px;
   height: 18px;
   border-radius: 6px;
+  font-size: var(--body-size);
+  font-family: var(--body-font);
 }
 
 .btn-add-guest-y {
@@ -93,9 +95,6 @@ ul.participant-list li button {
   height: 37px;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
-  flex-shrink: 0;
-  padding: 0;
   background-color: var(--button-color);
 }
 
@@ -191,13 +190,24 @@ ul.participant-list li p img.vector {
     font-size: var(--body-desktop-size);
   }
 
+  .btn-add-guest-y {
+    cursor: pointer;
+  }
+
   ul.participant-list li button {
     border: none;
     background-color: var(--refused-color);
     color: var(--light-color);
     width: 75px;
-    height: 18px;
+    height: 28px;
     border-radius: 6px;
+    font-size: var(--body-desktop-size);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  ul.participant-list li button:hover {
+    box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5);
   }
 
   ul.participant-list li p.refused,
