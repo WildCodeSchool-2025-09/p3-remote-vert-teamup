@@ -10,5 +10,7 @@ router.post("/api/activity", activityActions.add);
 router.get("/api/activities", activityActions.browse);
 router.get("/api/sport", sportAction.read);
 router.get("/api/participation", participationActions.browse);
+router.put("/api/participation/refused", participationActions.updateRefused);
+router.put("/api/participation/accepted", participationActions.updateAccepted);
 
 export default router;
