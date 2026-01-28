@@ -10,7 +10,6 @@ class ActivityRepository {
     userId?: number,
     status?: string,
   ) {
-    console.log("USER ID FROM REPOSItoRu", userId, status);
     const offset = (page - 1) * limit;
 
     const conditions = [];

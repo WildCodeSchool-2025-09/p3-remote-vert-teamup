@@ -1,4 +1,4 @@
-// import { Link } from "react-router";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 
@@ -10,14 +10,16 @@ function ActivityCard({ activity }: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
+  const [alreadyParticipant, setAlreadyParticipant] = useState(false);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
     month: "short",
   });
-
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
+
+  console.log(alreadyParticipant);
 
   const makeReservation = async (
     activity: Activity,
@@ -29,7 +31,8 @@ function ActivityCard({ activity }: ActivityCardType) {
       // button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
-    const userId = Math.floor(Math.random() * 50);
+    // const userId = Math.floor(Math.random() * 50);
+    const userId = 34;
 
     const newParticipant = {
       activityId: activity.id,
@@ -58,6 +61,16 @@ function ActivityCard({ activity }: ActivityCardType) {
       }
 
       const responseStatus = await response.json();
+
+      console.log(
+        "Response From middl when user alreadyEnroled",
+        responseStatus,
+      );
+
+      if (responseStatus.alreadyClicked) {
+        setAlreadyParticipant(responseStatus.alreadyClicked);
+        return;
+      }
 
       navigate(navigateUrl, {
         state: {

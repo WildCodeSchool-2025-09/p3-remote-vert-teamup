@@ -8,10 +8,12 @@ function Upcoming() {
   const newParticipant = location.state?.newParticipant || {};
   const { userId, status } = newParticipant;
 
+  // Implement middlwhare to verify if the user is already enrolled to the activity.
+  // Update reserve button functionality and waitlist mailing
+
   if (!newParticipant) {
     return <div>Aucune donnée de participation n'est disponible.</div>;
   }
-  console.log("Upcoming", upcomingActivity);
 
   useEffect(() => {
     if (!userId) {

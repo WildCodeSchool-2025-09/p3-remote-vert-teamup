@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import ParticipationRepository from "./participateRepository";
+import participateRepository from "./participateRepository";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -17,4 +18,28 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add };
+const verifyParticipation: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId } = req.body;
+
+    console.log("Participation recived from front", userId, activityId);
+
+    const participant = await participateRepository.read(userId, activityId);
+
+    console.log("PARTICIPATION:", participant);
+
+    if (participant) {
+      res.json({
+        message: "Participant already enrolled",
+        participant,
+        alreadyClicked: true,
+      });
+      return;
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, verifyParticipation };

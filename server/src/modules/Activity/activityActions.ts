@@ -12,8 +12,6 @@ const browse: RequestHandler = async (req, res, next) => {
     const userId = Number.parseInt(req.query.userId as string);
     const status = req.query.status as string;
 
-    console.log("Actioooons:", userId, status);
-
     const { activities, totalActivities, totalPages } =
       await activityRepository.readAll(page, limit, filters, userId, status);
 

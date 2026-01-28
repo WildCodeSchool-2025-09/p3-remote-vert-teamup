@@ -14,9 +14,22 @@ class ParticipationRepository {
         VALUES ('${newUser.status}', ${newUser.userId}, ${newUser.activityId})`,
     );
 
-    console.log("Participation Repo Results:", Result);
-
     return Result;
+  }
+
+  // Query is incorect. No i just check if user id exists in participation table but it can axist for another another activity.
+  // I have to verify if user_id exists for specific activity.
+
+  async read(usedId: number, activityId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT * FROM participation AS p
+      WHERE p.user_id = ? AND p.activity_id = ?`,
+      [usedId, activityId],
+    );
+
+    console.log(rows);
+
+    return rows[0];
   }
 }
 
