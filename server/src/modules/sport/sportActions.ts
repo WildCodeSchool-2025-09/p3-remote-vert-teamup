@@ -1,11 +1,11 @@
 import type { RequestHandler } from "express";
 import sportRepository from "./sportRepository";
 
-const list: RequestHandler = async (req, res, next) => {
+const browse: RequestHandler = async (req, res, next) => {
   try {
     const sportName = req.query.name as string;
 
-    const sports = await sportRepository.find(sportName);
+    const sports = await sportRepository.readAllBy(sportName);
 
     res.json(sports);
   } catch (err) {
@@ -13,4 +13,4 @@ const list: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { list };
+export default { browse };

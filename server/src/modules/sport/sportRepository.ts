@@ -2,7 +2,7 @@ import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
 class SportRepository {
-  async find(sportName: string) {
+  async readAllBy(sportName: string) {
     let query = "";
     if (sportName) {
       query += "WHERE name LIKE ?";

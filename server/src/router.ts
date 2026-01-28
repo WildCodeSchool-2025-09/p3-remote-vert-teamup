@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/api/me/publications", activityActions.browseByCreator);
 
-router.get("/api/sports", sportActions.list);
+router.get("/api/sports", sportActions.browse);
 
 router.post("/api/activity", activityActions.add);
 router.get("/api/activities", activityActions.browse);
