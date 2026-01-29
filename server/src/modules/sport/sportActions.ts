@@ -5,13 +5,9 @@ const browse: RequestHandler = async (req, res, next) => {
   try {
     const sportName = req.query.name as string;
 
-    if (!sportName) {
-      res.status(404).json({ error: "Sport not found" });
-    }
+    const sports = await sportRepository.readAllBy(sportName);
 
-    const sport = await sportRepository.readSome(sportName);
-
-    res.json(sport);
+    res.json(sports);
   } catch (err) {
     next(err);
   }

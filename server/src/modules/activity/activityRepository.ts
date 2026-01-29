@@ -1,8 +1,37 @@
-import type { RowDataPacket } from "mysql2";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import databaseClient from "../../../database/client";
 import type { Rows } from "../../../database/client";
 
 class ActivityRepository {
+  async create(activity: ActivityForm) {
+    const [result] = await databaseClient.query<ResultSetHeader>(
+      `INSERT INTO activity (description, address, city, zip_code, playing_at, playing_time, playing_duration, nb_spots, auto_validation, price, visibility, level, disabled, locker, shower, air_conditioning, toilet, user_id, sport_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        activity.description ?? null,
+        activity.address,
+        activity.city,
+        activity.zip_code,
+        activity.playing_at,
+        activity.playing_time,
+        activity.playing_duration,
+        activity.nb_spots,
+        activity.auto_validation,
+        activity.price ?? 0,
+        activity.visibility,
+        activity.level ?? "all",
+        activity.disabled ?? false,
+        activity.locker ?? null,
+        activity.shower ?? null,
+        activity.air_conditioning ?? null,
+        activity.toilet ?? null,
+        activity.user_id,
+        activity.sport_id,
+      ],
+    );
+    return result.insertId;
+  }
+
   async readAll(
     page: number,
     limit: number,
@@ -50,7 +79,7 @@ class ActivityRepository {
     }
 
     const query =
-      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+      conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name,
@@ -84,5 +113,20 @@ class ActivityRepository {
     };
   }
 }
+
+//   async readAllByUserAndStatus(userId: number, status: string) {
+//     // Execute the SQL SELECT query to retrieve all items from the "item" table
+//     const [rows] = await databaseClient.query<Rows>(
+//       `SELECT *
+//       FROM activity
+//       JOIN participation ON participation.activity_id = activity.id
+//       WHERE participation.user_id = ?
+//       AND activity.playing_at >= CURDATE()
+//       ORDER BY activity.playing_at ASC`,
+//       [userId],
+//     );
+//     return rows as Activity[];
+//   }
+// }
 
 export default new ActivityRepository();

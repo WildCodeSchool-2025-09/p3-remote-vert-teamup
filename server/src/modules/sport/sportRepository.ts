@@ -1,25 +1,17 @@
 import databaseClient from "../../../database/client";
-
 import type { Rows } from "../../../database/client";
 
-type Sport = {
-  id: number;
-  name: string;
-};
-
 class SportRepository {
-  async readSome(sportName: string) {
+  async readAllBy(sportName: string) {
+    let query = "";
+    if (sportName) {
+      query += "WHERE name LIKE ?";
+    }
+
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT name FROM sport WHERE name LIKE ?",
+      `SELECT id, name FROM sport ${query} ORDER BY name`,
       [`${sportName}%`],
     );
-
-    return rows as Sport[];
-  }
-
-  async readAll() {
-    const [rows] = await databaseClient.query<Rows>("SELECT name FROM sport");
-
     return rows as Sport[];
   }
 }

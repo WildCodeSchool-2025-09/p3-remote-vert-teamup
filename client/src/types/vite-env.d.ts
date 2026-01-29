@@ -29,3 +29,8 @@ type Activity = {
   nb_participant: number;
   user_participation_status?: string | null;
 };
+
+type User = {
+  id: number;
+  email: string;
+};

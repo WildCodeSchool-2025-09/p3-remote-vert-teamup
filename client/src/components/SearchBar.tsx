@@ -26,7 +26,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
     setActivitiesOnDropdown((prev) => ({ ...prev, sport: e.target.value }));
 
     if (e.target.value.length > 0) {
-      fetch(`${import.meta.env.VITE_API_URL}/api/sport?name=${e.target.value}`)
+      fetch(`${import.meta.env.VITE_API_URL}/api/sports?name=${e.target.value}`)
         .then((response) => response.json())
         .then((sports) => {
           setSports(sports);
@@ -161,7 +161,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
           </ul>
         </article>
         <article>
-          <img src="/icon/calendar.png" alt="Calendrier" />
+          <img src="/icons/calendar-input.svg" alt="Calendrier" />
           <input
             type="date"
             required
