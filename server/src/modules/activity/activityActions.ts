@@ -55,7 +55,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const browseMine: RequestHandler = async (req, res, next) => {
   try {
-    const userId = 5;
+    const userId = 1;
     const status = req.query.status as string;
 
     const activities = await activityRepository.readAllByUserAndStatus(

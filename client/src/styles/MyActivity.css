@@ -10,3 +10,22 @@
     font-size: var(--heading-size);
   }
 }
+
+.cards-myactivities {
+  display: grid;
+  grid-template-columns: 320px;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .cards-myactivities {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 320px);
+    justify-content: center;
+  }
+
+  #my-activities h1 {
+    font-size: var(--heading-desktop-size);
+  }
+}

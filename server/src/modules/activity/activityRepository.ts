@@ -97,14 +97,29 @@ class ActivityRepository {
   }
 
   async readAllByUserAndStatus(userId: number, status: string) {
-    // Execute the SQL SELECT query to retrieve all items from the "item" table
+    let query = "";
+    if (status === "incoming") {
+      query += "WHERE p.user_id = ? AND p.status = 'accepted'";
+    }
+
+    if (status === "published") {
+      query += "WHERE u.id = ?";
+    }
+
+    if (status === "pending") {
+      query += "WHERE p.user_id = ? AND p.status IN ('request', 'inviting') ";
+    }
+
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT * 
-      FROM activity 
-      JOIN participation ON participation.activity_id = activity.id 
-      WHERE participation.user_id = ? 
-      AND activity.playing_at >= CURDATE() 
-      ORDER BY activity.playing_at ASC`,
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
+      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation AS p ON p.activity_id = a.id 
+      ${query}
+      AND a.playing_at >= CURDATE()
+      GROUP BY a.id  
+      ORDER BY a.playing_at ASC`,
       [userId],
     );
     return rows as Activity[];
