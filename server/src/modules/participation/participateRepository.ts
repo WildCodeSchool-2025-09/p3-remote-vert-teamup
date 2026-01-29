@@ -8,17 +8,14 @@ type newUserType = {
 };
 
 class ParticipationRepository {
-  async create(newUser: newUserType) {
+  async create(newParticipant: newUserType) {
     const [Result] = await databaseClient.query<Result>(
       `INSERT INTO participation (status, user_id, activity_id)
-        VALUES ('${newUser.status}', ${newUser.userId}, ${newUser.activityId})`,
+        VALUES ('${newParticipant.status}', ${newParticipant.userId}, ${newParticipant.activityId})`,
     );
 
     return Result;
   }
-
-  // Query is incorect. No i just check if user id exists in participation table but it can axist for another another activity.
-  // I have to verify if user_id exists for specific activity.
 
   async read(usedId: number, activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
