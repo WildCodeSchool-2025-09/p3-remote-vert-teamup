@@ -16,13 +16,9 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId, status } = req.body;
+    const { userId, activityId } = req.body;
 
-    const insertId = await participationRepository.create(
-      userId,
-      activityId,
-      status,
-    );
+    const insertId = await participationRepository.create(userId, activityId);
 
     res.json(insertId);
   } catch (err) {

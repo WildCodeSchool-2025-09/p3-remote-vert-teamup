@@ -53,6 +53,14 @@ type User = {
   picture: string;
 };
 
+type Participant = {
+  id: number;
+  userId: number;
+  username: string;
+  picture: string;
+  status: string;
+};
+
 type Filters = {
   sport: string;
   city: string;

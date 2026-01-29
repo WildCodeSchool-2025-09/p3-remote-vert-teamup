@@ -10,6 +10,7 @@ function MyActivities() {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
+  const [showParticpants, setShowParticipants] = useState<number | null>();
 
   useEffect(() => {
     if (location.state) {
@@ -54,7 +55,17 @@ function MyActivities() {
 
         <section className="cards-myactivities">
           {myActivities.map((myActivity) => (
-            <ActivityCard activity={myActivity} key={myActivity.id} />
+            <ActivityCard
+              activity={myActivity}
+              key={myActivity.id}
+              status={status}
+              participantsListIsOpen={showParticpants === myActivity.id}
+              onClickListParticipant={() =>
+                setShowParticipants(
+                  showParticpants === myActivity.id ? null : myActivity.id,
+                )
+              }
+            />
           ))}
         </section>
       </div>

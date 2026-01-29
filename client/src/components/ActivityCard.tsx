@@ -3,14 +3,14 @@ import ParticipantsList from "./ParticipantsList";
 
 type ActivityCardType = {
   activity: Activity;
-  publicatedRoad?: boolean;
+  status?: string;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
 };
 
 function ActivityCard({
   activity,
-  publicatedRoad,
+  status,
   participantsListIsOpen,
   onClickListParticipant,
 }: ActivityCardType) {
@@ -101,7 +101,7 @@ function ActivityCard({
             {" "}
           </div>
         </div>
-        {!publicatedRoad && (
+        {!status && (
           <>
             <div className="card-footer">
               <div className="user-organizer">
@@ -123,7 +123,7 @@ function ActivityCard({
             </div>
           </>
         )}
-        {publicatedRoad && (
+        {status === "published" && (
           <button
             type="button"
             className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}

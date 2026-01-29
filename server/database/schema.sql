@@ -45,7 +45,6 @@ CREATE TABLE activity (
   ON DELETE CASCADE
 );
 
-<<<<<<< HEAD
 CREATE TABLE participation (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status ENUM('inviting', 'accepted', 'refused', 'request') NOT NULL,
@@ -58,21 +57,6 @@ CREATE TABLE participation (
   FOREIGN KEY (activity_id) REFERENCES activity(id) ON DELETE CASCADE
 );
 
-=======
-CREATE TABLE participation ( 
-  status ENUM('request', 'inviting', 'accepted', 'refused') NOT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  user_id INT NOT NULL, 
-  activity_id INT NOT NULL,
-  PRIMARY KEY (user_id, activity_id),
-  FOREIGN KEY (user_id) REFERENCES user(id)
-  ON DELETE CASCADE,
-  FOREIGN KEY (activity_id) REFERENCES activity(id)
-);
-
-
->>>>>>> dev
 INSERT INTO sport(name)
 VALUES
   ("Football"),

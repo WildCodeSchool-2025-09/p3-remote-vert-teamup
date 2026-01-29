@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { StatusCodes } from "http-status-codes";
 import "../styles/ParticipantsList.css";
 
 type ParticipantsListProps = {
@@ -31,11 +32,11 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
         `${import.meta.env.VITE_API_URL}/api/user?email=${inputGuest}`,
       );
 
-      if (inputGuest.length === 0) {
+      if (response.status === StatusCodes.NO_CONTENT) {
         throw new Error("Veuillez remplir ce champ");
       }
 
-      if (response.status === 404) {
+      if (response.status === StatusCodes.NOT_FOUND) {
         throw new Error("Cette personne n'existe pas");
       }
 
@@ -48,7 +49,6 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       const newGuest = {
         userId: user.id,
         activityId: activityId,
-        status: "inviting",
       };
 
       const invitationResponse = await fetch(
@@ -62,7 +62,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
         },
       );
 
-      if (invitationResponse.status === 409) {
+      if (invitationResponse.status === StatusCodes.CONFLICT) {
         throw new Error("Cette personne a déjà été invitée");
       }
 
@@ -82,9 +82,9 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
 
       setParticipants((prev) => [...prev, guestToAdd]);
     } catch (err) {
-      setInputGuest("");
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     }
+    setInputGuest("");
   }
 
   async function acceptOrRefuseRequest(id: number, newStatus: string) {
