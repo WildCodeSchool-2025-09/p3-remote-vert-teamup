@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ActivityCard from "../components/ActivityCard";
 
 function MyActivitiesIncoming() {
   const [activities, setActivities] = useState<Activity[] | null>(null);
@@ -13,21 +14,15 @@ function MyActivitiesIncoming() {
 
   return (
     <>
-      {!error && activities && (
+      {!error && activities ? (
         <ul>
           {activities.map((activity) => (
-            <li key={activity.id}>
-              <div>{activity.description}</div>
-              <div>
-                {activity.city} ({activity.zip_code})
-              </div>
-              <div>{activity.user_id}</div>
-              <div>{activity.playing_at}</div>
-            </li>
+            <ActivityCard key={activity.id} activity={activity} />
           ))}
         </ul>
+      ) : (
+        <p>Un problème est survenu</p>
       )}
-      : <p>Un problème est survenu</p>
     </>
   );
 }

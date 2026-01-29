@@ -1,18 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import "../styles/variables.css";
 import "../styles/ActivityForm.css";
-import AddIcon from "../assets/Icons/AddIcon.svg";
-import CalenderIcon from "../assets/Icons/CalenderIcon.svg";
-import ClockIcon from "../assets/Icons/ClockIcon.svg";
-import DurationIcon from "../assets/Icons/DurationIcon.svg";
-import LocationIcon from "../assets/Icons/LocationIcon.svg";
-import PeopleIcon from "../assets/Icons/PeopleIcon.svg";
-import PriceIcon from "../assets/Icons/PriceIcon.svg";
-import ProfileIcon from "../assets/Icons/ProfileIcon.svg";
-import RemoveIcon from "../assets/Icons/RemoveIcon.svg";
-import SearchIcon from "../assets/Icons/SearchIcon.svg";
 
 function ActivityForm() {
   const navigate = useNavigate();
@@ -25,17 +14,15 @@ function ActivityForm() {
   const addressRef = useRef<HTMLInputElement>(null);
   const zipCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const durationRef = useRef<HTMLInputElement>(null);
+  const [playingAt, setPlayingAt] = useState("");
+  const [playingTime, setPlayingTime] = useState("");
+  const playingDurationRef = useRef<HTMLInputElement>(null);
   const nbPlacesRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [isFree, setIsFree] = useState(true);
   const [price, setPrice] = useState("");
   const [isPublic, setIsPublic] = useState(true);
   const [autoValidation, setAutoValidation] = useState(false);
-  const [guestInput, setGuestInput] = useState("");
-  const [guests, setGuests] = useState<string[]>([]);
   const [locker, setLocker] = useState(false);
   const [shower, setShower] = useState(false);
   const [toilet, setToilet] = useState(false);
@@ -45,13 +32,21 @@ function ActivityForm() {
   >("All");
   const [handisport, setHandisport] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [guestInput, setGuestInput] = useState<string>("");
+  const [guests, setGuests] = useState<User[]>([]);
+  const [openTooltipStatut, setOpenTooltipStatut] = useState(false);
+  const [error, setError] = useState({ addGuest: "", addActivity: "" });
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
       .then((res) => res.json())
       .then((sports) => setSports(sports))
-      .catch(() => setError("Impossible de charger les sports"));
+      .catch(() =>
+        setError((prev) => ({
+          ...prev,
+          addActivity: "Impossible de charger les sports",
+        })),
+      );
   }, []);
 
   useEffect(() => {
@@ -77,17 +72,6 @@ function ActivityForm() {
     setShowSportsDropdown(false);
   };
 
-  const addGuest = () => {
-    if (guestInput.trim() && !guests.includes(guestInput.trim())) {
-      setGuests([...guests, guestInput.trim()]);
-      setGuestInput("");
-    }
-  };
-
-  const removeGuest = (guest: string) => {
-    setGuests(guests.filter((g) => g !== guest));
-  };
-
   const openCriteriaModal = () => {
     criteriaModalRef.current?.showModal();
   };
@@ -98,28 +82,33 @@ function ActivityForm() {
 
   const createActivity = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError((prev) => ({ ...prev, addActivity: "" }));
     setIsSubmitting(true);
 
+    const guestIds = guests.map((guest) => guest.id);
+
     const activityData = {
-      user_id: 1, // TODO: remplacer après authentification !
-      sport_id: Number(sportId),
-      address: addressRef.current?.value || "",
-      city: cityRef.current?.value || "",
-      zip_code: zipCodeRef.current?.value || "",
-      playing_at: date,
-      playing_time: `${time}:00`,
-      playing_duration: Number(durationRef.current?.value) || 0,
-      nb_spots: Number(nbPlacesRef.current?.value) || 0,
-      description: descriptionRef.current?.value || null,
-      price: isFree ? 0 : Number(price),
-      visibility: isPublic,
-      auto_validation: isPublic ? autoValidation : false,
-      level,
-      locker,
-      shower,
-      toilet,
-      air_conditioning: airConditioning,
+      activity: {
+        user_id: 1, // TODO: remplacer après authentification !
+        sport_id: Number(sportId),
+        address: addressRef.current?.value || "",
+        city: cityRef.current?.value || "",
+        zip_code: zipCodeRef.current?.value || "",
+        playing_at: playingAt,
+        playing_time: playingTime,
+        playing_duration: Number(playingDurationRef.current?.value) || 0,
+        nb_spots: Number(nbPlacesRef.current?.value) || 0,
+        description: descriptionRef.current?.value || null,
+        price: isFree ? 0 : Number(price),
+        visibility: isPublic,
+        auto_validation: isPublic ? autoValidation : false,
+        level: level,
+        locker: locker,
+        shower: shower,
+        toilet: toilet,
+        air_conditioning: airConditioning,
+      },
+      guestIds,
     };
 
     try {
@@ -137,13 +126,54 @@ function ActivityForm() {
         throw new Error(data.error || "Erreur lors de la publication");
       }
 
-      toast.success("Activité créée avec succès !");
-      setTimeout(() => navigate("/myactivities/publications"), 2000);
+      navigate("/my-activities/published", {
+        state: {
+          toast: "Activité créée avec succès !",
+        },
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur inconnue");
+      setError((prev) => ({
+        ...prev,
+        addActivity: err instanceof Error ? err.message : "Erreur inconnue",
+      }));
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const addGuest = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users?email=${guestInput}`,
+      );
+
+      if (response.status === 200) {
+        const user = await response.json();
+
+        if (!guests.some((guest) => guest.id === user.id)) {
+          setGuests((prev) => [...prev, user]);
+          setGuestInput("");
+          setError((prev) => ({ ...prev, addGuest: "" }));
+        } else {
+          setError((prev) => ({ ...prev, addGuest: "Déjà invité" }));
+        }
+      } else if (response.status === 204) {
+        setError((prev) => ({
+          ...prev,
+          addGuest: "Veuillez remplir le champ",
+        }));
+      } else if (response.status === 404) {
+        setError((prev) => ({ ...prev, addGuest: "Email inexistant" }));
+      } else {
+        setError((prev) => ({ ...prev, addGuest: "Erreur serveur" }));
+      }
+    } catch {
+      setError((prev) => ({ ...prev, addGuest: "Erreur inconnue" }));
+    }
+  };
+
+  const removeGuest = (guest: User) => {
+    setGuests((prev) => prev.filter((g) => g.id !== guest.id));
   };
 
   return (
@@ -154,7 +184,7 @@ function ActivityForm() {
       <form className="publication-form" onSubmit={createActivity}>
         <div className="combobox" ref={sportsDropdownRef}>
           <div className="input-with-icon">
-            <img src={SearchIcon} alt="" width="24" height="24" />
+            <img src="./icons/search-input.svg" alt="" width="24" height="24" />
             <input
               type="text"
               placeholder="Sport *"
@@ -183,7 +213,7 @@ function ActivityForm() {
         </div>
 
         <div className="input-with-icon">
-          <img src={LocationIcon} alt="" width="24" height="24" />
+          <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
           <input
             type="text"
             placeholder="Adresse *"
@@ -194,7 +224,7 @@ function ActivityForm() {
 
         <div className="field-row">
           <div className="input-with-icon">
-            <img src={LocationIcon} alt="" width="24" height="24" />
+            <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
             <input
               type="text"
               placeholder="Code postal *"
@@ -204,40 +234,51 @@ function ActivityForm() {
           </div>
 
           <div className="input-with-icon">
-            <img src={LocationIcon} alt="" width="24" height="24" />
+            <img src="./icons/pin-input.svg" alt="" width="24" height="24" />
             <input type="text" placeholder="Ville *" ref={cityRef} required />
           </div>
         </div>
 
         <div className="field-row field-row-3">
           <div className="input-with-icon date-input-wrapper">
-            <img src={CalenderIcon} alt="" width="24" height="24" />
+            <img
+              src="./icons/calendar-input.svg"
+              alt=""
+              width="24"
+              height="24"
+            />
             <input
               type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
+              value={playingAt}
+              onChange={(e) => setPlayingAt(e.target.value)}
               required
             />
-            {!date && <span className="date-placeholder">Date *</span>}
+            {!playingAt && <span className="date-placeholder">Date *</span>}
           </div>
 
           <div className="input-with-icon time-input-wrapper">
-            <img src={ClockIcon} alt="" width="24" height="24" />
+            <img src="./icons/clock-input.svg" alt="" width="24" height="24" />
             <input
               type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
+              value={playingTime}
+              onChange={(e) => setPlayingTime(e.target.value)}
               required
             />
-            {!time && <span className="time-placeholder">Heure *</span>}
+            {!playingTime && <span className="time-placeholder">Heure *</span>}
           </div>
 
           <div className="input-with-icon">
-            <img src={DurationIcon} alt="" width="24" height="24" />
+            <img
+              src="./icons/duration-input.svg"
+              alt=""
+              width="24"
+              height="24"
+            />
             <input
               type="number"
-              placeholder="Durée *"
-              ref={durationRef}
+              placeholder="Durée*"
+              ref={playingDurationRef}
               required
               min="1"
             />
@@ -247,7 +288,12 @@ function ActivityForm() {
         <div className="places-budget-description-row">
           <div className="places-budget-column">
             <div className="input-with-icon">
-              <img src={PeopleIcon} alt="" width="24" height="24" />
+              <img
+                src="./icons/participants-input.svg"
+                alt=""
+                width="24"
+                height="24"
+              />
               <input
                 type="number"
                 placeholder="Nombre de places *"
@@ -284,7 +330,12 @@ function ActivityForm() {
               <div
                 className={`price-input-wrapper ${isFree ? "disabled" : ""}`}
               >
-                <img src={PriceIcon} alt="" width="20" height="20" />
+                <img
+                  src="./icons/price-input.svg"
+                  alt=""
+                  width="20"
+                  height="20"
+                />
                 <input
                   type="number"
                   placeholder="Prix (€)"
@@ -484,7 +535,24 @@ function ActivityForm() {
 
         <div className="status-row">
           <div className="status-box">
-            <span className="status-label">Status * :</span>
+            <span className="status-label tooltip">
+              <button
+                type="button"
+                className="btn-info"
+                onClick={() => {
+                  setOpenTooltipStatut((prev) => !prev);
+                }}
+              >
+                <img
+                  src="./icons/info.png"
+                  alt="bulle info"
+                  width="12"
+                  height="12"
+                />
+              </button>
+              Statut * :
+            </span>
+
             <label className="radio-label">
               <input
                 type="radio"
@@ -504,6 +572,16 @@ function ActivityForm() {
               Privée
             </label>
           </div>
+          {openTooltipStatut && (
+            <p className="text-tooltip-status">
+              Public = tous les utilisateurs de l'app peuvent voir et
+              s'inscrirent à votre activité
+              <br />
+              <br />
+              Privée = seul les personnes que vous invitez peuvent voir et
+              participer à votre activité
+            </p>
+          )}
 
           {isPublic && (
             <div className="status-box">
@@ -532,10 +610,22 @@ function ActivityForm() {
           {!isPublic && (
             <div className="guests-section">
               {guests.map((guest) => (
-                <div key={guest} className="guest-row added-guest">
+                <div key={guest.id} className="guest-row added-guest">
                   <div className="guest-input-display">
-                    <img src={ProfileIcon} alt="" width="22" height="22" />
-                    <span>{guest}</span>
+                    <svg
+                      className="username-accepted"
+                      width="22"
+                      height="22"
+                      viewBox="0 0 32 32"
+                    >
+                      <title>icon profile</title>
+                      <g id="about">
+                        <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+
+                        <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
+                      </g>
+                    </svg>
+                    <span>{guest.email}</span>
                   </div>
                   <button
                     type="button"
@@ -543,20 +633,45 @@ function ActivityForm() {
                     onClick={() => removeGuest(guest)}
                     aria-label={`Retirer ${guest}`}
                   >
-                    <img src={RemoveIcon} alt="" width="20" height="20" />
+                    <img
+                      src="./icons/remove.png"
+                      alt=""
+                      width="20"
+                      height="20"
+                    />
                   </button>
                 </div>
               ))}
 
-              <div className="guest-row invite-row">
-                <div className="guest-input-display">
-                  <img src={ProfileIcon} alt="" width="22" height="22" />
+              <div className="guest-row">
+                <div
+                  className={`guest-input-display ${error.addGuest && "error-detected"}`}
+                >
+                  <svg
+                    className={`username-accepted ${error.addGuest && "username-refused"}`}
+                    width="22"
+                    height="22"
+                    viewBox="0 0 32 32"
+                  >
+                    <title>icon profile</title>
+                    <g id="about">
+                      <path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z" />
+
+                      <path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z" />
+                    </g>
+                  </svg>
                   <input
                     type="text"
                     value={guestInput}
+                    onFocus={() =>
+                      setError((prev) => ({ ...prev, addGuest: "" }))
+                    }
                     onChange={(e) => setGuestInput(e.target.value)}
-                    placeholder="Inviter des personnes"
+                    placeholder="Inviter des personnes (email)"
                   />
+                  {error.addGuest && (
+                    <p className="error-message-add-guest">{error.addGuest}</p>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -564,14 +679,16 @@ function ActivityForm() {
                   onClick={addGuest}
                   aria-label="Ajouter une personne"
                 >
-                  <img src={AddIcon} alt="" width="20" height="20" />
+                  <img src="./icons/add.png" alt="" width="20" height="20" />
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error.addActivity && (
+          <p className="error-message">{error.addActivity}</p>
+        )}
 
         <button type="submit" className="btn-publish" disabled={isSubmitting}>
           {isSubmitting ? "Publication..." : "Publier"}
@@ -718,7 +835,6 @@ function ActivityForm() {
           </button>
         </div>
       </dialog>
-      <Toaster position="top-center" />
     </main>
   );
 }

@@ -26,9 +26,8 @@ function ActivityTabs({ selectedTab, setSelectedTab }: SegmentedControlProps) {
               display: "none",
             },
             "& .MuiTab-root": {
-              fontWeight: 700,
               fontSize: "var(--button-size)",
-              fontFamily: "var(--button-mobile)",
+              fontFamily: "var(--button-font)",
               width: "50px",
               p: 0,
             },
