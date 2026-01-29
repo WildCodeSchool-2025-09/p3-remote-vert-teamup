@@ -126,9 +126,10 @@ function ActivityForm() {
         throw new Error(data.error || "Erreur lors de la publication");
       }
 
-      navigate("/my-activities/published", {
+      navigate("/my-activities", {
         state: {
           toast: "Activité créée avec succès !",
+          selectedTab: 1,
         },
       });
     } catch (err) {
