@@ -32,7 +32,7 @@ function MyActivities() {
   } else if (selectedTab === 1) {
     status = "published";
   } else if (selectedTab === 2) {
-    status = "onPending";
+    status = "pending";
   }
 
   useEffect(() => {

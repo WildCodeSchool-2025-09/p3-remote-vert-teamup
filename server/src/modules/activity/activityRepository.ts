@@ -106,7 +106,7 @@ class ActivityRepository {
       query += "WHERE u.id = ?";
     }
 
-    if (status === "onPending") {
+    if (status === "pending") {
       query += "WHERE p.user_id = ? AND p.status IN ('request', 'inviting') ";
     }
 
