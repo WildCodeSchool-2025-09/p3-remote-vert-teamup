@@ -12,7 +12,7 @@ class ParticipationSeeder extends AbstractSeeder {
   }
 
   run() {
-    const statusArray = ["inviting", "accepted", "refused", "request"];
+    const statusArray = ["request", "inviting", "accepted", "refused"];
 
     for (let i = 0; i < 50; i += 1) {
       const randomActivity = Math.floor(Math.random() * 22);

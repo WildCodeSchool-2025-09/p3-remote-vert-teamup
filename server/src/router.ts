@@ -6,15 +6,7 @@ import userActions from "./modules/user/userActions";
 
 const router = express.Router();
 
-router.get(
-  "/api/publications",
-  activityActions.browseActivitiesPublicatedByUser,
-);
-router.get("/api/activities", activityActions.browse);
-
-router.get("/api/sport", sportActions.browse);
-
-router.get("/api/user", userActions.readUser);
+router.get("/api/user", userActions.readByEmail);
 
 router.get("/api/participants", participationActions.browseByActivity);
 router.patch("/api/participant/:id", participationActions.edit);
@@ -23,9 +15,13 @@ router.post(
   participationActions.validate,
   participationActions.add,
 );
+
 router.get("/api/sports", sportActions.browse);
+
+router.get("/api/users", userActions.readByEmail);
+
 router.post("/api/activity", activityActions.add);
 router.get("/api/activities", activityActions.browse);
-router.get("/api/sport", sportActions.read);
+router.get("/api/activities/me", activityActions.browseMine);
 
 export default router;

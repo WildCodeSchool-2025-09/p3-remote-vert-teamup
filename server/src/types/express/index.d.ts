@@ -38,12 +38,19 @@ type Activity = {
   nb_participant: number;
 };
 
-type Participant = {
+type User = {
   id: number;
-  userId: number;
+  email: string;
   username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  born_at: string;
+  address: string;
+  city: string;
+  zip_code: string;
+  phone: string;
   picture: string;
-  status: string;
 };
 
 type Filters = {
@@ -84,19 +91,4 @@ type ActivityForm = {
 type Sport = {
   id: number;
   name: string;
-};
-
-type User = {
-  id: number;
-  email: string;
-  username: string;
-  password: string;
-  firstname: string;
-  lastname: string;
-  born_at: Date;
-  address: string;
-  city: string;
-  zip_code: string;
-  phone: string;
-  picture: string;
 };

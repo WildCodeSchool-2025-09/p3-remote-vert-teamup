@@ -1,16 +1,15 @@
 import { createBrowserRouter } from "react-router";
-import App from "./App";
+import App from "./App.tsx";
 import Activities from "./pages/Activities";
-import ActivitiesPublicated from "./pages/ActivitiesPublicated";
 import ActivityForm from "./pages/ActivityForm";
-import MyActivities from "./pages/MyActivities";
+import MyActivities from "./pages/MyActivities.tsx";
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
       {
-        path: "publication",
+        path: "/publication",
         element: <ActivityForm />,
       },
       {
@@ -18,14 +17,8 @@ const router = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "myactivities",
+        path: "/my-activities",
         element: <MyActivities />,
-        children: [
-          {
-            path: "publications",
-            element: <ActivitiesPublicated />,
-          },
-        ],
       },
     ],
   },

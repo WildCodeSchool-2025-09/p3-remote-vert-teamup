@@ -1,21 +1,25 @@
 import type { RequestHandler } from "express";
+import { StatusCodes } from "http-status-codes";
 import userRepository from "./userRepository";
 
-const readUser: RequestHandler = async (req, res, next) => {
+const readByEmail: RequestHandler = async (req, res, next) => {
   try {
     const email = req.query.email as string;
 
-    const user = await userRepository.readUserbyEmail(email);
-
-    if (!user) {
-      res.sendStatus(404);
-      return;
+    if (email.trim() === "") {
+      res.sendStatus(StatusCodes.NO_CONTENT);
     }
 
-    res.json(user);
+    const user = await userRepository.readByEmail(email);
+
+    if (!user) {
+      res.sendStatus(StatusCodes.NOT_FOUND);
+    }
+
+    res.json(user).status(StatusCodes.OK);
   } catch (err) {
     next(err);
   }
 };
 
-export default { readUser };
+export default { readByEmail };

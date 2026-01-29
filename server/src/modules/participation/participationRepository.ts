@@ -13,10 +13,10 @@ class participationRepository {
     return rows as Participant[];
   }
 
-  async create(userId: number, activityId: number, status: string) {
+  async create(userId: number, activityId: number) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO participation (user_id, activity_id, status) VALUES (?, ?, ?)",
-      [userId, activityId, status],
+      "INSERT INTO participation (user_id, activity_id, status) VALUES (?, ?, 'inviting')",
+      [userId, activityId],
     );
 
     return result.insertId;
