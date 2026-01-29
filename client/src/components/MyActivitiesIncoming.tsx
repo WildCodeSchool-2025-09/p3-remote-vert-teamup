@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import ActivityCard from "./ActivityCard";
 
 function MyActivitiesIncoming() {
   const [activities, setActivities] = useState<Activity[] | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3310/api/activities/me?status=incoming")
+    fetch("http://localhost:3310/api/activities/me?status=refused")
       .then((res) => res.json())
       .then((activities) => setActivities(activities))
       .catch((error) => setError(error));
@@ -13,21 +14,15 @@ function MyActivitiesIncoming() {
 
   return (
     <>
-      {!error && activities && (
-        <ul>
+      {!error && activities ? (
+        <div className="cards-activity">
           {activities.map((activity) => (
-            <li key={activity.id}>
-              <div>{activity.description}</div>
-              <div>
-                {activity.city} ({activity.zip_code})
-              </div>
-              <div>{activity.user_id}</div>
-              <div>{activity.playing_at}</div>
-            </li>
+            <ActivityCard activity={activity} key={activity.id} />
           ))}
-        </ul>
+        </div>
+      ) : (
+        <p>Un problème est survenu</p>
       )}
-      : <p>Un problème est survenu</p>
     </>
   );
 }

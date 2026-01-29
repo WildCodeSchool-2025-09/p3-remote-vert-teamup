@@ -107,13 +107,17 @@ class ActivityRepository {
   async readAllByUserAndStatus(userId: number, status: string) {
     // Execute the SQL SELECT query to retrieve all items from the "item" table
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT * 
-      FROM activity 
-      JOIN participation ON participation.activity_id = activity.id 
-      WHERE participation.user_id = ? 
-      AND activity.playing_at >= CURDATE() 
-      ORDER BY activity.playing_at ASC`,
-      [userId],
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
+      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation AS p ON p.activity_id = a.id 
+      WHERE p.user_id = ? 
+      AND p.status = ?
+      AND a.playing_at >= CURDATE()
+      GROUP BY a.id  
+      ORDER BY a.playing_at ASC`,
+      [userId, status],
     );
     return rows as Activity[];
   }
