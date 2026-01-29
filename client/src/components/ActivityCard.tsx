@@ -28,7 +28,6 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
       // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
-    // const userId = Math.floor(Math.random() * 50);
     const userId = 34;
 
     const newParticipant = {
@@ -40,6 +39,8 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
     const navigateUrl = activity.auto_validation
       ? "/myactivity/upcoming"
       : "/myactivity/awaiting";
+
+    // selectTab
 
     try {
       const response = await fetch(
