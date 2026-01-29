@@ -96,15 +96,6 @@ class ActivityRepository {
     };
   }
 
-  async readByCreator(userID: number) {
-    const [rows] = await databaseClient.query<Rows>(
-      "SELECT a.*, u.username, u.picture AS user_picture, s.name, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant FROM activity AS a JOIN user AS u ON u.id = a.user_id  JOIN sport AS s ON s.id = a.sport_id LEFT JOIN participation AS p ON p.activity_id = a.id WHERE u.id = ? GROUP BY a.id ORDER BY a.id ",
-      [userID],
-    );
-
-    return rows as Activity[];
-  }
-
   async readAllByUserAndStatus(userId: number, status: string) {
     let query = "";
     if (status === "incoming") {
