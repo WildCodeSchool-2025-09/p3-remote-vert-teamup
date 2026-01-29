@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ActivityCard from "./ActivityCard";
+import ActivityCard from "../components/ActivityCard";
 
 function MyActivitiesIncoming() {
   const [activities, setActivities] = useState<Activity[] | null>(null);

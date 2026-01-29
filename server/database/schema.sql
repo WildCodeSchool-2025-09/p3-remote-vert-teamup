@@ -45,9 +45,8 @@ CREATE TABLE activity (
   ON DELETE CASCADE
 );
 
-
 CREATE TABLE participation ( 
-  status ENUM('inviting', 'accepted', 'refused', 'request') NOT NULL,
+  status ENUM('request', 'inviting', 'accepted', 'refused') NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   user_id INT NOT NULL, 

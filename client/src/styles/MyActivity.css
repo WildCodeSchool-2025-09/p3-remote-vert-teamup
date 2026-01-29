@@ -2,9 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: var(--heading-mobile);
+  font-family: var(--heading-font);
   color: var(--dark-color);
-  h1 {
+
+  & > h1 {
     margin-top: 1rem;
     font-size: var(--heading-size);
   }

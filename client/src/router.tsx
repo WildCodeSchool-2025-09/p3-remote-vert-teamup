@@ -9,16 +9,16 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/my-activities",
-        element: <MyActivities />,
-      },
-      {
-        path: "publication",
+        path: "/publication",
         element: <ActivityForm />,
       },
       {
         path: "/activities/page/:page",
         element: <Activities />,
+      },
+      {
+        path: "/my-activities",
+        element: <MyActivities />,
       },
     ],
   },

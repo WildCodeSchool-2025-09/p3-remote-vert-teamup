@@ -68,7 +68,7 @@ class ActivityRepository {
     filters.disabled && conditions.push("a.disabled = 1");
 
     const query =
-      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+      conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
       `SELECT a.*, u.username, u.picture AS user_picture, s.name,
@@ -76,13 +76,14 @@ class ActivityRepository {
       FROM activity AS a JOIN user AS u ON u.id = a.user_id
       JOIN sport AS s ON s.id = a.sport_id
       LEFT JOIN participation AS p ON p.activity_id = a.id
+      WHERE a.visibility = 1
       ${query}
       GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
-      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id ${query}`,
+      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id WHERE a.visibility = 1 ${query}`,
       [...params],
     );
 

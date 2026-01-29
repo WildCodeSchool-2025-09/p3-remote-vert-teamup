@@ -161,7 +161,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
           </ul>
         </article>
         <article>
-          <img src="/icon/calendar.png" alt="Calendrier" />
+          <img src="/icons/calendar-input.svg" alt="Calendrier" />
           <input
             type="date"
             required
