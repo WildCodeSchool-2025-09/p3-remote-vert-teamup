@@ -6,21 +6,15 @@ import participationActions from "./modules/participation/participationActions";
 
 const router = express.Router();
 
-router.get("/api/user", userActions.readByEmail);
-
 router.get("/api/participants", participationActions.browseByActivity);
 router.patch("/api/participant/:id", participationActions.edit);
-router.post(
-  "/api/me/invitation",
-  participationActions.validate,
-  participationActions.add,
-);
 
 router.get("/api/sports", sportActions.browse);
 
 router.get("/api/users", userActions.readByEmail);
 
 router.post("/api/activity", activityActions.add);
+
 router.get("/api/activities", activityActions.browse);
 router.get("/api/activities/me", activityActions.browseMine);
 
