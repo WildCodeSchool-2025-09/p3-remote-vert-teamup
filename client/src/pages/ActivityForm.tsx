@@ -108,6 +108,7 @@ function ActivityForm() {
         toilet: toilet,
         air_conditioning: airConditioning,
       },
+      status: "inviting",
       guestIds,
     };
 

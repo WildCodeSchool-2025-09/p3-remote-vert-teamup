@@ -1,6 +1,12 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
+type newUserType = {
+  userId: number;
+  activityId: number;
+  status: string;
+};
+
 class participationRepository {
   async readAllParticipants(activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
@@ -12,15 +18,6 @@ class participationRepository {
     );
 
     return rows as Participant[];
-  }
-
-  async create(userId: number, activityId: number) {
-    const [result] = await databaseClient.query<Result>(
-      "INSERT INTO participation (user_id, activity_id, status) VALUES (?, ?, 'inviting')",
-      [userId, activityId],
-    );
-
-    return result.insertId;
   }
 
   async patch(id: number, status: string) {
@@ -37,6 +34,25 @@ class participationRepository {
       [userId, activityId],
     );
     return rows as Participant[];
+  }
+
+  async create(newParticipant: newUserType) {
+    const [Result] = await databaseClient.query<Result>(
+      `INSERT INTO participation (status, user_id, activity_id)
+        VALUES ('${newParticipant.status}', ${newParticipant.userId}, ${newParticipant.activityId})`,
+    );
+
+    return Result;
+  }
+
+  async read(usedId: number, activityId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT * FROM participation AS p
+      WHERE p.user_id = ? AND p.activity_id = ?`,
+      [usedId, activityId],
+    );
+
+    return rows[0];
   }
 }
 

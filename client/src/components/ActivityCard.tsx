@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router";
+import { useState } from "react";
 import "../styles/ActivityCard.css";
 import ParticipantsList from "./ParticipantsList";
 
@@ -16,14 +18,63 @@ function ActivityCard({
 }: ActivityCardType) {
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
+  const [alreadyParticipant, setAlreadyParticipant] = useState(false);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
     month: "short",
   });
-
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
+  const navigate = useNavigate();
+
+  const makeReservation = async (
+    activity: Activity,
+    nbAvailableSpots: number,
+  ) => {
+    //  !User navigate to sign up (To implement when we will see connection)
+
+    if (nbAvailableSpots === 0) {
+      // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
+    }
+
+    const newParticipant = {
+      activityId: activity.id,
+      status: activity.auto_validation ? "accepted" : "request",
+    };
+
+    const selectedTab = activity.auto_validation ? 0 : 2;
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newParticipant),
+        },
+      );
+
+      const responseStatus = await response.json();
+
+      if (!response.ok) throw new Error("Failed to join activity");
+
+      if (responseStatus.alreadyClicked) {
+        setAlreadyParticipant(responseStatus.alreadyClicked);
+        return;
+      }
+
+      navigate("/my-activities", {
+        state: {
+          selectedTab,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -116,13 +167,23 @@ function ActivityCard({
                 />
               )}
               {!status && (
-                <button type="button">
+                <button
+                  type="button"
+                  onClick={() => makeReservation(activity, nbAvailableSpots)}
+                >
                   {nbAvailableSpots === 0 ? (
                     <>
                       <img src="/icons/bell.png" alt="logo alert" />
                     </>
                   ) : (
-                    <>Réserver &gt;</>
+                    <>
+                      {" "}
+                      {alreadyParticipant
+                        ? "Déjà inscrit"
+                        : status
+                          ? status
+                          : "Reserve"}
+                    </>
                   )}
                 </button>
               )}

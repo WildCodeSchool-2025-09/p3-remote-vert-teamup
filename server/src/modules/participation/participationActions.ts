@@ -16,11 +16,9 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId } = req.body;
+    const response = await participationRepository.create(req.body);
 
-    const insertId = await participationRepository.create(userId, activityId);
-
-    res.json(insertId);
+    res.json(response);
   } catch (err) {
     next(err);
   }
@@ -43,23 +41,24 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const validate: RequestHandler = async (req, res, next) => {
+const verifyParticipation: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId } = req.body;
-    const existingRow = await participationRepository.validate(
-      userId,
-      activityId,
-    );
 
-    if (existingRow.length === 0) {
-      next();
-    } else {
-      res.sendStatus(409);
+    console.log(req.body);
+
+    const participant = await participationRepository.read(userId, activityId);
+
+    if (participant) {
+      res.json({
+        alreadyClicked: true,
+      });
       return;
     }
+    next();
   } catch (err) {
     next(err);
   }
 };
 
-export default { browseByActivity, add, edit, validate };
+export default { browseByActivity, add, edit, verifyParticipation };
