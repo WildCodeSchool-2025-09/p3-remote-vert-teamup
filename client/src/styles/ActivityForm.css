@@ -1,20 +1,15 @@
-body:has(.publication-page) {
-  background-color: var(--light-color);
-}
-
 .publication-page {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px 16px;
+  max-width: 90vw;
   min-height: 100vh;
+  margin: auto;
 }
 
 .publication-page h1 {
-  font-family: var(--heading-mobile);
+  font-family: var(--heading-font);
   font-size: var(--heading-size);
   color: var(--dark-color);
-  margin-bottom: 8px;
   text-align: left;
+  margin: 1.5rem 0 0.5rem 0;
 }
 
 .required-fields {
@@ -85,8 +80,8 @@ body:has(.publication-page) {
 .input-with-icon {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 4px;
+  padding: 12px 8px;
   border: 1px solid var(--input-color);
   border-radius: 10px;
   background-color: var(--light-color);
@@ -240,17 +235,54 @@ body:has(.publication-page) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 0 16px;
   border: 1px solid var(--input-color);
   border-radius: 10px;
   background-color: var(--light-color);
-  width: 241px;
+  width: 260px;
   height: 37px;
   align-self: center;
 }
 
+.tooltip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.text-tooltip-status {
+  width: 260px;
+  margin-top: -14px;
+  text-align: left;
+  font-family: var(--tag-font);
+  font-size: var(--tag-size);
+  background-color: var(--neutral-color);
+  border-radius: 10px;
+  padding: 8px;
+  animation: tooltip 0.6s both;
+}
+
+@keyframes tooltip {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .status-label {
-  font-family: var(--body-font);
+  font-family: var(--body-highlight-font);
   font-size: var(--body-size);
   color: var(--dark-color);
 }
@@ -269,9 +301,9 @@ body:has(.publication-page) {
   appearance: none;
   width: 16px;
   height: 16px;
-  border: 1px solid #c4c4c4;
+  border: 1px solid var(--neutral-color);
   border-radius: 50%;
-  background-color: #e8e8e8;
+  background-color: var(--light-color);
   margin: 0;
   cursor: pointer;
   position: relative;
@@ -310,7 +342,7 @@ body:has(.publication-page) {
 }
 
 .price-input-wrapper.disabled {
-  background-color: #e2e2e2;
+  background-color: var(--light-color);
 }
 
 .price-input-wrapper input {
@@ -449,11 +481,12 @@ fieldset legend {
   color: var(--light-color);
   border: none;
   border-radius: 10px;
-  font-family: var(--button-mobile);
+  font-family: var(--button-font);
   font-size: var(--button-size);
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
+  margin-bottom: 1.5rem;
   transition: opacity 0.2s;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
   align-self: center;
@@ -491,10 +524,20 @@ fieldset legend {
   background-color: var(--light-color);
   width: 185px;
   height: 37px;
+  position: relative;
+
+  & > .username-accepted {
+    fill: var(--input-color);
+  }
+
+  & > .username-refused {
+    fill: var(--refused-color);
+  }
 }
 
-.guest-input-display img {
-  flex-shrink: 0;
+.error-detected {
+  border-radius: 10px 10px 0 0;
+  border: 1px solid var(--refused-color);
 }
 
 .guest-input-display span {
@@ -533,11 +576,51 @@ fieldset legend {
 }
 
 .btn-add-guest {
-  background-color: #00bd7d;
+  background-color: var(--input-color);
 }
 
 .btn-remove-guest {
-  background-color: #00bd7d;
+  background-color: var(--input-color);
+}
+
+.error-message-add-guest {
+  color: var(--refused-color);
+  font-family: var(--body-font);
+  font-size: var(--tag-size);
+  text-align: center;
+  line-height: 0;
+  padding: 12px;
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--refused-color);
+  border-radius: 0 0 10px 10px;
+  width: 185px;
+  height: 5px;
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  animation: error-message-display 0.5s both;
+}
+
+@keyframes error-message-display {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message {
+  color: var(--refused-color);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  text-align: center;
+  padding: 12px;
+  background-color: rgba(230, 57, 70, 0.1);
+  border-radius: 12px;
+  margin-top: 1rem;
 }
 
 .criteria-desktop {
@@ -562,11 +645,10 @@ fieldset legend {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #6c5ce7;
-  color: #fafafa;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 10px;
+  background-color: var(--accent-color);
+  color: var(--light-color);
+  font-family: var(--tag-font);
+  font-size: var(--tag-size);
   padding: 6px 10px 6px 14px;
   border-radius: 15px;
 }
@@ -574,8 +656,8 @@ fieldset legend {
 .criteria-tag button {
   background: none;
   border: none;
-  color: #fafafa;
-  font-size: 10px;
+  color: var(--light-color);
+  font-size: var(--tag-size);
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -586,23 +668,13 @@ fieldset legend {
   opacity: 1;
 }
 
-.error-message {
-  color: var(--refused-color);
-  font-family: var(--body-font);
-  font-size: var(--body-size);
-  text-align: center;
-  padding: 12px;
-  background-color: rgba(230, 57, 70, 0.1);
-  border-radius: 12px;
-}
-
 .publication-success {
   text-align: center;
   padding: 80px 24px;
 }
 
 .publication-success h2 {
-  font-family: var(--heading-mobile);
+  font-family: var(--heading-font);
   font-size: var(--heading-size);
   color: var(--input-color);
   margin-bottom: 16px;
@@ -630,7 +702,7 @@ fieldset legend {
 }
 
 .modal-content {
-  background-color: #fafafa;
+  background-color: var(--light-color);
   width: 100%;
   height: auto;
   display: flex;
@@ -658,9 +730,8 @@ fieldset legend {
 .modal-clear {
   background: none;
   border: none;
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 10px;
+  font-family: var(--body-font);
+  font-size: var(--body-size);
   color: var(--dark-color);
   cursor: pointer;
   padding: 0;
@@ -673,9 +744,8 @@ fieldset legend {
 }
 
 .criteria-fieldset legend {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
+  font-family: var(--title-font);
+  font-size: var(--title-size);
   color: var(--dark-color);
   margin-bottom: 12px;
 }
@@ -696,9 +766,8 @@ fieldset legend {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 10px;
+  font-family: var(--body-highlight-font);
+  font-size: var(--body-size);
   color: var(--dark-color);
   cursor: pointer;
 }
@@ -708,8 +777,8 @@ fieldset legend {
   appearance: none;
   width: 12px;
   height: 12px;
-  background-color: #e8e8e8;
-  border: 1px solid #c4c4c4;
+  background-color: var(--light-color);
+  border: 1px solid var(--neutral-color);
   margin: 0;
   cursor: pointer;
   flex-shrink: 0;
@@ -735,7 +804,7 @@ fieldset legend {
   content: "✓";
   display: block;
   color: var(--light-color);
-  font-size: 8px;
+  font-size: var(--tag-size);
   text-align: center;
   line-height: 10px;
 }
@@ -773,12 +842,12 @@ fieldset legend {
   }
 
   .publication-page h1 {
-    font-size: 32px;
+    font-size: var(--heading-desktop-size);
     margin-bottom: 4px;
   }
 
   .required-fields {
-    font-size: 10px;
+    font-size: var(--tag-desktop-size);
     margin-bottom: 12px;
   }
 
@@ -795,11 +864,11 @@ fieldset legend {
 
   .input-with-icon input,
   .input-with-icon select {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   .input-with-icon input::placeholder {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   .input-with-icon img {
@@ -816,7 +885,7 @@ fieldset legend {
   }
 
   .combobox-dropdown button {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
     padding: 12px 16px;
   }
 
@@ -854,7 +923,7 @@ fieldset legend {
   .date-placeholder,
   .time-placeholder {
     left: 46px;
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   .places-budget-description-row {
@@ -887,7 +956,7 @@ fieldset legend {
     width: 330px;
     height: 109px;
     padding: 12px;
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
     border-radius: 10px;
     box-sizing: border-box;
     order: unset;
@@ -903,12 +972,12 @@ fieldset legend {
   }
 
   .budget-label {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
     font-weight: 500;
   }
 
   .budget-row .radio-label {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   .budget-row .price-input-wrapper {
@@ -922,7 +991,11 @@ fieldset legend {
   }
 
   .budget-row .price-input-wrapper.disabled {
-    background-color: #e2e2e2;
+    background-color: var(--light-color);
+  }
+
+  .status-row {
+    flex-wrap: wrap;
   }
 
   .status-box {
@@ -933,13 +1006,27 @@ fieldset legend {
     box-sizing: border-box;
   }
 
+  .btn-info > img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .text-tooltip-status {
+    order: 3;
+    width: 333px;
+    margin-top: 0;
+    text-align: left;
+    font-size: var(--tag-desktop-size);
+    padding: 10px;
+  }
+
   .status-box:last-child {
     width: 327px;
   }
 
   .status-label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--body-desktop-size);
+    font-family: var(--body-highlight-font);
   }
 
   .status-row {
@@ -948,6 +1035,10 @@ fieldset legend {
     gap: 8px;
     align-items: flex-start;
     width: 668px;
+  }
+
+  .radio-label {
+    font-size: var(--body-desktop-size);
   }
 
   /* Hide modal criteria button on desktop */
@@ -960,8 +1051,8 @@ fieldset legend {
     display: block;
     width: 668px;
     padding: 20px 0;
-    border-top: 1px solid #2e2e2e;
-    border-bottom: 1px solid #2e2e2e;
+    border-top: 1px solid var(--dark-color);
+    border-bottom: 1px solid var(--dark-color);
     margin: 8px 0;
   }
 
@@ -973,19 +1064,18 @@ fieldset legend {
   }
 
   .criteria-desktop-header h3 {
-    font-family: "Poppins", sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: #2e2e2e;
+    font-family: var(--title-font);
+    font-size: var(--title-desktop-size);
+    color: var(--dark-color);
     margin: 0;
   }
 
   .criteria-desktop-header button {
     background: none;
     border: none;
-    font-family: "Inter", sans-serif;
-    font-size: 14px;
-    color: #2e2e2e;
+    font-family: var(--body-font);
+    font-size: var(--body-desktop-size);
+    color: var(--dark-color);
     cursor: pointer;
   }
 
@@ -1001,10 +1091,9 @@ fieldset legend {
   }
 
   .criteria-desktop-column legend {
-    font-family: "Inter", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: #2e2e2e;
+    font-family: var(--body-highlight-font);
+    font-size: var(--body-desktop-size);
+    color: var(--dark-color);
     text-decoration: underline;
     margin-bottom: 12px;
     padding: 0;
@@ -1014,9 +1103,9 @@ fieldset legend {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: "Inter", sans-serif;
-    font-size: 14px;
-    color: #2e2e2e;
+    font-family: var(--body-font);
+    font-size: var(--body-desktop-size);
+    color: var(--dark-color);
     margin-bottom: 8px;
     gap: 60px;
     cursor: pointer;
@@ -1027,8 +1116,8 @@ fieldset legend {
     appearance: none;
     width: 16px;
     height: 16px;
-    background-color: #e2e2e2;
-    border: 0.5px solid #2e2e2e;
+    background-color: var(--light-color);
+    border: 0.5px solid var(--dark-color);
     border-radius: 2px;
     cursor: pointer;
     flex-shrink: 0;
@@ -1041,8 +1130,8 @@ fieldset legend {
 
   .criteria-desktop-column input[type="checkbox"]:checked,
   .criteria-desktop-column input[type="radio"]:checked {
-    background-color: #6c5ce7;
-    border-color: #6c5ce7;
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
   }
 
   .criteria-desktop-column input[type="checkbox"]:checked::after {
@@ -1051,8 +1140,8 @@ fieldset legend {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #fafafa;
-    font-size: 10px;
+    color: var(--light-color);
+    font-size: var(--tag-desktop-size);
     font-weight: bold;
     line-height: 1;
   }
@@ -1065,7 +1154,7 @@ fieldset legend {
     transform: translate(-50%, -50%);
     width: 6px;
     height: 6px;
-    background-color: #fafafa;
+    background-color: var(--light-color);
     border-radius: 50%;
   }
 
@@ -1078,7 +1167,7 @@ fieldset legend {
   .btn-publish {
     width: 668px;
     height: 48px;
-    font-size: 20px;
+    font-size: var(--title-desktop-size);
     align-self: flex-start;
   }
 
@@ -1086,7 +1175,6 @@ fieldset legend {
   .guests-section {
     flex: 1;
     gap: 8px;
-    flex-direction: column-reverse;
   }
 
   .guest-row {
@@ -1101,7 +1189,12 @@ fieldset legend {
 
   .guest-input-display span,
   .guest-input-display input {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
+  }
+
+  .error-message-add-guest {
+    font-size: var(--tag-desktop-size);
+    width: 100.8%;
   }
 
   .btn-add-guest,
@@ -1111,7 +1204,7 @@ fieldset legend {
 
   /* Error message */
   .error-message {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   /* Success page */
@@ -1120,11 +1213,11 @@ fieldset legend {
   }
 
   .publication-success h2 {
-    font-size: 32px;
+    font-size: var(--heading-desktop-size);
   }
 
   .publication-success p {
-    font-size: 14px;
+    font-size: var(--body-desktop-size);
   }
 
   /* Modal still works but less needed on desktop */

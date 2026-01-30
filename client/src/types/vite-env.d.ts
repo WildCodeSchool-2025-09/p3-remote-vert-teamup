@@ -27,4 +27,10 @@ type Activity = {
   user_picture: string;
   name: string;
   nb_participant: number;
+  user_participation_status?: string | null;
+};
+
+type User = {
+  id: number;
+  email: string;
 };

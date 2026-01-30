@@ -45,20 +45,8 @@ CREATE TABLE activity (
   ON DELETE CASCADE
 );
 
-CREATE TABLE demand (
-  status ENUM('pending', 'accepted', 'refused') NOT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  activity_id INT NOT NULL,
-  user_id INT NOT NULL, 
-  PRIMARY KEY (user_id, activity_id),
-  FOREIGN KEY (user_id) REFERENCES user(id)
-  ON DELETE CASCADE,
-  FOREIGN KEY (activity_id) REFERENCES activity(id)
-);
-
 CREATE TABLE participation ( 
-  status ENUM('inviting', 'accepted', 'refused') NOT NULL,
+  status ENUM('request', 'inviting', 'accepted', 'refused') NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   user_id INT NOT NULL, 
