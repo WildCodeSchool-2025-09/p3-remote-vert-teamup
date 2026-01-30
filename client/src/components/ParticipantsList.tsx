@@ -139,21 +139,11 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
             <p>{participant.username}</p>
           </div>
           {participant.status === "refused" ? (
-            <p className="refused">
-              Refusée
-              <img src="/icons/close.png" alt="refused" />
-            </p>
+            <img src="/icons/cross.png" alt="refused" />
           ) : participant.status === "accepted" ? (
-            <p className="accepted">
-              Acceptée{" "}
-              <img
-                src="/icons/validate.png"
-                alt="validate"
-                className="vector"
-              />
-            </p>
+            <img src="/icons/check.png" alt="validate" />
           ) : participant.status === "inviting" ? (
-            <p className="pending">En attente ...</p>
+            <img src="/icons/hourglass.png" alt="pending" />
           ) : (
             <div>
               <button
@@ -163,14 +153,14 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
                   acceptOrRefuseRequest(participant.id, "accepted")
                 }
               >
-                Accepté
+                Accepter
               </button>
               <button
                 type="button"
                 className="btn-refused"
                 onClick={() => acceptOrRefuseRequest(participant.id, "refused")}
               >
-                Refusé
+                Refuser
               </button>
             </div>
           )}
