@@ -6,7 +6,8 @@ class participationRepository {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT participation.id, participation.status, user.id as userId, user.username, user.picture FROM participation
       JOIN user ON participation.user_id = user.id
-      WHERE participation.activity_id = ?`,
+      WHERE participation.activity_id = ?
+      ORDER BY FIELD(participation.status, 'request', 'accepted', 'inviting', 'refused')`,
       [activityId],
     );
 
