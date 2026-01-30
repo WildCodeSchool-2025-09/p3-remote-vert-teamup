@@ -101,22 +101,31 @@ function ActivityCard({
             {" "}
           </div>
         </div>
-        {!status && (
+        {status !== "published" && (
           <>
             <div className="card-footer">
               <div className="user-organizer">
                 <img src={activity.user_picture} alt="user" />
                 <p>{activity.username}</p>
               </div>
-              <button type="button">
-                {nbAvailableSpots === 0 ? (
-                  <>
-                    <img src="/icons/bell.png" alt="logo alert" />
-                  </>
-                ) : (
-                  <>Réserver &gt;</>
-                )}
-              </button>
+              {status === "incoming" && (
+                <img
+                  src="/icons/check.png"
+                  alt="validate"
+                  className="tag-status"
+                />
+              )}
+              {!status && (
+                <button type="button">
+                  {nbAvailableSpots === 0 ? (
+                    <>
+                      <img src="/icons/bell.png" alt="logo alert" />
+                    </>
+                  ) : (
+                    <>Réserver &gt;</>
+                  )}
+                </button>
+              )}
             </div>
             <div className={nbAvailableSpots === 0 ? "activity-full" : ""}>
               {" "}
