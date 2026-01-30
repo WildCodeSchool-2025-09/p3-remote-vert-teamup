@@ -17,11 +17,11 @@ class ParticipationRepository {
     return Result;
   }
 
-  async read(usedId: number, activityId: number) {
+  async read(newParticipant: Omit<newUserType, "status">) {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT * FROM participation AS p
       WHERE p.user_id = ? AND p.activity_id = ?`,
-      [usedId, activityId],
+      [newParticipant.userId, newParticipant.activityId],
     );
 
     return rows[0];

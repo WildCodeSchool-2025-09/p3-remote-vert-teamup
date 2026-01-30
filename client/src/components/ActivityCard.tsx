@@ -31,11 +31,10 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
     }
 
     const newParticipant = {
+      userId: 25,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };
-
-    const selectedTab = activity.auto_validation ? 0 : 2;
 
     try {
       const response = await fetch(
@@ -59,9 +58,7 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
       }
 
       navigate("/my-activities", {
-        state: {
-          selectedTab,
-        },
+        state: activity.auto_validation ? 0 : 2,
       });
     } catch (err) {
       console.error(err);

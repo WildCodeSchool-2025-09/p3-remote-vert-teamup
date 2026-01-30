@@ -12,10 +12,6 @@ router.get("/api/activities", activityActions.browse);
 router.get("/api/users", userActions.readByEmail);
 router.get("/api/activities/me", activityActions.browseMine);
 
-router.post(
-  "/api/participation",
-  participationActions.verifyParticipation,
-  participationActions.add,
-);
+router.post("/api/participation", participationActions.add);
 
 export default router;
