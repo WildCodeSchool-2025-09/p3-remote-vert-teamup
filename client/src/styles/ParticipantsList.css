@@ -34,7 +34,13 @@ ul.participant-list li {
   justify-content: space-between;
   align-items: center;
   padding: 8px;
+  margin: 0 12px;
   font-size: var(--body-size);
+  border-bottom: 1px solid black;
+}
+
+ul.participant-list li:last-child {
+  border: none;
 }
 
 ul.participant-list li img {

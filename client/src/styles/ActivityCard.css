@@ -186,6 +186,23 @@
 .Skateboard {
   background-image: url("/img_sports/skateboard.png");
 }
+.tag-status {
+  width: 32px;
+  height: 32px;
+}
+
+.accepted {
+  color: var(--light-color);
+  font-family: var(--body-font);
+  font-size: var(--body-desktop-size);
+  width: 108px;
+  height: 28px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: var(--input-color);
+}
 
 .important-info {
   display: flex;
