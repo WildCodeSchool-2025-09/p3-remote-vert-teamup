@@ -28,14 +28,6 @@ class participationRepository {
     return result.affectedRows;
   }
 
-  async validate(userId: number, activityId: number) {
-    const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM participation WHERE user_id = ? AND activity_id = ?",
-      [userId, activityId],
-    );
-    return rows as Participant[];
-  }
-
   async create(newParticipant: newUserType) {
     const [Result] = await databaseClient.query<Result>(
       `INSERT INTO participation (status, user_id, activity_id)
