@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import participationRepository from "./participationRepository";
+import { StatusCodes } from "http-status-codes";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
@@ -16,6 +17,7 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
+    req.body.userId = 25;
     const response = await participationRepository.create(req.body);
 
     res.json(response);
@@ -43,16 +45,13 @@ const edit: RequestHandler = async (req, res, next) => {
 
 const verifyParticipation: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId } = req.body;
-
-    console.log(req.body);
+    const { activityId } = req.body;
+    const userId = 25;
 
     const participant = await participationRepository.read(userId, activityId);
 
     if (participant) {
-      res.json({
-        alreadyClicked: true,
-      });
+      res.sendStatus(StatusCodes.CONFLICT);
       return;
     }
     next();
