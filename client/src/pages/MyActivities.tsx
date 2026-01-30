@@ -26,7 +26,6 @@ function MyActivities() {
   }, [location.state, location.pathname, navigate]);
 
   let status = "";
-  const userId = 5;
 
   if (selectedTab === 0) {
     status = "incoming";
@@ -37,9 +36,7 @@ function MyActivities() {
   }
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}?UserId=${userId}`,
-    )
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}`)
       .then((response) => response.json())
       .then((myActivities) => setMyActivities(myActivities));
   }, [status]);

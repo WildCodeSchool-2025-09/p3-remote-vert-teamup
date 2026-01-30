@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { useState } from "react";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
@@ -10,6 +11,7 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
+  const [alreadyParticipant, setAlreadyParticipant] = useState(false);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
@@ -28,19 +30,12 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
       // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
-    const userId = 34;
-
     const newParticipant = {
       activityId: activity.id,
-      userId,
       status: activity.auto_validation ? "accepted" : "request",
     };
 
-    const navigateUrl = activity.auto_validation
-      ? "/myactivity/upcoming"
-      : "/myactivity/awaiting";
-
-    // selectTab
+    const selectedTab = activity.auto_validation ? 0 : 2;
 
     try {
       const response = await fetch(
@@ -56,17 +51,16 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
 
       const responseStatus = await response.json();
 
-      if (!response.ok) {
-        if (responseStatus.alreadyClicked) {
-          return;
-        }
-        throw new Error("Failed to join activity");
+      if (!response.ok) throw new Error("Failed to join activity");
+
+      if (responseStatus.alreadyClicked) {
+        setAlreadyParticipant(responseStatus.alreadyClicked);
+        return;
       }
 
-      navigate(navigateUrl, {
+      navigate("/my-activities", {
         state: {
-          responseStatus,
-          newParticipant,
+          selectedTab,
         },
       });
     } catch (err) {
@@ -159,11 +153,18 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
               <img src="/icons/bell.png" alt="logo alert" />
             </>
           ) : (
-            <>{participantStatus ? participantStatus : "Reserve"}</>
+            <>
+              {" "}
+              {alreadyParticipant
+                ? "Déjà inscrit"
+                : participantStatus
+                  ? participantStatus
+                  : "Reserve"}
+            </>
           )}
         </button>
       </div>
-      <div className={nbAvailableSpots === 0 ? "activity-full" : ""}> </div>
+      <div className={nbAvailableSpots === 0 ? "Complet" : ""}> </div>
     </article>
   );
 }

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
-import ParticipationRepository from "./participateRepository";
-import participateRepository from "./participateRepository";
+import ParticipationRepository from "./participationRepository";
+import participateRepository from "./participationRepository";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -21,6 +21,8 @@ const add: RequestHandler = async (req, res, next) => {
 const verifyParticipation: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId } = req.body;
+
+    console.log(req.body);
 
     const participant = await participateRepository.read(userId, activityId);
 

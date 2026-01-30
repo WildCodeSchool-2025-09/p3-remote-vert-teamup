@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
-import participateRepository from "../participation/participateRepository";
+import participateRepository from "../participation/participationRepository";
 import activityRepository from "./activityRepository";
 
 const add: RequestHandler = async (req, res, next) => {
@@ -40,7 +40,7 @@ const browse: RequestHandler = async (req, res, next) => {
     const status = req.query.status && (req.query.status as string);
 
     const { activities, totalActivities, totalPages } =
-      await activityRepository.readAll(page, limit, filters, userId, status);
+      await activityRepository.readAll(page, limit, filters);
 
     res.json({
       activities: activities,
@@ -56,20 +56,20 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-// const browseMine: RequestHandler = async (req, res, next) => {
-//   try {
-//     const userId = 1;
-//     const status = req.query.status as string;
+const browseMine: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = 25;
+    const status = req.query.status as string;
 
-//     const activities = await activityRepository.readAllByUserAndStatus(
-//       userId,
-//       status,
-//     );
+    const activities = await activityRepository.readAllByUserAndStatus(
+      userId,
+      status,
+    );
 
-//     res.status(200).json(activities);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+    res.status(200).json(activities);
+  } catch (err) {
+    next(err);
+  }
+};
 
-export default { add, browse };
+export default { add, browse, browseMine };

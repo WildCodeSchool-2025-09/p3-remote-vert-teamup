@@ -32,13 +32,7 @@ class ActivityRepository {
     return result.insertId;
   }
 
-  async readAll(
-    page: number,
-    limit: number,
-    filters: Filters,
-    userId?: number,
-    status?: string,
-  ) {
+  async readAll(page: number, limit: number, filters: Filters) {
     const offset = (page - 1) * limit;
 
     const conditions = [];
@@ -73,6 +67,37 @@ class ActivityRepository {
 
     filters.disabled && conditions.push("a.disabled = 1");
 
+    const query =
+      conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
+
+    const [activities] = await databaseClient.query<Rows>(
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
+      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation AS p ON p.activity_id = a.id
+      WHERE a.visibility = 1
+      ${query}
+      GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
+    );
+
+    const [totalResult] = await databaseClient.query<RowDataPacket[]>(
+      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id WHERE a.visibility = 1 ${query}`,
+      [...params],
+    );
+
+    const totalActivities = totalResult[0].total_activity as number;
+
+    return {
+      activities: activities as Activity[],
+      totalActivities: totalActivities,
+      totalPages: Math.ceil(totalActivities / limit),
+    };
+  }
+
+  async readAllByUserAndStatus(userId: number, status: string) {
+    let query = "";
     if (status === "incoming") {
       query += "WHERE p.user_id = ? AND p.status = 'accepted'";
     }
@@ -85,74 +110,20 @@ class ActivityRepository {
       query += "WHERE p.user_id = ? AND p.status IN ('request', 'inviting') ";
     }
 
-    if (status) {
-      conditions.push("up.status = ?");
-      params.push(status);
-    }
-
-    const query =
-      conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
-
-    const [activities] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
-      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
-      ${userId ? ", up.status AS user_participation_status" : ""}
-      FROM activity AS a JOIN user AS u ON u.id = a.user_id 
-      JOIN sport AS s ON s.id = a.sport_id 
-      LEFT JOIN participation AS p ON p.activity_id = a.id
-      ${userId ? "JOIN participation AS up ON up.activity_id = a.id AND up.user_id = ?" : ""}
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, p.status,
+      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation AS p ON p.activity_id = a.id 
       ${query}
-      GROUP BY a.id 
-      ORDER BY a.id ASC LIMIT ? OFFSET ?`,
-      userId ? [userId, ...params, limit, offset] : [...params, limit, offset],
+      AND a.playing_at >= CURDATE()
+      GROUP BY a.id  
+      ORDER BY a.playing_at ASC`,
+      [userId],
     );
-
-    const [totalResult] = await databaseClient.query<RowDataPacket[]>(
-      `SELECT COUNT(*) AS total_activity 
-        FROM activity AS a 
-        JOIN sport AS s ON s.id = a.sport_id
-        ${userId ? "JOIN participation AS up ON up.activity_id = a.id AND up.user_id = ?" : ""} 
-        ${query}`,
-      userId ? [userId, ...params] : [...params],
-    );
-
-    const totalActivities = totalResult[0].total_activity as number;
-
-    return {
-      activities: activities as Activity[],
-      totalActivities: totalActivities,
-      totalPages: Math.ceil(totalActivities / limit),
-    };
+    return rows as Activity[];
   }
-
-  // async readAllByUserAndStatus(userId: number, status: string) {
-  //   let query = "";
-  //   if (status === "incoming") {
-  //     query += "WHERE p.user_id = ? AND p.status = 'accepted'";
-  //   }
-
-  //   if (status === "published") {
-  //     query += "WHERE u.id = ?";
-  //   }
-
-  //   if (status === "pending") {
-  //     query += "WHERE p.user_id = ? AND p.status IN ('request', 'inviting') ";
-  //   }
-
-  //   const [rows] = await databaseClient.query<Rows>(
-  //     `SELECT a.*, u.username, u.picture AS user_picture, s.name,
-  //     COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
-  //     FROM activity AS a JOIN user AS u ON u.id = a.user_id
-  //     JOIN sport AS s ON s.id = a.sport_id
-  //     LEFT JOIN participation AS p ON p.activity_id = a.id
-  //     ${query}
-  //     AND a.playing_at >= CURDATE()
-  //     GROUP BY a.id
-  //     ORDER BY a.playing_at ASC`,
-  //     [userId],
-  //   );
-  //   return rows as Activity[];
-  // }
 }
 
 export default new ActivityRepository();

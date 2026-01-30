@@ -10,6 +10,7 @@ router.get("/api/sports", sportActions.browse);
 router.post("/api/activity", activityActions.add);
 router.get("/api/activities", activityActions.browse);
 router.get("/api/users", userActions.readByEmail);
+router.get("/api/activities/me", activityActions.browseMine);
 
 router.post(
   "/api/participation",
