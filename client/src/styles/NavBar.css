@@ -1,30 +1,43 @@
 .navbar {
-  background-color: var(--dark-color);
-  height: 3.75rem;
-  width: 100vw;
-  box-shadow: 0 -4px 4px rgba(46, 46, 46, 0.25);
   position: fixed;
   bottom: 0;
   left: 0;
+  width: 100vw;
+  height: 3.75rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  background-color: var(--dark-color);
+  box-shadow: 0 -4px 4px rgba(46, 46, 46, 0.25);
 
-  & > .top-navbar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex: 1;
-    margin-right: 2.5rem;
+  &::before {
+    content: "";
+    position: absolute;
+    top: -6rem;
+    inset-inline: 0;
+    height: 6rem;
+    background: linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.95),
+      rgba(255, 255, 255, 0)
+    );
+    pointer-events: none;
   }
 
+  & > .top-navbar,
   & > .bottom-navbar {
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex: 1;
+  }
 
-    & > .btn-chat {
+  & > .top-navbar {
+    margin-right: 2.5rem;
+  }
+
+  & > .bottom-navbar {
+    .btn-chat {
       display: none;
     }
   }
@@ -34,45 +47,121 @@
   display: none;
 }
 
+.navbar-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  text-decoration: none;
+  color: var(--light-color);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+
+  &.link-active {
+    color: var(--button-color);
+
+    > svg {
+      fill: var(--button-color);
+    }
+  }
+
+  &.link-publication {
+    position: absolute;
+    left: 50%;
+    bottom: 2.45rem;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 10px;
+    background-color: var(--button-color);
+    box-shadow: 0 4px 4px rgba(46, 46, 46, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    p {
+      display: none;
+    }
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    &.link-publication-active {
+      box-shadow: inset 0 4px 4px rgba(46, 46, 46, 0.25);
+    }
+  }
+}
+
+svg {
+  fill: var(--light-color);
+}
+
+.top-navbar .navbar-link {
+  &:nth-of-type(1) svg {
+    width: 25px;
+    height: 25px;
+  }
+  &:nth-of-type(2) svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.bottom-navbar .navbar-link {
+  &:nth-of-type(1) svg {
+    width: 27px;
+    height: 27px;
+  }
+  &:nth-of-type(2) svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
 @media (min-width: 1024px) {
   .navbar {
-    height: 100vh;
     width: 6rem;
+    height: 100vh;
     flex-direction: column;
     justify-content: space-between;
 
-    & > .top-navbar {
+    & > .top-navbar,
+    & > .bottom-navbar {
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
       width: 100%;
-      margin-right: 0;
+    }
+
+    & > .top-navbar {
+      justify-content: flex-start;
       padding-top: 1.25rem;
+      margin-right: 0;
     }
 
     & > .bottom-navbar {
-      flex-direction: column;
       justify-content: flex-end;
-      align-items: center;
-      gap: 2rem;
       padding-bottom: 1.25rem;
 
-      & > .btn-chat {
+      .btn-chat {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0.3rem;
 
-        & > img {
-          display: block;
+        img {
           width: 2.25rem;
         }
 
-        & > p {
-          color: var(--light-color);
+        p {
           font-family: var(--body-font);
           font-size: var(--body-desktop-size);
+          color: var(--light-color);
         }
       }
     }
@@ -84,87 +173,70 @@
     align-items: center;
     color: var(--light-color);
 
-    & p:nth-of-type(1) {
+    p:nth-of-type(1) {
       font-family: var(--body-font);
       font-size: var(--body-desktop-size);
       line-height: 2;
     }
 
-    & p:nth-of-type(2) {
+    p:nth-of-type(2) {
       font-family: var(--title-font);
       font-size: var(--title-desktop-size);
     }
   }
-}
 
-.navbar::before {
-  content: "";
-  position: absolute;
-  top: -6rem;
-  left: 0;
-  right: 0;
-  height: 6rem;
-  background: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0)
-  );
-  pointer-events: none;
-}
-
-.navbar-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--light-color);
-  text-decoration: none;
-  font-family: var(--body-font);
-  font-size: var(--body-size);
-  height: 2.1rem;
-  cursor: pointer;
-
-  &.link-active {
-    color: var(--button-color);
-  }
-
-  &.link-publication {
-    position: absolute;
-    left: 50%;
-    bottom: 2.45rem;
-    transform: translateX(-50%);
-    background-color: var(--button-color);
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-    box-shadow: 0 4px 4px rgba(46, 46, 46, 0.25);
-
-    &.link-publication-active {
-      box-shadow: inset 0 4px 4px rgba(46, 46, 46, 0.25);
-    }
-  }
-}
-
-@media (min-width: 1024px) {
   .navbar-link {
     font-size: var(--body-desktop-size);
 
     &.link-publication {
+      position: static;
+      transform: none;
+      width: auto;
+      height: auto;
       background: none;
-      position: inherit;
-      transform: translateX(0);
+      box-shadow: none;
+      justify-content: space-between;
+
+      p {
+        display: block;
+        margin-top: 5px;
+      }
+
+      &.link-publication-active {
+        svg {
+          fill: var(--button-color);
+        }
+
+        p {
+          color: var(--button-color);
+        }
+      }
     }
   }
-}
 
-svg {
-  fill: var(--light-color);
-}
+  .top-navbar .navbar-link {
+    &:nth-of-type(1) svg {
+      width: 48px;
+      height: 48px;
+    }
+    &:nth-of-type(2) svg {
+      width: 36px;
+      height: 36px;
+    }
+    &:nth-of-type(3) svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
 
-.link-active > svg {
-  fill: var(--button-color);
+  .bottom-navbar .navbar-link {
+    &:nth-of-type(1) svg {
+      width: 48px;
+      height: 48px;
+    }
+    &:nth-of-type(2) svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
 }

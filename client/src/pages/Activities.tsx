@@ -4,7 +4,6 @@ import "../styles/Activity.css";
 import { useNavigate, useParams } from "react-router";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
-import SearchFilters from "../components/SearchFilters";
 
 function Activities() {
   const { page } = useParams();
@@ -64,7 +63,6 @@ function Activities() {
             ))}
           </section>
         </div>
-        <SearchFilters setFilters={setFilters} />
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>

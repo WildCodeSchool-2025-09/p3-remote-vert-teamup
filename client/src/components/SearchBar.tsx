@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../styles/SearchBar.css";
 import { useMediaQuery } from "react-responsive";
+import SearchFilters from "./SearchFilters";
 
 type SearchBarProps = {
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -19,6 +20,10 @@ function SearchBar({ setFilters }: SearchBarProps) {
     playingAt: "",
     city: "",
   });
+  const criteriaModalRef = useRef<HTMLDialogElement>(null);
+
+  const openCriteriaModal = () => criteriaModalRef.current?.showModal();
+  const closeCriteriaModal = () => criteriaModalRef.current?.close();
 
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
@@ -177,10 +182,27 @@ function SearchBar({ setFilters }: SearchBarProps) {
           </ul>
         </article>
         {isMobile && (
-          <button type="button" className="filter-button">
-            Filtre
+          <button
+            type="button"
+            className="filter-button"
+            onClick={openCriteriaModal}
+          >
+            <img src="/icons/filters.png" alt="icon pour filtres" />
           </button>
         )}
+
+        <dialog
+          ref={criteriaModalRef}
+          onClick={(e) => {
+            if (e.target === criteriaModalRef.current) {
+              closeCriteriaModal();
+            }
+          }}
+          onKeyDown={(e) => e.key === "Escape" && closeCriteriaModal()}
+          className="modal-criteria"
+        >
+          <SearchFilters onClose={closeCriteriaModal} />
+        </dialog>
       </section>
     </>
   );

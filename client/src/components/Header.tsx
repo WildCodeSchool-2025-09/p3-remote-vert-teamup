@@ -2,7 +2,7 @@ import "../styles/Header.css";
 
 function Header() {
   return (
-    <header>
+    <header className="header-navbar">
       <div>
         <p>Bonjour</p>
         <p>User</p>

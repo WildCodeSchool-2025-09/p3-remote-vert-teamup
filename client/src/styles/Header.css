@@ -1,4 +1,4 @@
-header {
+.header-navbar {
   width: 100vw;
   height: 3.5rem;
   background-color: var(--light-color);
@@ -35,7 +35,7 @@ header {
 }
 
 @media (min-width: 1024px) {
-  header {
+  .header-navbar {
     display: none;
   }
 }

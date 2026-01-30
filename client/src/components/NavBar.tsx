@@ -51,7 +51,7 @@ function NavBar() {
             }
             to="/publication"
           >
-            <svg width="28" height="28" viewBox="0 0 28 28">
+            <svg viewBox="0 0 28 28">
               <title>icon add</title>
               <g clip-path="url(#clip0_52_153)">
                 <path d="M14 0C6.26817 0 0 6.26817 0 14C0 21.7318 6.26817 28 14 28C21.7318 28 28 21.7318 28 14C28 6.26817 21.7318 0 14 0ZM14 25.6666C7.55683 25.6666 2.33335 20.4432 2.33335 14C2.33335 7.55683 7.55683 2.33335 14 2.33335C20.4432 2.33335 25.6666 7.55683 25.6666 14C25.6666 20.4432 20.4432 25.6666 14 25.6666Z" />
@@ -63,6 +63,7 @@ function NavBar() {
                 </clipPath>
               </defs>
             </svg>
+            <p>Publier</p>
           </NavLink>
         </div>
         <div className="bottom-navbar">
