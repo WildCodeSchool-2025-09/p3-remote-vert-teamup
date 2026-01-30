@@ -42,6 +42,10 @@ function MyActivities() {
       .then((myActivities) => setMyActivities(myActivities));
   }, [status]);
 
+  useEffect(() => {
+    selectedTab && setShowParticipants(null);
+  }, [selectedTab]);
+
   return (
     <>
       <div id="my-activities">
