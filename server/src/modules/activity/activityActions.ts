@@ -18,7 +18,11 @@ const add: RequestHandler = async (req, res, next) => {
       }
 
       guestIds.map(async (userId: number) => {
-        await participationRepository.create({ userId, activityId, status });
+        await participationRepository.create({
+          userId,
+          activityId,
+          status: "inviting",
+        });
       });
     }
 

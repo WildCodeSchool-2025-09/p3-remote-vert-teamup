@@ -20,28 +20,50 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
+  const LIMIT = 10;
+  const userId = 25; // Replace userId with context loged in variable
+
+  console.log(activities);
+
   useEffect(() => {
     if (!filters.sport && !filters.city && !filters.playingAt) return;
     navigate("/activities/page/1");
   }, [filters, navigate]);
 
   useEffect(() => {
-    const LIMIT = 10;
+    const fetchAndFilterActivities = async () => {
+      let enrolledActivityIds: number[] = [];
 
-    const queryString = new URLSearchParams({
-      filters: JSON.stringify(filters),
-    }).toString();
+      if (userId) {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
+        );
+        enrolledActivityIds = await res.json();
+      }
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
-    )
-      .then((response) => response.json())
-      .then((activities) => {
-        setActivities(activities.activities);
-        setTotalPages(activities.pagination.totalPages);
-        setTotalActivities(activities.pagination.totalActivities);
-      });
-  }, [currentPage, filters]);
+      const queryString = new URLSearchParams({
+        filters: JSON.stringify(filters),
+      }).toString();
+
+      const allActivities = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
+      );
+
+      const data = await allActivities.json();
+
+      const filteredActivities = userId
+        ? data.activities.filter(
+            (a: Activity) => !enrolledActivityIds.includes(a.id),
+          )
+        : data.activities;
+
+      setActivities(filteredActivities);
+      setTotalPages(data.pagination.totalPages);
+      setTotalActivities(data.pagination.totalActivities);
+    };
+
+    fetchAndFilterActivities();
+  }, [currentPage, filters, userId]);
 
   return (
     <>

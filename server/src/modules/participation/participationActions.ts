@@ -5,10 +5,8 @@ import participateRepository from "./participationRepository";
 const add: RequestHandler = async (req, res, next) => {
   try {
     const participant = await participateRepository.read(req.body);
-    if (participant) {
+    if (participant[0]) {
       res.json({
-        message: "Participant already enrolled",
-        participant,
         alreadyClicked: true,
       });
       return;
@@ -22,4 +20,23 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add };
+const browseSome: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number(req.query.userId);
+
+    if (!userId) {
+      res.json({
+        message: "User is not enrolled in any activity",
+      });
+      return;
+    }
+
+    const activitiesUserEnrolled = await participateRepository.read({ userId });
+
+    res.status(201).json(activitiesUserEnrolled.map((a) => a.activity_id));
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, browseSome };
