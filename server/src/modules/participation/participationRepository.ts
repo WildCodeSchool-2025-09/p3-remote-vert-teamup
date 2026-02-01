@@ -39,7 +39,7 @@ class ParticipationRepository {
 
   async delete(userId: number, activityId: number) {
     const [result] = await databaseClient.query<Result>(
-      `DELETE FROM participation WHERE user_id = ? AND activity_id = ?`,
+      "DELETE FROM participation WHERE user_id = ? AND activity_id = ?",
       [userId, activityId],
     );
 

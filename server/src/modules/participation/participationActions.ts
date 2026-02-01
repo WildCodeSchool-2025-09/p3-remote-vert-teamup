@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import ParticipationRepository from "./participationRepository";
 import participateRepository from "./participationRepository";
-import activityRepository from "../Activity/activityRepository";
+import activityRepository from "../activity/activityRepository";
 import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {

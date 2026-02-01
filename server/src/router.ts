@@ -1,5 +1,5 @@
 import express from "express";
-import activityActions from "./modules/Activity/activityActions";
+import activityActions from "./modules/activity/activityActions";
 import sportActions from "./modules/sport/sportActions";
 import userActions from "./modules/user/userActions";
 import participationActions from "./modules/participation/participationActions";
