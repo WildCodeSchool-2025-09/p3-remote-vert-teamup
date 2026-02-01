@@ -40,4 +40,28 @@ const verifyParticipation: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, verifyParticipation };
+const editStatus: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId, status } = req.body;
+
+    const result = await participationRepository.update(userId, activityId, status);
+
+    res.json({ message: "Participation updated", result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteParticipation: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId } = req.body;
+
+    const result = await participationRepository.delete(userId, activityId);
+
+    res.json({ message: "Participation deleted", result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, verifyParticipation, editStatus, deleteParticipation };
