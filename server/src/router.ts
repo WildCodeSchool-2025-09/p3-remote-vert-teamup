@@ -17,5 +17,7 @@ router.post(
   participationActions.verifyParticipation,
   participationActions.add,
 );
+router.put("/api/participation", participationActions.editStatus);
+router.delete("/api/participation", participationActions.deleteParticipation);
 
 export default router;

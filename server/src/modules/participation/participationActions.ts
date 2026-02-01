@@ -1,6 +1,8 @@
 import type { RequestHandler } from "express";
 import ParticipationRepository from "./participationRepository";
 import participateRepository from "./participationRepository";
+import activityRepository from "../Activity/activityRepository";
+import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -42,9 +44,20 @@ const verifyParticipation: RequestHandler = async (req, res, next) => {
 
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId, status } = req.body;
+    const { userId, activityId, status, participantUsername } = req.body;
 
-    const result = await participationRepository.update(userId, activityId, status);
+    const result = await ParticipationRepository.update(userId, activityId, status);
+
+    if (status === "accepted") {
+      const activity = await activityRepository.readWithOrganizer(activityId);
+
+      await mailService.sendInvitationAcceptedEmail({
+        organizerEmail: activity.organizer_email,
+        organizerUsername: activity.organizer_username,
+        activityName: activity.name,
+        participantUsername: participantUsername,
+      });
+    }
 
     res.json({ message: "Participation updated", result });
   } catch (err) {
@@ -56,7 +69,7 @@ const deleteParticipation: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId } = req.body;
 
-    const result = await participationRepository.delete(userId, activityId);
+    const result = await ParticipationRepository.delete(userId, activityId);
 
     res.json({ message: "Participation deleted", result });
   } catch (err) {
