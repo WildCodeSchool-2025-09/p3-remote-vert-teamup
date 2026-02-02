@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
-import participateRepository from "../participation/participationRepository";
+import participationRepository from "../participation/participationRepository";
 import activityRepository from "./activityRepository";
 
 const add: RequestHandler = async (req, res, next) => {
@@ -18,7 +18,7 @@ const add: RequestHandler = async (req, res, next) => {
 
     if (!activity.visibility) {
       guestIds.map(async (userId: number) => {
-        await participateRepository.create({
+        await participationRepository.create({
           userId,
           activityId,
           status: "inviting",

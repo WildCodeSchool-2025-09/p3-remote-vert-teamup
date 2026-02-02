@@ -43,21 +43,35 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const verifyParticipation: RequestHandler = async (req, res, next) => {
+// const verifyParticipation: RequestHandler = async (req, res, next) => {
+//   try {
+//     const { activityId } = req.body;
+//     const userId = 25;
+
+//     const participant = await participationRepository.read(userId, activityId);
+
+//     if (participant) {
+//       res.sendStatus(StatusCodes.CONFLICT);
+
+const browseSome: RequestHandler = async (req, res, next) => {
   try {
-    const { activityId } = req.body;
-    const userId = 25;
+    const userId = Number(req.query.userId);
 
-    const participant = await participationRepository.read(userId, activityId);
-
-    if (participant) {
-      res.sendStatus(StatusCodes.CONFLICT);
+    if (!userId) {
+      res.json({
+        message: "User is not enrolled in any activity",
+      });
       return;
     }
-    next();
+
+    const activitiesUserEnrolled = await participationRepository.read({
+      userId,
+    });
+
+    res.status(201).json(activitiesUserEnrolled.map((a) => a.activity_id));
   } catch (err) {
     next(err);
   }
 };
 
-export default { browseByActivity, add, edit, verifyParticipation };
+export default { browseByActivity, add, edit, browseSome };

@@ -40,11 +40,10 @@ function ActivityCard({
     }
 
     const newParticipant = {
+      userId: 25,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };
-
-    const selectedTab = activity.auto_validation ? 0 : 2;
 
     try {
       const response = await fetch(
@@ -66,9 +65,7 @@ function ActivityCard({
       if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
-        state: {
-          selectedTab,
-        },
+        state: activity.auto_validation ? 0 : 2,
       });
     } catch (err) {
       console.error(err);
