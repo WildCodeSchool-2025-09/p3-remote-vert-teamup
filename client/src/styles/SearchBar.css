@@ -120,6 +120,18 @@ section.searchbar article ul.dropdown button {
   height: 30px;
 }
 
+.date-input {
+  color: #9ca3af; /* gris */
+}
+
+.date-input:focus {
+  color: #000;
+}
+
+.date-input:not([value=""]) {
+  color: #000;
+}
+
 section.searchbar article ul.dropdown-false li {
   display: flex;
   flex-direction: column;
