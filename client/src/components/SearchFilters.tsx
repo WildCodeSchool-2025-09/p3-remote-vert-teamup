@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/SearchFilters.css";
+import { useMediaQuery } from "react-responsive";
 
 type Filters = {
   locker: boolean;
@@ -19,7 +20,7 @@ type SearchFilterProps = {
       city: string;
     }>
   >;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 type EquipmentOptionsType = {
@@ -95,16 +96,22 @@ function SearchFilters({ setFilters, onClose }: SearchFilterProps) {
         ...optionalFilters,
       };
     });
-    onClose();
+    onClose?.();
   };
+
+  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   return (
     <>
       <div className="modal-content">
         <div className="modal-header">
-          <button type="button" className="modal-close" onClick={onClose}>
-            ✕
-          </button>
+          {isMobile ? (
+            <button type="button" className="modal-close" onClick={onClose}>
+              ✕
+            </button>
+          ) : (
+            <p>Filtres</p>
+          )}
           <button type="button" className="modal-clear" onClick={resetFilters}>
             Tout effacer
           </button>
@@ -165,31 +172,38 @@ function SearchFilters({ setFilters, onClose }: SearchFilterProps) {
               />
             </label>
 
-            <label className={`criteria-label ${isFree && "slider-disabled"}`}>
+            <label
+              className={`criteria-label criteria-label-price-desktop ${isFree && "slider-disabled"}`}
+            >
               Payant
-              <span className={`price-tag ${isFree && "slider-disabled"}`}>
-                {optionalFilters.price}€
-              </span>
-              <input
-                className={`slider ${isFree && "slider-disabled"}`}
-                id="myRange"
-                type="range"
-                name="price"
-                min={0}
-                max={100}
-                value={optionalFilters.price ?? 0}
-                onChange={(e) => {
-                  setOptionalFilters((prev) => {
-                    const value = Number(e.target.value);
-                    setPrevPayedPrice(value === 0 ? 15 : value);
-                    return {
-                      ...prev,
-                      price: value,
-                    };
-                  });
-                }}
-              />
-              <span className={`${isFree && "slider-disabled"}`}> 100€</span>
+              <div className="range-price">
+                <span className={`price-tag ${isFree && "slider-disabled"}`}>
+                  {optionalFilters.price}€
+                </span>
+                <input
+                  className={`slider ${isFree && "slider-disabled"}`}
+                  id="myRange"
+                  type="range"
+                  name="price"
+                  min={0}
+                  max={100}
+                  value={optionalFilters.price ?? 0}
+                  onChange={(e) => {
+                    setOptionalFilters((prev) => {
+                      const value = Number(e.target.value);
+                      setPrevPayedPrice(value === 0 ? 15 : value);
+                      return {
+                        ...prev,
+                        price: value,
+                      };
+                    });
+                  }}
+                />
+                <span className={`price-tag ${isFree && "slider-disabled"}`}>
+                  {" "}
+                  100€
+                </span>
+              </div>
             </label>
           </div>
         </fieldset>

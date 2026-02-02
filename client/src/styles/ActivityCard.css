@@ -5,6 +5,7 @@
   position: relative;
   animation: scale 0.5s cubic-bezier(0.5, 0, 0.5, 1) both, appear 0.5s linear
     both;
+  width: 320px;
 }
 
 @keyframes appear {

@@ -2,9 +2,8 @@ section.searchbar {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 85%;
+  width: 100%;
   margin: auto;
-  margin-top: 1.5rem;
   gap: 0.5rem;
 }
 
@@ -145,8 +144,12 @@ section.searchbar article ul.dropdown-false li {
     padding-left: 40px;
   }
 
+  section.searchbar article:nth-of-type(1) {
+    max-width: 250px;
+  }
+
   section.searchbar article:nth-of-type(3) {
-    max-width: 161px;
+    max-width: 150px;
   }
 
   section.searchbar article ul.dropdown,
@@ -177,8 +180,11 @@ section.searchbar article ul.dropdown-false li {
   section.searchbar button.search-button:hover {
     transform: scale(1.05);
   }
+
   section.searchbar {
+    width: 100%;
     justify-content: flex-start;
     gap: 8px;
+    margin-top: 0;
   }
 }

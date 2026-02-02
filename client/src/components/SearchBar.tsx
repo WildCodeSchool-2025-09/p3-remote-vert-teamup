@@ -25,7 +25,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
   const openCriteriaModal = () => criteriaModalRef.current?.showModal();
   const closeCriteriaModal = () => criteriaModalRef.current?.close();
 
-  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   function searchSport(e: React.ChangeEvent<HTMLInputElement>) {
     setActivitiesOnDropdown((prev) => ({ ...prev, sport: e.target.value }));

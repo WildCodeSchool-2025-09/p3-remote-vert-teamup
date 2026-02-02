@@ -1,8 +1,17 @@
+.activities-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem auto;
+  gap: 2rem;
+  width: 85%;
+}
+
 .header-activity {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.5rem 1rem 1rem 2rem;
+  width: 100%;
 
   & p {
     font-family: var(--body-font);
@@ -18,33 +27,41 @@
 }
 
 @media (min-width: 1024px) {
-  .flx-activitypg {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    margin: 2rem;
+  .page-activities {
+    width: calc(100% - 8rem);
+    margin-left: 8rem;
+    display: flex;
+    justify-content: flex-start;
+    gap: 2rem;
   }
 
   .activities-container {
+    width: 74%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0;
+    margin-top: 2rem;
+    gap: 2rem;
   }
 
   .cards-activity {
     width: 100%;
-    grid-template-columns: repeat(auto-fit, 320px);
-    justify-content: start;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .header-activity {
-    width: 80%;
-
-    & > h1 {
-      margin: 1.5rem 0 2rem 8rem;
-    }
+    width: 100%;
+    padding-right: 1.5rem;
 
     & p {
       font-size: var(--tag-desktop-size);
     }
+  }
+
+  .filters-desktop {
+    width: 20%;
+    margin-top: 2.5rem;
   }
 }
