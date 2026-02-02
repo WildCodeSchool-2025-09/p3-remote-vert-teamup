@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
+import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
-import { toast, Toaster } from "react-hot-toast";
 import ActivityCard from "../components/ActivityCard.tsx";
 
 function MyActivities() {
@@ -54,7 +54,18 @@ function MyActivities() {
 
         <section className="cards-myactivities">
           {myActivities.map((myActivity) => (
-            <ActivityCard activity={myActivity} key={myActivity.id} />
+            <ActivityCard
+              activity={myActivity}
+              key={myActivity.id}
+              isPending={status === "pending"}
+              onStatusChange={() => {
+                fetch(
+                  `${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}`,
+                )
+                  .then((response) => response.json())
+                  .then((activities) => setMyActivities(activities));
+              }}
+            />
           ))}
         </section>
       </div>

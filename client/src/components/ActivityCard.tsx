@@ -1,13 +1,20 @@
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
   activity: Activity;
   participantStatus?: string | null | undefined;
+  isPending?: boolean;
+  onStatusChange?: () => void;
 };
 
-function ActivityCard({ activity, participantStatus }: ActivityCardType) {
+function ActivityCard({
+  activity,
+  participantStatus,
+  isPending,
+  onStatusChange,
+}: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
@@ -60,6 +67,52 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
       navigate("/my-activities", {
         state: activity.auto_validation ? 0 : 2,
       });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const acceptInvitation = async (activityId: number) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: 25,
+            activityId: activityId,
+            status: "accepted",
+            participantUsername: "CurrentUser",
+          }),
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to accept invitation");
+
+      if (onStatusChange) onStatusChange();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refuseInvitation = async (activityId: number) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: 25,
+            activityId: activityId,
+          }),
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to refuse invitation");
+
+      if (onStatusChange) onStatusChange();
     } catch (err) {
       console.error(err);
     }
@@ -141,25 +194,44 @@ function ActivityCard({ activity, participantStatus }: ActivityCardType) {
           <img src={activity.user_picture} alt="user" />
           <p>{activity.username}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => makeReservation(activity, nbAvailableSpots)}
-        >
-          {nbAvailableSpots === 0 ? (
-            <>
-              <img src="/icons/bell.png" alt="logo alert" />
-            </>
-          ) : (
-            <>
-              {" "}
-              {alreadyParticipant
-                ? "Déjà inscrit"
-                : participantStatus
-                  ? participantStatus
-                  : "Reserve"}
-            </>
-          )}
-        </button>
+        {isPending ? (
+          <div className="invitation-buttons">
+            <button
+              type="button"
+              className="refuse-button"
+              onClick={() => refuseInvitation(activity.id)}
+            >
+              Refuser
+            </button>
+            <button
+              type="button"
+              className="accept-button"
+              onClick={() => acceptInvitation(activity.id)}
+            >
+              Accepter
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => makeReservation(activity, nbAvailableSpots)}
+          >
+            {nbAvailableSpots === 0 ? (
+              <>
+                <img src="/icons/bell.png" alt="logo alert" />
+              </>
+            ) : (
+              <>
+                {" "}
+                {alreadyParticipant
+                  ? "Déjà inscrit"
+                  : participantStatus
+                    ? participantStatus
+                    : "Reserve"}
+              </>
+            )}
+          </button>
+        )}
       </div>
       <div className={nbAvailableSpots === 0 ? "Complet" : ""}> </div>
     </article>

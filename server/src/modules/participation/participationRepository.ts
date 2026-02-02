@@ -41,6 +41,25 @@ class ParticipationRepository {
 
     return rows;
   }
+
+  async update(userId: number, activityId: number, status: string) {
+    const [result] = await databaseClient.query<Result>(
+      `UPDATE participation SET status = ?, updated_at = NOW()
+       WHERE user_id = ? AND activity_id = ?`,
+      [status, userId, activityId],
+    );
+
+    return result;
+  }
+
+  async delete(userId: number, activityId: number) {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM participation WHERE user_id = ? AND activity_id = ?",
+      [userId, activityId],
+    );
+
+    return result;
+  }
 }
 
 export default new ParticipationRepository();

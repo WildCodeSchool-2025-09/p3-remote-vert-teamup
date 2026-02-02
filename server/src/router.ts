@@ -1,5 +1,5 @@
 import express from "express";
-import activityActions from "./modules/Activity/activityActions";
+import activityActions from "./modules/activity/activityActions";
 import sportActions from "./modules/sport/sportActions";
 import userActions from "./modules/user/userActions";
 import participationActions from "./modules/participation/participationActions";
@@ -14,5 +14,7 @@ router.get("/api/activities/me", activityActions.browseMine);
 
 router.get("/api/participations", participationActions.browseSome);
 router.post("/api/participation", participationActions.add);
+router.put("/api/participation", participationActions.editStatus);
+router.delete("/api/participation", participationActions.deleteParticipation);
 
 export default router;
