@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import "../styles/ActivityCard.css";
+import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
 
 type ActivityCardType = {
@@ -57,14 +58,12 @@ function ActivityCard({
         },
       );
 
-      const responseStatus = await response.json();
-
-      if (!response.ok) throw new Error("Failed to join activity");
-
-      if (responseStatus.alreadyClicked) {
-        setAlreadyParticipant(responseStatus.alreadyClicked);
+      if (response.status === StatusCodes.CONFLICT) {
+        setAlreadyParticipant(true);
         return;
       }
+
+      if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
         state: {
@@ -182,7 +181,7 @@ function ActivityCard({
                         ? "Déjà inscrit"
                         : status
                           ? status
-                          : "Reserve"}
+                          : "Réserver"}
                     </>
                   )}
                 </button>
@@ -199,9 +198,7 @@ function ActivityCard({
             className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
             onClick={onClickListParticipant}
           >
-            {activity.visibility
-              ? "Liste des participants"
-              : "Liste des invités"}
+            Participants
             <img
               src="/icons/chevron.png"
               alt=""
