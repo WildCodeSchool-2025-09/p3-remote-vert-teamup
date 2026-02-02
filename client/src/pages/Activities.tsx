@@ -6,6 +6,9 @@ import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 
+const LIMIT = 10;
+const userId = 25; // Replace userId with context loged in variable
+
 function Activities() {
   const { page } = useParams();
   const currentPage = Math.max(1, Number(page) || 1);
@@ -20,27 +23,46 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
+  console.log(activities);
+
   useEffect(() => {
     if (!filters.sport && !filters.city && !filters.playingAt) return;
     navigate("/activities/page/1");
   }, [filters, navigate]);
 
   useEffect(() => {
-    const LIMIT = 10;
+    const fetchAndFilterActivities = async () => {
+      let enrolledActivityIds: number[] = [];
 
-    const queryString = new URLSearchParams({
-      filters: JSON.stringify(filters),
-    }).toString();
+      if (userId) {
+        const enrollmentsResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
+        );
+        enrolledActivityIds = await enrollmentsResponse.json();
+      }
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
-    )
-      .then((response) => response.json())
-      .then((activities) => {
-        setActivities(activities.activities);
-        setTotalPages(activities.pagination.totalPages);
-        setTotalActivities(activities.pagination.totalActivities);
-      });
+      const queryString = new URLSearchParams({
+        filters: JSON.stringify(filters),
+      }).toString();
+
+      const activitiesResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
+      );
+
+      const activitiesData = await activitiesResponse.json();
+
+      const filteredActivities = userId
+        ? activitiesData.activities.filter(
+            (a: Activity) => !enrolledActivityIds.includes(a.id),
+          )
+        : activitiesData.activities;
+
+      setActivities(filteredActivities);
+      setTotalPages(activitiesData.pagination.totalPages);
+      setTotalActivities(activitiesData.pagination.totalActivities);
+    };
+
+    fetchAndFilterActivities();
   }, [currentPage, filters]);
 
   return (

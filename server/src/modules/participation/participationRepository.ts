@@ -2,9 +2,9 @@ import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
 type newUserType = {
-  userId: number;
-  activityId: number;
-  status: string;
+  userId?: number;
+  activityId?: number;
+  status?: string;
 };
 
 class ParticipationRepository {
@@ -17,14 +17,29 @@ class ParticipationRepository {
     return Result;
   }
 
-  async read(usedId: number, activityId: number) {
+  async read(newParticipant: newUserType) {
+    const conditions = [];
+    const params = [];
+
+    if (newParticipant.userId) {
+      conditions.push("p.user_id = ?");
+      params.push(newParticipant.userId);
+    }
+
+    if (newParticipant.activityId) {
+      conditions.push("p.activity_id = ?");
+      params.push(newParticipant.activityId);
+    }
+
+    const query = conditions.length > 0 && ` WHERE ${conditions.join(" AND ")}`;
+
     const [rows] = await databaseClient.query<Rows>(
       `SELECT * FROM participation AS p
-      WHERE p.user_id = ? AND p.activity_id = ?`,
-      [usedId, activityId],
+      ${query}`,
+      params,
     );
 
-    return rows[0];
+    return rows;
   }
 }
 

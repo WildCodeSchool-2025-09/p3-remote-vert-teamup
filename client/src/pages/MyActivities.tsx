@@ -13,8 +13,8 @@ function MyActivities() {
 
   useEffect(() => {
     if (location.state) {
-      if (location.state.selectedTab !== undefined) {
-        setSelectedTab(location.state.selectedTab);
+      if (location.state !== undefined) {
+        setSelectedTab(location.state);
       }
 
       if (location.state.toast) {
