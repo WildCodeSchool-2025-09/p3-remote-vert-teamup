@@ -49,10 +49,11 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       const newGuest = {
         userId: user.id,
         activityId: activityId,
+        status: "inviting",
       };
 
       const invitationResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/me/invitation`,
+        `${import.meta.env.VITE_API_URL}/api/participation`,
         {
           method: "POST",
           headers: {
