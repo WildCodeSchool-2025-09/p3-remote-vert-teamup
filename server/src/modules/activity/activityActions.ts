@@ -5,18 +5,18 @@ import activityRepository from "./activityRepository";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const { activity, guestIds, status } = req.body;
+    const { activity, guestIds } = req.body;
+
+    if (!activity.visibility && guestIds.length === 0) {
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+        error: "Une activité privée doit avoir au moins un participant",
+      });
+      return;
+    }
 
     const activityId = await activityRepository.create(activity);
 
     if (!activity.visibility) {
-      if (guestIds.length === 0) {
-        res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-          error: "Une activité privée doit avoir au moins un participant",
-        });
-        return;
-      }
-
       guestIds.map(async (userId: number) => {
         await participationRepository.create({
           userId,
@@ -59,7 +59,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const browseMine: RequestHandler = async (req, res, next) => {
   try {
-    const userId = 25;
+    const userId = 1;
     const status = req.query.status as string;
 
     const activities = await activityRepository.readAllByUserAndStatus(

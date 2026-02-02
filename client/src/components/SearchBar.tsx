@@ -88,7 +88,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
             </g>
           </svg>
           <input
-            className={`${error.sport ? "error-input" : ""} ${sports.length > 0 ? "bottom-border" : ""}`}
+            className={`${error.sport ? "error-input" : ""}`}
             type="text"
             placeholder="Rechercher une activité..."
             required
@@ -131,7 +131,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
             </g>
           </svg>
           <input
-            className={`${error.city ? "error-input" : ""} ${cities.length > 0 ? "bottom-border" : ""}`}
+            className={`${error.city ? "error-input" : ""}`}
             type="text"
             placeholder="Ville ?"
             required
@@ -167,6 +167,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
             required
             min={new Date().toISOString().split("T")[0]}
             onChange={searchPlayingAt}
+            className="date-input"
           />
           <ul className={`${emptyInputPlayingAt && "dropdown-false"}`}>
             {emptyInputPlayingAt && (

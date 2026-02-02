@@ -10,6 +10,7 @@ function MyActivities() {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
+  const [showParticpants, setShowParticipants] = useState<number | null>();
 
   useEffect(() => {
     if (location.state) {
@@ -41,6 +42,10 @@ function MyActivities() {
       .then((myActivities) => setMyActivities(myActivities));
   }, [status]);
 
+  useEffect(() => {
+    selectedTab && setShowParticipants(null);
+  }, [selectedTab]);
+
   return (
     <>
       <div id="my-activities">
@@ -57,14 +62,13 @@ function MyActivities() {
             <ActivityCard
               activity={myActivity}
               key={myActivity.id}
-              isPending={status === "pending"}
-              onStatusChange={() => {
-                fetch(
-                  `${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}`,
+              status={status}
+              participantsListIsOpen={showParticpants === myActivity.id}
+              onClickListParticipant={() =>
+                setShowParticipants(
+                  showParticpants === myActivity.id ? null : myActivity.id,
                 )
-                  .then((response) => response.json())
-                  .then((activities) => setMyActivities(activities));
-              }}
+              }
             />
           ))}
         </section>

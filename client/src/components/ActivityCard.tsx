@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
+import { StatusCodes } from "http-status-codes";
+import ParticipantsList from "./ParticipantsList";
 
 type ActivityCardType = {
   activity: Activity;
-  participantStatus?: string | null | undefined;
-  isPending?: boolean;
-  onStatusChange?: () => void;
+  status?: string;
+  participantsListIsOpen?: boolean;
+  onClickListParticipant?: () => void;
 };
 
 function ActivityCard({
   activity,
-  participantStatus,
-  isPending,
-  onStatusChange,
+  status,
+  participantsListIsOpen,
+  onClickListParticipant,
 }: ActivityCardType) {
-  const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
   const [alreadyParticipant, setAlreadyParticipant] = useState(false);
@@ -26,6 +27,7 @@ function ActivityCard({
   });
   const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
+  const navigate = useNavigate();
 
   const makeReservation = async (
     activity: Activity,
@@ -55,14 +57,12 @@ function ActivityCard({
         },
       );
 
-      const responseStatus = await response.json();
-
-      if (!response.ok) throw new Error("Failed to join activity");
-
-      if (responseStatus.alreadyClicked) {
-        setAlreadyParticipant(responseStatus.alreadyClicked);
+      if (response.status === StatusCodes.CONFLICT) {
+        setAlreadyParticipant(true);
         return;
       }
+
+      if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
         state: activity.auto_validation ? 0 : 2,
@@ -80,7 +80,7 @@ function ActivityCard({
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: 25,
+            userId: 1,
             activityId: activityId,
             status: "accepted",
             participantUsername: "CurrentUser",
@@ -89,8 +89,6 @@ function ActivityCard({
       );
 
       if (!response.ok) throw new Error("Failed to accept invitation");
-
-      if (onStatusChange) onStatusChange();
     } catch (err) {
       console.error(err);
     }
@@ -111,90 +109,144 @@ function ActivityCard({
       );
 
       if (!response.ok) throw new Error("Failed to refuse invitation");
-
-      if (onStatusChange) onStatusChange();
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <article className="card">
-      <div className={`card-header ${activity.name}`}>
-        <h2>{activity.name}</h2>
-        <p className={`label-price ${price === 0 ? "free" : "paid"}`}>
-          {price === 0
-            ? "Gratuit"
-            : price % 1 === 0
-              ? `${price} €`
-              : `${price.toFixed(2)} €`}
-        </p>
-      </div>
-      <div className="important-info">
-        <img src="/icons/calendar.png" alt="icon-calendar" />
-        <p>
-          {formattedPlayingAt.charAt(0).toUpperCase() +
-            formattedPlayingAt.slice(1)}
-        </p>
-        <img src="/icons/clock.png" alt="icon-clock" />
-        <p>{activity.playing_time.slice(0, 5).replace(":", "h")}</p>
-        <img src="/icons/pin.png" alt="icon-pin" />
-        <p>{activity.city}</p>
-      </div>
-      <div className="card-tags">
-        <p className="card-tag">
-          {activity.level === "all" && "Tous niveaux"}
-          {activity.level === "beginner" && "Débutant"}
-          {activity.level === "amateur" && "Intermédiaire"}
-          {activity.level === "advanced" && "Confirmé"}
-        </p>
-        <p className={`card-tag ${!activity.disabled && "condition-missing"}`}>
-          <img src="/icons/disabled.png" alt="logo disabled" />
-          Handisport
-        </p>
-        <p className={`card-tag ${!activity.locker && "condition-missing"}`}>
-          <img src="/icons/locker.png" alt="logo locker" />
-          Vestiaires
-        </p>
-        <p className={`card-tag ${!activity.shower && "condition-missing"}`}>
-          <img src="/icons/shower.png" alt="logo shower" />
-          Douches
-        </p>
-        <p className={`card-tag ${!activity.toilet && "condition-missing"}`}>
-          <img src="/icons/toilet.png" alt="logo toilet" />
-          Toilettes
-        </p>
-        <p
-          className={`card-tag ${!activity.air_conditioning && "condition-missing"}`}
-        >
-          <img
-            src="/icons/air-conditionning.png"
-            alt="logo air conditionning"
-          />
-          Clim
-        </p>
-      </div>
-      <div className="nb-participant">
-        <p>
-          <img src="/icons/participants.png" alt="logo participants" />
-          {`${activity.nb_participant}/${activity.nb_spots} Participants`}
-        </p>
-        <p>{`${nbAvailableSpots < 0 ? "0" : nbAvailableSpots} ${nbAvailableSpots <= 1 ? "place restante" : "places restantes"}`}</p>
-      </div>
-      <div className="bar">
-        <div
-          className={`progress-bar ${activity.nb_participant >= activity.nb_spots / 2 && "almost-full"} ${nbAvailableSpots === 0 && "full"}`}
-          style={{ "--size": `${widthProgressBar}%` } as React.CSSProperties}
-        >
-          {" "}
+    <>
+      <article
+        className={`card ${participantsListIsOpen ? "card-important" : ""}`}
+      >
+        <div className={`card-header ${activity.name}`}>
+          <h2>{activity.name}</h2>
+          <p className={`label-price ${price === 0 ? "free" : "paid"}`}>
+            {price === 0
+              ? "Gratuit"
+              : price % 1 === 0
+                ? `${price} €`
+                : `${price.toFixed(2)} €`}
+          </p>
         </div>
-      </div>
-      <div className="card-footer">
-        <div className="user-organizer">
-          <img src={activity.user_picture} alt="user" />
-          <p>{activity.username}</p>
+        <div className="important-info">
+          <img src="/icons/calendar.png" alt="icon-calendar" />
+          <p>
+            {formattedPlayingAt.charAt(0).toUpperCase() +
+              formattedPlayingAt.slice(1)}
+          </p>
+          <img src="/icons/clock.png" alt="icon-clock" />
+          <p>{activity.playing_time.slice(0, 5).replace(":", "h")}</p>
+          <img src="/icons/pin.png" alt="icon-pin" />
+          <p>{activity.city}</p>
         </div>
-        {isPending ? (
+        <div className="card-tags">
+          <p className="card-tag">
+            {activity.level === "all" && "Tous niveaux"}
+            {activity.level === "beginner" && "Débutant"}
+            {activity.level === "amateur" && "Intermédiaire"}
+            {activity.level === "advanced" && "Confirmé"}
+          </p>
+          <p
+            className={`card-tag ${!activity.disabled && "condition-missing"}`}
+          >
+            <img src="/icons/disabled.png" alt="logo disabled" />
+            Handisport
+          </p>
+          <p className={`card-tag ${!activity.locker && "condition-missing"}`}>
+            <img src="/icons/locker.png" alt="logo locker" />
+            Vestiaires
+          </p>
+          <p className={`card-tag ${!activity.shower && "condition-missing"}`}>
+            <img src="/icons/shower.png" alt="logo shower" />
+            Douches
+          </p>
+          <p className={`card-tag ${!activity.toilet && "condition-missing"}`}>
+            <img src="/icons/toilet.png" alt="logo toilet" />
+            Toilettes
+          </p>
+          <p
+            className={`card-tag ${!activity.air_conditioning && "condition-missing"}`}
+          >
+            <img
+              src="/icons/air-conditionning.png"
+              alt="logo air conditionning"
+            />
+            Clim
+          </p>
+        </div>
+        <div className="nb-participant">
+          <p>
+            <img src="/icons/participants.png" alt="logo participants" />
+            {`${activity.nb_participant}/${activity.nb_spots} Participants`}
+          </p>
+          <p>{`${nbAvailableSpots < 0 ? "0" : nbAvailableSpots} ${nbAvailableSpots <= 1 ? "place restante" : "places restantes"}`}</p>
+        </div>
+        <div className="bar">
+          <div
+            className={`progress-bar ${activity.nb_participant >= activity.nb_spots / 2 && "almost-full"} ${nbAvailableSpots === 0 && "full"}`}
+            style={{ "--size": `${widthProgressBar}%` } as React.CSSProperties}
+          >
+            {" "}
+          </div>
+        </div>
+        {status !== "published" && (
+          <>
+            <div className="card-footer">
+              <div className="user-organizer">
+                <img src={activity.user_picture} alt="user" />
+                <p>{activity.username}</p>
+              </div>
+              {status === "incoming" && (
+                <img
+                  src="/icons/check.png"
+                  alt="validate"
+                  className="tag-status"
+                />
+              )}
+              {!status && (
+                <button
+                  type="button"
+                  onClick={() => makeReservation(activity, nbAvailableSpots)}
+                >
+                  {nbAvailableSpots === 0 ? (
+                    <>
+                      <img src="/icons/bell.png" alt="logo alert" />
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      {alreadyParticipant
+                        ? "Déjà inscrit"
+                        : status
+                          ? status
+                          : "Réserver"}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+            <div className={nbAvailableSpots === 0 ? "activity-full" : ""}>
+              {" "}
+            </div>
+          </>
+        )}
+        {status === "published" && (
+          <button
+            type="button"
+            className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
+            onClick={onClickListParticipant}
+          >
+            Participants
+            <img
+              src="/icons/chevron.png"
+              alt=""
+              className={`${participantsListIsOpen ? "rotate" : ""}`}
+            />
+          </button>
+        )}
+
+        {status === "pending" && (
           <div className="invitation-buttons">
             <button
               type="button"
@@ -211,30 +263,16 @@ function ActivityCard({
               Accepter
             </button>
           </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => makeReservation(activity, nbAvailableSpots)}
-          >
-            {nbAvailableSpots === 0 ? (
-              <>
-                <img src="/icons/bell.png" alt="logo alert" />
-              </>
-            ) : (
-              <>
-                {" "}
-                {alreadyParticipant
-                  ? "Déjà inscrit"
-                  : participantStatus
-                    ? participantStatus
-                    : "Reserve"}
-              </>
-            )}
-          </button>
         )}
-      </div>
-      <div className={nbAvailableSpots === 0 ? "Complet" : ""}> </div>
-    </article>
+
+        {participantsListIsOpen && (
+          <ParticipantsList
+            activityId={activity.id}
+            visibility={activity.visibility}
+          />
+        )}
+      </article>
+    </>
   );
 }
 

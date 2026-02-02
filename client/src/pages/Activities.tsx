@@ -7,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 
 const LIMIT = 10;
-const userId = 25; // Replace userId with context loged in variable
+const userId = 1; // Replace userId with context loged in variable
 
 function Activities() {
   const { page } = useParams();
@@ -22,8 +22,6 @@ function Activities() {
   });
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-
-  console.log(activities);
 
   useEffect(() => {
     if (!filters.sport && !filters.city && !filters.playingAt) return;
