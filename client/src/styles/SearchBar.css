@@ -104,7 +104,6 @@ section.searchbar article ul.dropdown {
   border: 1px solid var(--input-color);
   position: absolute;
   top: 37px;
-  border: 1px solid var(--refused-color);
   width: 100%;
   z-index: 2;
 }
@@ -121,15 +120,12 @@ section.searchbar article ul.dropdown button {
 }
 
 .date-input {
-  color: #9ca3af; /* gris */
+  color: #787878;
 }
 
-.date-input:focus {
-  color: #000;
-}
-
-.date-input:not([value=""]) {
-  color: #000;
+.date-input:focus,
+.date-input:valid {
+  color: var(--dark-color);
 }
 
 section.searchbar article ul.dropdown-false li {

@@ -167,6 +167,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
             required
             min={new Date().toISOString().split("T")[0]}
             onChange={searchPlayingAt}
+            className="date-input"
           />
           <ul className={`${emptyInputPlayingAt && "dropdown-false"}`}>
             {emptyInputPlayingAt && (
