@@ -6,6 +6,9 @@ import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 
+const LIMIT = 10;
+const userId = 25; // Replace userId with context loged in variable
+
 function Activities() {
   const { page } = useParams();
   const currentPage = Math.max(1, Number(page) || 1);
@@ -20,9 +23,6 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  const LIMIT = 10;
-  const userId = 25; // Replace userId with context loged in variable
-
   console.log(activities);
 
   useEffect(() => {
@@ -35,35 +35,35 @@ function Activities() {
       let enrolledActivityIds: number[] = [];
 
       if (userId) {
-        const res = await fetch(
+        const enrollmentsResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
         );
-        enrolledActivityIds = await res.json();
+        enrolledActivityIds = await enrollmentsResponse.json();
       }
 
       const queryString = new URLSearchParams({
         filters: JSON.stringify(filters),
       }).toString();
 
-      const allActivities = await fetch(
+      const activitiesResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
       );
 
-      const data = await allActivities.json();
+      const activitiesData = await activitiesResponse.json();
 
       const filteredActivities = userId
-        ? data.activities.filter(
+        ? activitiesData.activities.filter(
             (a: Activity) => !enrolledActivityIds.includes(a.id),
           )
-        : data.activities;
+        : activitiesData.activities;
 
       setActivities(filteredActivities);
-      setTotalPages(data.pagination.totalPages);
-      setTotalActivities(data.pagination.totalActivities);
+      setTotalPages(activitiesData.pagination.totalPages);
+      setTotalActivities(activitiesData.pagination.totalActivities);
     };
 
     fetchAndFilterActivities();
-  }, [currentPage, filters, userId]);
+  }, [currentPage, filters]);
 
   return (
     <>
