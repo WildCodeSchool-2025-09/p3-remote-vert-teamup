@@ -100,3 +100,10 @@ type Sport = {
   id: number;
   name: string;
 };
+
+type InvitationAcceptedEmail = {
+  organizerEmail: string;
+  organizerUsername: string;
+  activityName: string;
+  participantUsername: string;
+};

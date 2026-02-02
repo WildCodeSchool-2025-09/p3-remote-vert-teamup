@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
@@ -67,6 +67,50 @@ function ActivityCard({
       navigate("/my-activities", {
         state: activity.auto_validation ? 0 : 2,
       });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const acceptInvitation = async (activityId: number) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: 25,
+            activityId: activityId,
+            status: "accepted",
+            participantUsername: "CurrentUser",
+          }),
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to accept invitation");
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refuseInvitation = async (activityId: number) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: 25,
+            activityId: activityId,
+          }),
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to refuse invitation");
+
     } catch (err) {
       console.error(err);
     }
@@ -204,6 +248,25 @@ function ActivityCard({
           </button>
         )}
 
+        {status === 'pending' && (
+        <div className="invitation-buttons">
+          <button
+            type="button"
+            className="refuse-button"
+            onClick={() => refuseInvitation(activity.id)}
+          >
+            Refuser
+          </button>
+          <button
+            type="button"
+            className="accept-button"
+            onClick={() => acceptInvitation(activity.id)}
+          >
+            Accepter
+          </button>
+        </div>
+        )}
+
         {participantsListIsOpen && (
           <ParticipantsList
             activityId={activity.id}
@@ -211,8 +274,9 @@ function ActivityCard({
           />
         )}
       </article>
-    </>
+    </> 
   );
 }
+
 
 export default ActivityCard;

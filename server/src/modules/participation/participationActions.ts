@@ -1,6 +1,10 @@
 import type { RequestHandler } from "express";
 import participationRepository from "./participationRepository";
 import { StatusCodes } from "http-status-codes";
+import ParticipationRepository from "./participationRepository";
+import participateRepository from "./participationRepository";
+import activityRepository from "../activity/activityRepository";
+import mailService from "../../services/mailService";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
@@ -43,16 +47,6 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-// const verifyParticipation: RequestHandler = async (req, res, next) => {
-//   try {
-//     const { activityId } = req.body;
-//     const userId = 25;
-
-//     const participant = await participationRepository.read(userId, activityId);
-
-//     if (participant) {
-//       res.sendStatus(StatusCodes.CONFLICT);
-
 const browseSome: RequestHandler = async (req, res, next) => {
   try {
     const userId = Number(req.query.userId);
@@ -74,4 +68,50 @@ const browseSome: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browseByActivity, add, edit, browseSome };
+const editStatus: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId, status, participantUsername } = req.body;
+
+    const result = await ParticipationRepository.update(
+      userId,
+      activityId,
+      status,
+    );
+
+    if (status === "accepted") {
+      const activity = await activityRepository.readWithOrganizer(activityId);
+
+      await mailService.sendInvitationAcceptedEmail({
+        organizerEmail: activity.organizer_email,
+        organizerUsername: activity.organizer_username,
+        activityName: activity.name,
+        participantUsername: participantUsername,
+      });
+    }
+
+    res.json({ message: "Participation updated", result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteParticipation: RequestHandler = async (req, res, next) => {
+  try {
+    const { userId, activityId } = req.body;
+
+    const result = await ParticipationRepository.delete(userId, activityId);
+
+    res.json({ message: "Participation deleted", result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default {
+  add,
+  browseSome,
+  editStatus,
+  deleteParticipation,
+  edit,
+  browseByActivity,
+};

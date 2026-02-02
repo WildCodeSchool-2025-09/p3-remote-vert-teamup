@@ -7,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 
 const LIMIT = 10;
-const userId = 12; // Replace userId with context loged in variable
+const userId = 25; // Replace userId with context loged in variable
 
 function Activities() {
   const { page } = useParams();

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
+import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
-import { toast, Toaster } from "react-hot-toast";
 import ActivityCard from "../components/ActivityCard.tsx";
 
 function MyActivities() {
