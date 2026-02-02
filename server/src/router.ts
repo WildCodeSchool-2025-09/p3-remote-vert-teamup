@@ -12,11 +12,8 @@ router.get("/api/activities", activityActions.browse);
 router.get("/api/users", userActions.readByEmail);
 router.get("/api/activities/me", activityActions.browseMine);
 
-router.post(
-  "/api/participation",
-  participationActions.verifyParticipation,
-  participationActions.add,
-);
+router.get("/api/participations", participationActions.browseSome);
+router.post("/api/participation", participationActions.add);
 router.put("/api/participation", participationActions.editStatus);
 router.delete("/api/participation", participationActions.deleteParticipation);
 

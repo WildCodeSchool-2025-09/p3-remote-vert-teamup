@@ -6,13 +6,15 @@ import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const newUser = {
-      userId: req.body.userId,
-      activityId: req.body.activityId,
-      status: req.body.status,
-    };
+    const participant = await participateRepository.read(req.body);
+    if (participant[0]) {
+      res.json({
+        alreadyClicked: true,
+      });
+      return;
+    }
 
-    const response = await ParticipationRepository.create(newUser);
+    const response = await ParticipationRepository.create(req.body);
 
     res.json(response);
   } catch (err) {
@@ -20,23 +22,20 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-const verifyParticipation: RequestHandler = async (req, res, next) => {
+const browseSome: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId } = req.body;
+    const userId = Number(req.query.userId);
 
-    console.log(req.body);
-
-    const participant = await participateRepository.read(userId, activityId);
-
-    if (participant) {
+    if (!userId) {
       res.json({
-        message: "Participant already enrolled",
-        participant,
-        alreadyClicked: true,
+        message: "User is not enrolled in any activity",
       });
       return;
     }
-    next();
+
+    const activitiesUserEnrolled = await participateRepository.read({ userId });
+
+    res.status(201).json(activitiesUserEnrolled.map((a) => a.activity_id));
   } catch (err) {
     next(err);
   }
@@ -77,4 +76,4 @@ const deleteParticipation: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, verifyParticipation, editStatus, deleteParticipation };
+export default { add, browseSome, editStatus, deleteParticipation };

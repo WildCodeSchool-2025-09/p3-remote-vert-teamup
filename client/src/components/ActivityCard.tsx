@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 
 type ActivityCardType = {
@@ -9,7 +9,12 @@ type ActivityCardType = {
   onStatusChange?: () => void;
 };
 
-function ActivityCard({ activity, participantStatus, isPending, onStatusChange }: ActivityCardType) {
+function ActivityCard({
+  activity,
+  participantStatus,
+  isPending,
+  onStatusChange,
+}: ActivityCardType) {
   const navigate = useNavigate();
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
@@ -33,11 +38,10 @@ function ActivityCard({ activity, participantStatus, isPending, onStatusChange }
     }
 
     const newParticipant = {
+      userId: 25,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };
-
-    const selectedTab = activity.auto_validation ? 0 : 2;
 
     try {
       const response = await fetch(
@@ -61,9 +65,7 @@ function ActivityCard({ activity, participantStatus, isPending, onStatusChange }
       }
 
       navigate("/my-activities", {
-        state: {
-          selectedTab,
-        },
+        state: activity.auto_validation ? 0 : 2,
       });
     } catch (err) {
       console.error(err);
