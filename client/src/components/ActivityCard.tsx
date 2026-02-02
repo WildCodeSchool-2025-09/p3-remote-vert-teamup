@@ -80,7 +80,7 @@ function ActivityCard({
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: 25,
+            userId: 1,
             activityId: activityId,
             status: "accepted",
             participantUsername: "CurrentUser",
@@ -89,7 +89,6 @@ function ActivityCard({
       );
 
       if (!response.ok) throw new Error("Failed to accept invitation");
-
     } catch (err) {
       console.error(err);
     }
@@ -110,7 +109,6 @@ function ActivityCard({
       );
 
       if (!response.ok) throw new Error("Failed to refuse invitation");
-
     } catch (err) {
       console.error(err);
     }
@@ -248,23 +246,23 @@ function ActivityCard({
           </button>
         )}
 
-        {status === 'pending' && (
-        <div className="invitation-buttons">
-          <button
-            type="button"
-            className="refuse-button"
-            onClick={() => refuseInvitation(activity.id)}
-          >
-            Refuser
-          </button>
-          <button
-            type="button"
-            className="accept-button"
-            onClick={() => acceptInvitation(activity.id)}
-          >
-            Accepter
-          </button>
-        </div>
+        {status === "pending" && (
+          <div className="invitation-buttons">
+            <button
+              type="button"
+              className="refuse-button"
+              onClick={() => refuseInvitation(activity.id)}
+            >
+              Refuser
+            </button>
+            <button
+              type="button"
+              className="accept-button"
+              onClick={() => acceptInvitation(activity.id)}
+            >
+              Accepter
+            </button>
+          </div>
         )}
 
         {participantsListIsOpen && (
@@ -274,9 +272,8 @@ function ActivityCard({
           />
         )}
       </article>
-    </> 
+    </>
   );
 }
-
 
 export default ActivityCard;
