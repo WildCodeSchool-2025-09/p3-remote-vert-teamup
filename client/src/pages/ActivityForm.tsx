@@ -89,7 +89,7 @@ function ActivityForm() {
 
     const activityData = {
       activity: {
-        user_id: 1, // TODO: remplacer après authentification !
+        user_id: 25, // TODO: remplacer après authentification !
         sport_id: Number(sportId),
         address: addressRef.current?.value || "",
         city: cityRef.current?.value || "",
@@ -108,7 +108,6 @@ function ActivityForm() {
         toilet: toilet,
         air_conditioning: airConditioning,
       },
-      status: "inviting",
       guestIds,
     };
 
@@ -144,6 +143,7 @@ function ActivityForm() {
   };
 
   const addGuest = async () => {
+    setError((prev) => ({ ...prev, addActivity: "" }));
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/users?email=${guestInput}`,
@@ -668,7 +668,10 @@ function ActivityForm() {
                     onFocus={() =>
                       setError((prev) => ({ ...prev, addGuest: "" }))
                     }
-                    onChange={(e) => setGuestInput(e.target.value)}
+                    onChange={(e) => {
+                      setGuestInput(e.target.value);
+                      setError((prev) => ({ ...prev, addActivity: "" }));
+                    }}
                     placeholder="Inviter des personnes (email)"
                   />
                   {error.addGuest && (
