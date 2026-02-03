@@ -120,6 +120,7 @@ function ActivityCard({
         className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >
         <div className={`card-header ${activity.name}`}>
+          <div className="overlay-img"> </div>
           <h2>{activity.name}</h2>
           <p className={`label-price ${price === 0 ? "free" : "paid"}`}>
             {price === 0

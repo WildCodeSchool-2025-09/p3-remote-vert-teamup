@@ -202,7 +202,7 @@ function SearchBar({ setFilters }: SearchBarProps) {
           onKeyDown={(e) => e.key === "Escape" && closeCriteriaModal()}
           className="modal-criteria"
         >
-          <SearchFilters onClose={closeCriteriaModal} />
+          <SearchFilters onClose={closeCriteriaModal} setFilters={setFilters} />
         </dialog>
       </section>
     </>

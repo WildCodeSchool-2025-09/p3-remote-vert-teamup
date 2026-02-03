@@ -1,3 +1,10 @@
+.tagline {
+  margin-top: 2rem;
+  margin-left: 8rem;
+  font-family: var(--heading-font);
+  font-size: var(--heading-desktop-size);
+}
+
 .activities-container {
   display: flex;
   flex-direction: column;
@@ -54,6 +61,10 @@
   .header-activity {
     width: 100%;
     padding-right: 1.5rem;
+
+    & > h1 {
+      font-size: var(--title-desktop-size);
+    }
 
     & p {
       font-size: var(--tag-desktop-size);

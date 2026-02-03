@@ -1,7 +1,13 @@
 .publication-page {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-container {
   max-width: 90vw;
-  min-height: 100vh;
-  margin: auto;
+  min-height: calc(100vh -12rem);
 }
 
 .publication-page h1 {
@@ -827,11 +833,10 @@ fieldset {
 }
 
 @media (min-width: 1024px) {
-  .publication-page {
+  .form-container {
     max-width: none;
     width: 668px;
     margin: 0;
-    margin-left: 160px;
     padding: 40px 0;
   }
 
@@ -1220,6 +1225,9 @@ fieldset {
 }
 
 @media (min-width: 1024px) {
+  .modal-content {
+    padding-right: 0.5rem;
+  }
   .modal-header {
     padding: 0;
     padding-bottom: 28px;
@@ -1258,7 +1266,60 @@ fieldset {
     line-height: 14px;
   }
 
+  .criteria-label input[type="radio"]:checked::after {
+    width: 8px;
+    height: 8px;
+  }
+
   .criteria-divider {
     margin: 24px 0px;
+  }
+}
+
+@media (min-width: 1040px) {
+  .publication-page {
+    width: calc(100vw - 12rem);
+    margin-left: 10rem;
+    margin-right: 3rem;
+    gap: 5rem;
+  }
+
+  .form-container {
+    margin-left: 0;
+  }
+
+  .activities-container-page-publication {
+    padding: 64px 0;
+  }
+
+  .activities-page-publication {
+    min-width: 420px;
+    max-height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .recently-activities {
+    display: block;
+    min-width: 420px;
+    font-family: var(--title-font);
+    font-size: var(--title-desktop-size);
+    padding-right: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .seperation {
+    width: 1px;
+    height: 100vh;
+    border: none;
+    border-left: 1px solid var(--dark-color);
+    margin-top: 3rem;
+  }
+
+  .publication-page h1 {
+    margin: 0 0 0.5rem 0;
   }
 }

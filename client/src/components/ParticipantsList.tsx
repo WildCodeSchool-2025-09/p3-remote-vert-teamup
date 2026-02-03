@@ -29,7 +29,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   async function addGuest() {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user?email=${inputGuest}`,
+        `${import.meta.env.VITE_API_URL}/api/users?email=${inputGuest}`,
       );
 
       if (response.status === StatusCodes.NO_CONTENT) {

@@ -35,6 +35,8 @@ function Activities() {
     const fetchAndFilterActivities = async () => {
       let enrolledActivityIds: number[] = [];
 
+      console.log(filters);
+
       if (userId) {
         const enrollmentsResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
@@ -68,6 +70,7 @@ function Activities() {
 
   return (
     <>
+      {!isMobile && <p className="tagline">Que recherchez-vous ?</p>}
       <section className="page-activities">
         <div className="activities-container">
           <SearchBar setFilters={setFilters} />
@@ -87,7 +90,9 @@ function Activities() {
             ))}
           </section>
         </div>
-        <div className="filters-desktop">{!isMobile && <SearchFilters />}</div>
+        <div className="filters-desktop">
+          {!isMobile && <SearchFilters setFilters={setFilters} />}
+        </div>
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
