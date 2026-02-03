@@ -1,24 +1,28 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
-import participateRepository from "../participation/participationRepository";
+import participationRepository from "../participation/participationRepository";
 import activityRepository from "./activityRepository";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const { activity, guestIds, status } = req.body;
+    const { activity, guestIds } = req.body;
+
+    if (!activity.visibility && guestIds.length === 0) {
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+        error: "Une activité privée doit avoir au moins un participant",
+      });
+      return;
+    }
 
     const activityId = await activityRepository.create(activity);
 
     if (!activity.visibility) {
-      if (guestIds.length === 0) {
-        res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-          error: "Une activité privée doit avoir au moins un participant",
-        });
-        return;
-      }
-
       guestIds.map(async (userId: number) => {
-        await participateRepository.create({ userId, activityId, status });
+        await participationRepository.create({
+          userId,
+          activityId,
+          status: "inviting",
+        });
       });
     }
 
@@ -35,9 +39,6 @@ const browse: RequestHandler = async (req, res, next) => {
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
     const filters: Filters = JSON.parse(req.query.filters as string);
-
-    const userId = Number.parseInt(req.query.userId as string);
-    const status = req.query.status && (req.query.status as string);
 
     const { activities, totalActivities, totalPages } =
       await activityRepository.readAll(page, limit, filters);
@@ -58,7 +59,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const browseMine: RequestHandler = async (req, res, next) => {
   try {
-    const userId = 25;
+    const userId = 1;
     const status = req.query.status as string;
 
     const activities = await activityRepository.readAllByUserAndStatus(

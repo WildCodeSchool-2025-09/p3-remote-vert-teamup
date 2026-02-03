@@ -1,8 +1,9 @@
 .card {
   background-color: var(--light-color);
   border-radius: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px 0px;
   position: relative;
+  overflow: hidden;
   animation: scale 0.5s cubic-bezier(0.5, 0, 0.5, 1) both, appear 0.5s linear
     both;
   width: 320px;
@@ -38,7 +39,6 @@
 
 .card-header {
   height: 7rem;
-  border-radius: 6px 6px 0 0;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -187,6 +187,23 @@
 .Skateboard {
   background-image: url("/img_sports/skateboard.png");
 }
+.tag-status {
+  width: 32px;
+  height: 32px;
+}
+
+.accepted {
+  color: var(--light-color);
+  font-family: var(--body-font);
+  font-size: var(--body-desktop-size);
+  width: 108px;
+  height: 28px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: var(--input-color);
+}
 
 .important-info {
   display: flex;
@@ -239,6 +256,7 @@
   padding: 0 0.5rem 0.5rem 0.5rem;
   font-family: var(--tag-font);
   font-size: var(--tag-size);
+  height: 3rem;
 
   & .card-tag {
     background-color: var(--neutral-color);
@@ -402,6 +420,28 @@
   }
 }
 
+.dropdown-participation {
+  font-family: var(--button-font);
+  font-size: var(--button-size);
+  border: none;
+  background-color: var(--button-color);
+  color: var(--light-color);
+  height: 2rem;
+  width: 11rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  z-index: 1;
+  margin: 1rem auto;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 @media (min-width: 1024px) {
   .card-footer {
     padding: 0 0.5rem 1rem 0.5rem;
@@ -433,6 +473,11 @@
       }
     }
   }
+
+  .dropdown-participation {
+    font-size: var(--button-desktop-size);
+    width: 13rem;
+  }
 }
 
 .activity-full {
@@ -442,5 +487,61 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 10px;
+}
+
+.card-important {
+  grid-row: span 2;
+  align-self: flex-start;
+}
+
+.dropdown-open {
+  box-shadow: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-participation img {
+  transition: all 0.2s ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.invitation-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.invitation-buttons button {
+  font-family: var(--body-highlight-font);
+  font-size: var(--body-size);
+  border: none;
+  color: var(--light-color);
+  height: 18px;
+  width: 69px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.refuse-button {
+  background-color: var(--refused-color);
+}
+
+.accept-button {
+  background-color: var(--input-color);
+}
+
+@media (min-width: 1024px) {
+  .invitation-buttons button {
+    height: 24px;
+    width: 80px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
 }

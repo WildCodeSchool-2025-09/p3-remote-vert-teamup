@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
+import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
-import { toast, Toaster } from "react-hot-toast";
 import ActivityCard from "../components/ActivityCard.tsx";
 
 function MyActivities() {
@@ -10,11 +10,12 @@ function MyActivities() {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
+  const [showParticpants, setShowParticipants] = useState<number | null>();
 
   useEffect(() => {
     if (location.state) {
-      if (location.state.selectedTab !== undefined) {
-        setSelectedTab(location.state.selectedTab);
+      if (location.state !== undefined) {
+        setSelectedTab(location.state);
       }
 
       if (location.state.toast) {
@@ -41,6 +42,10 @@ function MyActivities() {
       .then((myActivities) => setMyActivities(myActivities));
   }, [status]);
 
+  useEffect(() => {
+    selectedTab && setShowParticipants(null);
+  }, [selectedTab]);
+
   return (
     <>
       <div id="my-activities">
@@ -54,7 +59,17 @@ function MyActivities() {
 
         <section className="cards-myactivities">
           {myActivities.map((myActivity) => (
-            <ActivityCard activity={myActivity} key={myActivity.id} />
+            <ActivityCard
+              activity={myActivity}
+              key={myActivity.id}
+              status={status}
+              participantsListIsOpen={showParticpants === myActivity.id}
+              onClickListParticipant={() =>
+                setShowParticipants(
+                  showParticpants === myActivity.id ? null : myActivity.id,
+                )
+              }
+            />
           ))}
         </section>
       </div>

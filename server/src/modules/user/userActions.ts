@@ -8,12 +8,14 @@ const readByEmail: RequestHandler = async (req, res, next) => {
 
     if (email.trim() === "") {
       res.sendStatus(StatusCodes.NO_CONTENT);
+      return;
     }
 
     const user = await userRepository.readByEmail(email);
 
     if (!user) {
       res.sendStatus(StatusCodes.NOT_FOUND);
+      return;
     }
 
     res.json(user).status(StatusCodes.OK);

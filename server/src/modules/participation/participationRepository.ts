@@ -2,12 +2,32 @@ import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
 type newUserType = {
-  userId: number;
-  activityId: number;
-  status: string;
+  userId?: number;
+  activityId?: number;
+  status?: string;
 };
 
-class ParticipationRepository {
+class participationRepository {
+  async readAllParticipants(activityId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT participation.id, participation.status, user.id as userId, user.username, user.picture FROM participation
+      JOIN user ON participation.user_id = user.id
+      WHERE participation.activity_id = ?
+      ORDER BY FIELD(participation.status, 'request', 'accepted', 'inviting', 'refused')`,
+      [activityId],
+    );
+
+    return rows as Participant[];
+  }
+
+  async patch(id: number, status: string) {
+    const [result] = await databaseClient.query<Result>(
+      "UPDATE participation SET status = ? WHERE participation.id = ?",
+      [status, id],
+    );
+    return result.affectedRows;
+  }
+
   async create(newParticipant: newUserType) {
     const [Result] = await databaseClient.query<Result>(
       `INSERT INTO participation (status, user_id, activity_id)
@@ -17,15 +37,49 @@ class ParticipationRepository {
     return Result;
   }
 
-  async read(usedId: number, activityId: number) {
+  async read(newParticipant: newUserType) {
+    const conditions = [];
+    const params = [];
+
+    if (newParticipant.userId) {
+      conditions.push("p.user_id = ?");
+      params.push(newParticipant.userId);
+    }
+
+    if (newParticipant.activityId) {
+      conditions.push("p.activity_id = ?");
+      params.push(newParticipant.activityId);
+    }
+
+    const query = conditions.length > 0 && ` WHERE ${conditions.join(" AND ")}`;
+
     const [rows] = await databaseClient.query<Rows>(
       `SELECT * FROM participation AS p
-      WHERE p.user_id = ? AND p.activity_id = ?`,
-      [usedId, activityId],
+      ${query}`,
+      params,
     );
 
-    return rows[0];
+    return rows;
+  }
+
+  async update(userId: number, activityId: number, status: string) {
+    const [result] = await databaseClient.query<Result>(
+      `UPDATE participation SET status = ?, updated_at = NOW()
+       WHERE user_id = ? AND activity_id = ?`,
+      [status, userId, activityId],
+    );
+
+    return result;
+  }
+
+  async delete(userId: number, activityId: number) {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM participation WHERE user_id = ? AND activity_id = ?",
+      [userId, activityId],
+    );
+
+    return result;
   }
 }
 
-export default new ParticipationRepository();
+export default new participationRepository();
