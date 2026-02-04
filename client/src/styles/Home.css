@@ -1,0 +1,75 @@
+h1.homepage-title {
+  text-align: center;
+  color: var(--accent-color);
+  font-family: var(--heading-font);
+  font-size: 24px;
+  padding: 1rem;
+}
+
+h2.homepage-subtitle {
+  color: var(--dark-color);
+  font-family: var(--heading-font);
+  font-size: var(--heading-size);
+  padding: 1rem;
+}
+
+article.homepage-article {
+  width: 90%;
+  margin: auto;
+  box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+article.homepage-article p {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  line-height: 1.4;
+}
+
+.homepage-button-wrapper {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+}
+
+.homepage-button-wrapper button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--button-size);
+  font-family: var(--button-font);
+  color: var(--light-color);
+  background-color: var(--button-color);
+  border-radius: 10px;
+  width: 113px;
+  height: 35px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.homepage-button-wrapper a {
+  text-decoration: none;
+}
+
+.homepage-carrousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: scroll;
+}
+
+.homepage-carrousel article {
+  min-width: 320px;
+}
+
+.homepage-subtitle-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.homepage-subtitle-wrapper p {
+  font-size: var(--tag-size);
+  font-family: var(--body-font);
+}
