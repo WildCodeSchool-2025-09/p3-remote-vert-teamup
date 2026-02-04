@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import ActivityCard from "../components/ActivityCard";
 import "../styles/Activity.css";
 import { useNavigate, useParams } from "react-router";
@@ -6,8 +6,21 @@ import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 
+const tagLabelTranslations = [
+  { key: "locker", label: "Vestiaires" },
+  { key: "shower", label: "Douches" },
+  { key: "toilet", label: "Toilettes" },
+  { key: "air_conditioning", label: "Climatisation" },
+  { key: "disabled", label: "Handisport" },
+  { key: "all", label: "Tout Niveu" },
+  { key: "amateur", label: "Débutant" },
+  { key: "begginer", label: "Intermédiaire" },
+  { key: "advance", label: "Confirmé" },
+];
+
 const LIMIT = 10;
 const userId = 25; // Replace userId with context loged in variable
+const excludeFromFilterTags = ["sport", "playingAt", "city"];
 
 function Activities() {
   const { page } = useParams();
@@ -15,7 +28,7 @@ function Activities() {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalActivities, setTotalActivities] = useState(0);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     sport: "",
     playingAt: "",
     city: "",
@@ -23,7 +36,55 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  console.log(activities);
+  const translateTaglables = useCallback((key: string, value: string) => {
+    const translateOptions = tagLabelTranslations.find((item) => {
+      if (key === "level") {
+        return item.key === value;
+      }
+      return item.key === key;
+    });
+
+    return {
+      key,
+      value: translateOptions ? translateOptions.label : null,
+    };
+  }, []);
+
+  const filterTags = useMemo(() => {
+    return Object.entries(filters)
+      .filter(([key, value]) =>
+        key === "level" || key === "price"
+          ? value !== null
+          : !excludeFromFilterTags.includes(key) &&
+            typeof value === "boolean" &&
+            value,
+      )
+      .map(([key, value]) => {
+        if (key === "price") {
+          const numValue = Number(value);
+          return {
+            key: "price",
+            value: numValue === 0 ? "Gratuit" : `${value} €`,
+          };
+        }
+
+        return translateTaglables(key, value as keyof OptionalFilters);
+      });
+  }, [filters, translateTaglables]);
+
+  const removeTag = (tag: string | number) => {
+    setFilters((prev) => {
+      const next = { ...prev };
+
+      if (tag === "level" || tag === "price") {
+        next[tag] = null;
+      } else {
+        delete next[tag as keyof Filters];
+      }
+
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!filters.sport && !filters.city && !filters.playingAt) return;
@@ -80,13 +141,21 @@ function Activities() {
               <p>{totalActivities} résultats</p>
             )}
           </div>
+          <div className="filter-tags">
+            {filterTags.map(({ key, value }) => (
+              <button type="button" key={key} onClick={() => removeTag(key)}>
+                {" "}
+                {value}{" "}
+              </button>
+            ))}
+          </div>
           <section className="cards-activity">
             {activities.map((activity) => (
               <ActivityCard key={activity.id} activity={activity} />
             ))}
           </section>
         </div>
-        <SearchFilters setFilters={setFilters} />
+        <SearchFilters setFilters={setFilters} filters={filters} />
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
