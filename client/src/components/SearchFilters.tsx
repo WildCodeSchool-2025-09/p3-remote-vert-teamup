@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/SearchFilters.css";
 import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router";
 
 type Filters = {
   locker: boolean;
@@ -63,6 +64,8 @@ function SearchFilters({ setFilters, onClose }: SearchFilterProps) {
 
   const isFree = optionalFilters.price === 0;
 
+  const navigate = useNavigate();
+
   const resetFilters = () => {
     setOptionalFilters(initialState);
     setFilters?.((prev) => ({
@@ -97,6 +100,7 @@ function SearchFilters({ setFilters, onClose }: SearchFilterProps) {
       };
     });
     onClose?.();
+    navigate("/activities/page/1");
   };
 
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });

@@ -19,6 +19,10 @@
     font-size: var(--title-size);
   }
 
+  & > img {
+    width: 4rem;
+  }
+
   & > .btn-chat {
     background-color: var(--dark-color);
     width: 2rem;
