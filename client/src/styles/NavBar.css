@@ -140,7 +140,7 @@ svg {
 
     & > .top-navbar {
       justify-content: flex-start;
-      padding-top: 1.25rem;
+      padding-top: 0.5rem;
       margin-right: 0;
     }
 
@@ -183,10 +183,17 @@ svg {
       font-family: var(--title-font);
       font-size: var(--title-desktop-size);
     }
+
+    & > img {
+      width: 4.5rem;
+    }
   }
 
   .navbar-link {
     font-size: var(--body-desktop-size);
+    position: relative;
+    width: 50px;
+    text-align: center;
 
     &.link-publication {
       position: static;
@@ -212,6 +219,22 @@ svg {
         }
       }
     }
+  }
+
+  .navbar-link:not(.link-publication)::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    width: 3px;
+    height: 0;
+    background: var(--button-color);
+    transform: translateY(-50%);
+    transition: height 0.2s ease;
+  }
+
+  .navbar-link:not(.link-publication, .link-active):hover::before {
+    height: 100%;
   }
 
   .top-navbar .navbar-link {

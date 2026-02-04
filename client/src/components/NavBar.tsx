@@ -7,6 +7,7 @@ function NavBar() {
       <nav className="navbar">
         <div className="top-navbar">
           <div className="hello">
+            <img src="/logo.png" alt="logo teamup" />
             <p>Bonjour</p>
             <p>User</p>
           </div>
@@ -51,6 +52,7 @@ function NavBar() {
             }
             to="/publication"
           >
+            <span className="nav-indicator" />
             <svg viewBox="0 0 28 28">
               <title>icon add</title>
               <g clip-path="url(#clip0_52_153)">
@@ -63,7 +65,7 @@ function NavBar() {
                 </clipPath>
               </defs>
             </svg>
-            <p>Publier</p>
+            <p>Créer</p>
           </NavLink>
         </div>
         <div className="bottom-navbar">
