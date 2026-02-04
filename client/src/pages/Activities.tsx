@@ -35,8 +35,6 @@ function Activities() {
     const fetchAndFilterActivities = async () => {
       let enrolledActivityIds: number[] = [];
 
-      console.log(filters);
-
       if (userId) {
         const enrollmentsResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
