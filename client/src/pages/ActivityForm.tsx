@@ -5,7 +5,7 @@ import "../styles/ActivityForm.css";
 import { useMediaQuery } from "react-responsive";
 import ActivityCard from "../components/ActivityCard";
 
-const LIMIT = 5;
+const LIMIT = 6;
 
 function ActivityForm() {
   const navigate = useNavigate();
