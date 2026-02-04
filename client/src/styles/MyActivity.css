@@ -12,8 +12,8 @@
 }
 
 .cards-myactivities {
-  display: grid;
-  grid-template-columns: 320px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
 }

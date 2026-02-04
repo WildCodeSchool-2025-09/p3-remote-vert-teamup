@@ -1,5 +1,7 @@
-import "../styles/SearchFilters.css";
 import { useState } from "react";
+import "../styles/SearchFilters.css";
+import { useMediaQuery } from "react-responsive";
+import { useNavigate } from "react-router";
 
 type Filters = {
   locker: boolean;
@@ -19,6 +21,7 @@ type SearchFilterProps = {
       city: string;
     }>
   >;
+  onClose?: () => void;
 };
 
 type EquipmentOptionsType = {
@@ -51,15 +54,17 @@ const initialState = {
   toilet: false,
   air_conditioning: false,
   level: null,
-  price: null,
+  price: 0,
   disabled: false,
 };
 
-function SearchFilters({ setFilters }: SearchFilterProps) {
+function SearchFilters({ setFilters, onClose }: SearchFilterProps) {
   const [optionalFilters, setOptionalFilters] = useState<Filters>(initialState);
   const [prevPayedPrice, setPrevPayedPrice] = useState(15);
 
   const isFree = optionalFilters.price === 0;
+
+  const navigate = useNavigate();
 
   const resetFilters = () => {
     setOptionalFilters(initialState);
@@ -94,78 +99,91 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
         ...optionalFilters,
       };
     });
+    onClose?.();
+    navigate("/activities/page/1");
   };
+
+  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   return (
     <>
-      <section className="section">
-        <div className="reset-btns-container flex-spacing">
-          <button type="button" className="close-btn cls-btn-size">
-            X
-          </button>
-          <button type="button" className="close-btn" onClick={resetFilters}>
+      <div className="modal-content">
+        <div className="modal-header">
+          {isMobile ? (
+            <button type="button" className="modal-close" onClick={onClose}>
+              ✕
+            </button>
+          ) : (
+            <p>Filtres</p>
+          )}
+          <button type="button" className="modal-clear" onClick={resetFilters}>
             Tout effacer
           </button>
         </div>
-        <div className="container">
-          <fieldset className="equipment">
-            <legend className="filter-title">Équipements</legend>
-            <div className="flex-clmn">
-              {equipmentOptions.map((e) => (
-                <label key={e.key} className="flex-spacing ttls">
-                  {e.label}
-                  <input
-                    className="checkbox-pointers"
-                    type="checkbox"
-                    name="equipment"
-                    value={e.key}
-                    checked={optionalFilters[e.key] as boolean}
-                    onChange={updateFilters}
-                  />
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <fieldset className="equipment">
-            <legend className="filter-title">Niveau</legend>
-            <div className="flex-clmn">
-              {levelOptions.map((e) => {
-                return (
-                  <label key={e.key} className="flex-spacing ttls">
-                    {e.label}
-                    <input
-                      className="checkbox-pointers"
-                      type="radio"
-                      name="level"
-                      value={e.key}
-                      checked={optionalFilters.level === e.key}
-                      onChange={updateFilters}
-                    />
-                  </label>
-                );
-              })}
-            </div>
-          </fieldset>
-          <fieldset className="">
-            <legend className="filter-title">Budget</legend>
-            <div className="flex-clmn">
-              <label className="flex-spacing ttls">
-                Gratuit
+
+        <fieldset className="criteria-fieldset">
+          <legend>Équipements</legend>
+          <div className="criteria-group">
+            {equipmentOptions.map((e) => (
+              <label key={e.key} className="criteria-label">
+                {e.label}
                 <input
-                  className="checkbox-pointers"
                   type="checkbox"
-                  name="price"
-                  checked={isFree}
+                  name="equipment"
+                  value={e.key}
+                  checked={optionalFilters[e.key] as boolean}
                   onChange={updateFilters}
                 />
               </label>
-              <span className={`price-tag ${isFree && "slider-disabled"}`}>
-                {optionalFilters.price}€
-              </span>
-              <label
-                className={`flex-spacing ttls ${isFree && "slider-disabled"}`}
-              >
-                Payant
+            ))}
+          </div>
+        </fieldset>
+
+        <hr className="criteria-divider" />
+
+        <fieldset className="criteria-fieldset">
+          <legend>Niveau</legend>
+          <div className="criteria-group">
+            {levelOptions.map((e) => {
+              return (
+                <label key={e.key} className="criteria-label">
+                  {e.label}
+                  <input
+                    type="radio"
+                    name="level"
+                    value={e.key}
+                    checked={optionalFilters.level === e.key}
+                    onChange={updateFilters}
+                  />
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+
+        <hr className="criteria-divider" />
+
+        <fieldset className="criteria-fieldset">
+          <legend>Budget</legend>
+          <div className="criteria-group">
+            <label className="criteria-label">
+              Gratuit
+              <input
+                type="checkbox"
+                name="price"
+                checked={isFree}
+                onChange={updateFilters}
+              />
+            </label>
+
+            <label
+              className={`criteria-label criteria-label-price-desktop ${isFree && "slider-disabled"}`}
+            >
+              Payant
+              <div className="range-price">
+                <span className={`price-tag ${isFree && "slider-disabled"}`}>
+                  {optionalFilters.price}€
+                </span>
                 <input
                   className={`slider ${isFree && "slider-disabled"}`}
                   id="myRange"
@@ -185,34 +203,40 @@ function SearchFilters({ setFilters }: SearchFilterProps) {
                     });
                   }}
                 />
-                <span className={`${isFree && "slider-disabled"}`}> 100€</span>
-              </label>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend className="filter-title">Type de Sport</legend>
-            <div className="flex-clmn">
-              <label className="flex-spacing ttls">
-                Handisport
-                <input
-                  className="checkbox-pointers"
-                  type="checkbox"
-                  name="disabled"
-                  checked={optionalFilters.disabled}
-                  onChange={updateFilters}
-                />
-              </label>
-              <button
-                type="button"
-                onClick={validateFilters}
-                className="validate-btn"
-              >
-                Valider
-              </button>
-            </div>
-          </fieldset>
-        </div>
-      </section>
+                <span className={`price-tag ${isFree && "slider-disabled"}`}>
+                  {" "}
+                  100€
+                </span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <hr className="criteria-divider" />
+
+        <fieldset className="criteria-fieldset">
+          <legend>Type de Sport</legend>
+          <div className="criteria-group">
+            <label className="criteria-label">
+              Handisport
+              <input
+                type="checkbox"
+                name="disabled"
+                checked={optionalFilters.disabled}
+                onChange={updateFilters}
+              />
+            </label>
+          </div>
+        </fieldset>
+
+        <button
+          type="button"
+          onClick={validateFilters}
+          className="btn-validate"
+        >
+          Valider
+        </button>
+      </div>
     </>
   );
 }

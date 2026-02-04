@@ -1,7 +1,13 @@
 .publication-page {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-container {
   max-width: 90vw;
-  min-height: 100vh;
-  margin: auto;
+  min-height: calc(100vh -12rem);
 }
 
 .publication-page h1 {
@@ -23,6 +29,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 12rem;
 }
 
 .combobox {
@@ -395,13 +402,6 @@ fieldset {
   gap: 12px;
 }
 
-fieldset legend {
-  font-family: var(--body-highlight-font);
-  font-size: var(--body-size);
-  color: var(--dark-color);
-  margin-bottom: 4px;
-}
-
 .radio-group {
   display: flex;
   align-items: center;
@@ -499,20 +499,6 @@ fieldset legend {
 .btn-publish:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn-validate {
-  padding: 14px 28px;
-  background-color: var(--button-color);
-  color: var(--dark-color);
-  border: none;
-  border-radius: 25px;
-  font-family: var(--button-font);
-  font-size: var(--button-size);
-  font-weight: 600;
-  cursor: pointer;
-  align-self: center;
-  margin-top: 12px;
 }
 
 .guests-section {
@@ -701,44 +687,34 @@ fieldset legend {
 }
 
 .modal-criteria {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
+  border: none;
   padding: 0;
   margin: 0;
-  border: none;
+  width: 100vw;
+  height: auto;
+  max-width: 100vw;
   background: transparent;
-  overflow: visible;
 }
 
 .modal-criteria::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }
 
 .modal-content {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: var(--light-color);
   width: 100%;
-  max-width: 390px;
+  height: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  max-height: 100vh;
   overflow-y: auto;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 15px 16px;
+  align-items: flex-end;
+  padding: 16px 16px 24px 16px;
 }
 
 .modal-close {
@@ -763,7 +739,7 @@ fieldset legend {
 
 .criteria-fieldset {
   border: none;
-  padding: 0 37px;
+  padding: 0 50px;
   margin: 0;
 }
 
@@ -801,8 +777,8 @@ fieldset legend {
   appearance: none;
   width: 12px;
   height: 12px;
-  background-color: var(--light-color);
-  border: 1px solid var(--neutral-color);
+  background-color: var(--neutral-color);
+  border: 1px solid var(--dark-color);
   margin: 0;
   cursor: pointer;
   flex-shrink: 0;
@@ -843,7 +819,7 @@ fieldset legend {
   margin: 3px auto;
 }
 
-.modal-criteria .btn-validate {
+.btn-validate {
   background-color: var(--button-color);
   color: var(--light-color);
   font-family: var(--button-font);
@@ -857,11 +833,9 @@ fieldset legend {
 }
 
 @media (min-width: 1024px) {
-  .publication-page {
+  .form-container {
     max-width: none;
-    width: 668px;
     margin: 0;
-    margin-left: 160px;
     padding: 40px 0;
   }
 
@@ -877,6 +851,7 @@ fieldset legend {
 
   .publication-form {
     gap: 16px;
+    margin-top: 2rem;
   }
 
   .input-with-icon {
@@ -1084,7 +1059,7 @@ fieldset legend {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 1.5rem;
   }
 
   .criteria-desktop-header h3 {
@@ -1244,12 +1219,133 @@ fieldset legend {
     font-size: var(--body-desktop-size);
   }
 
-  /* Modal still works but less needed on desktop */
+  .criteria-fieldset {
+    padding: 0 0;
+  }
+}
+
+@media (min-width: 1024px) {
   .modal-content {
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 20px;
-    max-width: 420px;
-    max-height: 90vh;
+    padding-right: 0.5rem;
+  }
+  .modal-header {
+    padding: 0;
+    padding-bottom: 28px;
+
+    & > p {
+      font-family: var(--title-font);
+      font-size: var(--title-desktop-size);
+    }
+  }
+
+  .criteria-fieldset legend {
+    font-family: var(--body-highlight-font);
+    font-size: var(--body-desktop-size);
+    text-decoration: underline;
+  }
+
+  .criteria-label {
+    font-family: var(--body-font);
+    font-size: var(--body-desktop-size);
+  }
+
+  .criteria-label-price-desktop {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .criteria-label input[type="checkbox"],
+  .criteria-label input[type="radio"] {
+    width: 16px;
+    height: 16px;
+  }
+
+  .criteria-label input[type="checkbox"]:checked::after {
+    font-size: var(--tag-desktop-size);
+    line-height: 14px;
+  }
+
+  .criteria-label input[type="radio"]:checked::after {
+    width: 8px;
+    height: 8px;
+  }
+
+  .criteria-divider {
+    margin: 24px 0px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .publication-page {
+    width: calc(100vw - 12rem);
+    margin-left: 10rem;
+    margin-right: 3rem;
+    gap: 5rem;
+  }
+
+  .form-container {
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .activities-container-page-publication {
+    padding: 64px 0 0 0;
+    max-width: 50%;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      height: 6rem;
+      background: linear-gradient(
+        to top,
+        rgba(250, 250, 250, 0.95),
+        rgba(255, 255, 255, 0)
+      );
+      pointer-events: none;
+      z-index: 3;
+    }
+  }
+
+  .activities-page-publication {
+    min-width: 420px;
+    max-height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-bottom: 4rem;
+  }
+
+  .recently-activities {
+    display: block;
+    min-width: 420px;
+    font-family: var(--title-font);
+    font-size: var(--title-desktop-size);
+    padding-left: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .seperation {
+    width: 1px;
+    height: 100vh;
+    border: none;
+    border-left: 1px solid var(--dark-color);
+    margin-top: 3rem;
+  }
+
+  .publication-page h1 {
+    margin: 0 0 0.5rem 0;
+    align-self: flex-start;
+  }
+
+  .required-fields {
+    align-self: flex-start;
   }
 }

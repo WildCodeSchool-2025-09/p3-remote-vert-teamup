@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
+import { useMediaQuery } from "react-responsive";
 
 const LIMIT = 10;
 const userId = 1; // Replace userId with context loged in variable
@@ -22,6 +23,8 @@ function Activities() {
   });
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   useEffect(() => {
     if (!filters.sport && !filters.city && !filters.playingAt) return;
@@ -65,7 +68,8 @@ function Activities() {
 
   return (
     <>
-      <section className="flx-activitypg">
+      {!isMobile && <p className="tagline">Que recherchez-vous ?</p>}
+      <section className="page-activities">
         <div className="activities-container">
           <SearchBar setFilters={setFilters} />
           <div className="header-activity">
@@ -84,7 +88,9 @@ function Activities() {
             ))}
           </section>
         </div>
-        <SearchFilters setFilters={setFilters} />
+        <div className="filters-desktop">
+          {!isMobile && <SearchFilters setFilters={setFilters} />}
+        </div>
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
