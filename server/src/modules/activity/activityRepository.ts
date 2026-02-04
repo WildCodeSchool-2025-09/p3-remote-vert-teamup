@@ -37,35 +37,36 @@ class ActivityRepository {
 
     const conditions = [];
     const params = [];
+    if (filters) {
+      if (filters.sport) {
+        conditions.push("s.name = ?");
+        params.push(filters.sport);
+      }
+      if (filters.city) {
+        conditions.push("a.city = ?");
+        params.push(filters.city);
+      }
+      if (filters.playingAt) {
+        conditions.push("a.playing_at = ?");
+        params.push(filters.playingAt);
+      }
 
-    if (filters.sport) {
-      conditions.push("s.name = ?");
-      params.push(filters.sport);
-    }
-    if (filters.city) {
-      conditions.push("a.city = ?");
-      params.push(filters.city);
-    }
-    if (filters.playingAt) {
-      conditions.push("a.playing_at = ?");
-      params.push(filters.playingAt);
-    }
+      filters.locker && conditions.push("a.locker = 1");
+      filters.shower && conditions.push("a.shower = 1");
+      filters.toilet && conditions.push("a.toilet = 1");
+      filters.air_conditioning && conditions.push("a.air_conditioning = 1");
 
-    filters.locker && conditions.push("a.locker = 1");
-    filters.shower && conditions.push("a.shower = 1");
-    filters.toilet && conditions.push("a.toilet = 1");
-    filters.air_conditioning && conditions.push("a.air_conditioning = 1");
+      if (filters.level) {
+        conditions.push("(a.level IS NULL OR a.level = ?)");
+        params.push(filters.level);
+      }
+      if (filters.price !== null && filters.price !== undefined) {
+        conditions.push("(a.price IS NULL OR a.price <= ?)");
+        params.push(filters.price);
+      }
 
-    if (filters.level) {
-      conditions.push("(a.level IS NULL OR a.level = ?)");
-      params.push(filters.level);
+      filters.disabled && conditions.push("a.disabled = 1");
     }
-    if (filters.price !== null && filters.price !== undefined) {
-      conditions.push("(a.price IS NULL OR a.price <= ?)");
-      params.push(filters.price);
-    }
-
-    filters.disabled && conditions.push("a.disabled = 1");
 
     const query =
       conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
