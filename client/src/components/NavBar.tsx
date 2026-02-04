@@ -7,6 +7,7 @@ function NavBar() {
       <nav className="navbar">
         <div className="top-navbar">
           <div className="hello">
+            <img src="/logo.png" alt="logo teamup" />
             <p>Bonjour</p>
             <p>User</p>
           </div>

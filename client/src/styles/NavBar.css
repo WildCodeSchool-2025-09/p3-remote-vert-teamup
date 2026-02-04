@@ -140,7 +140,7 @@ svg {
 
     & > .top-navbar {
       justify-content: flex-start;
-      padding-top: 1.25rem;
+      padding-top: 0.5rem;
       margin-right: 0;
     }
 
@@ -182,6 +182,10 @@ svg {
     p:nth-of-type(2) {
       font-family: var(--title-font);
       font-size: var(--title-desktop-size);
+    }
+
+    & > img {
+      width: 4.5rem;
     }
   }
 
