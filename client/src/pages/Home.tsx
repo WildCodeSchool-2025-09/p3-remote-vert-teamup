@@ -17,30 +17,32 @@ function Home() {
 
   return (
     <section className="homepage">
-      <h1 className="homepage-title">TeamUp</h1>
-      <article className="homepage-article">
-        <p>
-          Envie de bouger, mais pas seul ? <br />
-          TeamUp te permet de créer ou rejoindre des activités sportives avec
-          des personnes qui partagent la même motivation.
-          <br /> <br />
-          <strong>Trouve ton équipe. Passe à l’action.</strong>
-        </p>
-      </article>
-      <div className="superwrapper">
-        <div className="homepage-button-wrapper">
-          <Link to="/activities/page/1">
-            <button type="button">
-              <img src="/icons/search.png" alt="search" />
-              Explore
-            </button>
-          </Link>
-          <Link to="/publication">
-            <button type="button">
-              <img src="/icons/add.png" alt="add" />
-              Crée
-            </button>
-          </Link>
+      <div className="hero-wrapper">
+        <h1 className="homepage-title">TeamUp</h1>
+        <article className="homepage-article">
+          <p>
+            Envie de bouger, mais pas seul ? <br />
+            TeamUp te permet de créer ou rejoindre des activités sportives avec
+            des personnes qui partagent la même motivation.
+            <br /> <br />
+            <strong>Trouve ton équipe. Passe à l’action.</strong>
+          </p>
+        </article>
+        <div className="superwrapper">
+          <div className="homepage-button-wrapper">
+            <Link to="/activities/page/1">
+              <button type="button">
+                <img src="/icons/search.png" alt="search" />
+                Explore
+              </button>
+            </Link>
+            <Link to="/publication">
+              <button type="button">
+                <img src="/icons/add.png" alt="add" />
+                Crée
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
       <div className="homepage-subtitle-wrapper">
@@ -53,23 +55,29 @@ function Home() {
         activities={activities}
         renderActivity={(activity) => <ActivityCard activity={activity} />}
       />
-      <h2 className="homepage-subtitle">Comment ça marche ?</h2>
-      <article className="homepage-article">
-        <p>
-          🔎 Cherche une activité (sport, lieu, date, niveau).
-          <br />🤝 Rejoins un groupe ou crée le tien.
-          <br />🏅 Fais du sport avec des gens motivés.
-        </p>
-      </article>
-      <h2 className="homepage-subtitle">Pourquoi utiliser TeamUp ?</h2>
-      <article className="homepage-article">
-        <p>
-          ✅ Activités adaptées à ton niveau.
-          <br /> ✅ Sport quand tu veux, où tu veux.
-          <br />✅ Rencontre de nouvelles personnes.
-          <br />✅ Pas besoin d’être inscrit dans un club.
-        </p>
-      </article>
+      <div className="faq-wrapper">
+        <div>
+          <h2 className="homepage-subtitle">Comment ça marche ?</h2>
+          <article className="homepage-article">
+            <p>
+              🔎 Cherche une activité (sport, lieu, date, niveau).
+              <br />🤝 Rejoins un groupe ou crée le tien.
+              <br />🏅 Fais du sport avec des gens motivés.
+            </p>
+          </article>
+        </div>
+        <div>
+          <h2 className="homepage-subtitle">Pourquoi utiliser TeamUp ?</h2>
+          <article className="homepage-article">
+            <p>
+              ✅ Activités adaptées à ton niveau.
+              <br /> ✅ Sport quand tu veux, où tu veux.
+              <br />✅ Rencontre de nouvelles personnes.
+              <br />✅ Pas besoin d’être inscrit dans un club.
+            </p>
+          </article>
+        </div>
+      </div>
     </section>
   );
 }
