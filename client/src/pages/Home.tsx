@@ -4,7 +4,7 @@ import Carousel from "../components/Carousel";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
 
-const LIMIT = 5;
+const LIMIT = 10;
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -23,24 +23,36 @@ function Home() {
           Envie de bouger, mais pas seul ? <br />
           TeamUp te permet de créer ou rejoindre des activités sportives avec
           des personnes qui partagent la même motivation.
-          <br />
-          Trouve ton équipe. Passe à l’action.
+          <br /> <br />
+          <strong>Trouve ton équipe. Passe à l’action.</strong>
         </p>
       </article>
-      <div className="homepage-button-wrapper">
+      <div className="superwrapper">
+        <div className="homepage-button-wrapper">
+          <Link to="/activities/page/1">
+            <button type="button">
+              <img src="/icons/search.png" alt="search" />
+              Explore
+            </button>
+          </Link>
+          <Link to="/publication">
+            <button type="button">
+              <img src="/icons/add.png" alt="add" />
+              Crée
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="homepage-subtitle-wrapper">
+        <h2 className="homepage-subtitle">Proposition d'activités</h2>
         <Link to="/activities/page/1">
-          <button type="button">
-            <img src="/icons/search.png" alt="search" />
-            Explore
-          </button>
-        </Link>
-        <Link to="/publication">
-          <button type="button">
-            <img src="/icons/add.png" alt="add" />
-            Crée
-          </button>
+          <p>voir plus</p>
         </Link>
       </div>
+      <Carousel
+        activities={activities}
+        renderActivity={(activity) => <ActivityCard activity={activity} />}
+      />
       <h2 className="homepage-subtitle">Comment ça marche ?</h2>
       <article className="homepage-article">
         <p>
@@ -58,16 +70,6 @@ function Home() {
           <br />✅ Pas besoin d’être inscrit dans un club.
         </p>
       </article>
-      <div className="homepage-subtitle-wrapper">
-        <h2 className="homepage-subtitle">Proposition d'activités</h2>
-        <Link to="/activities/page/1">
-          <p>voir plus</p>
-        </Link>
-      </div>
-      <Carousel
-        activities={activities}
-        renderActivity={(activity) => <ActivityCard activity={activity} />}
-      />
     </section>
   );
 }
