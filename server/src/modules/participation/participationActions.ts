@@ -1,8 +1,6 @@
 import type { RequestHandler } from "express";
 import participationRepository from "./participationRepository";
-import { StatusCodes } from "http-status-codes";
 import ParticipationRepository from "./participationRepository";
-import participateRepository from "./participationRepository";
 import activityRepository from "../activity/activityRepository";
 import mailService from "../../services/mailService";
 

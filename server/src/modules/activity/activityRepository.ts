@@ -79,7 +79,7 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id
       WHERE a.visibility = 1
       ${query}
-      GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
+      GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
 
