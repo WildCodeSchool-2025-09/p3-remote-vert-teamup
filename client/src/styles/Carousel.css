@@ -35,3 +35,9 @@
 .embla__dots button.active {
   background: #000;
 }
+
+@media (min-width: 1024px) {
+  .embla__slide {
+    flex: 0 0 400px;
+  }
+}

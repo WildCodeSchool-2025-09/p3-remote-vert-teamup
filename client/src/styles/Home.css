@@ -1,9 +1,15 @@
+.homepage {
+  margin-bottom: 10rem;
+}
+
 h1.homepage-title {
   text-align: center;
   color: var(--accent-color);
   font-family: var(--heading-font);
-  font-size: 24px;
-  padding: 1rem;
+  font-size: 60px;
+  padding: 1rem 1rem 0rem 1rem;
+  height: 68px;
+  margin-top: 40px;
 }
 
 h2.homepage-subtitle {
@@ -11,14 +17,24 @@ h2.homepage-subtitle {
   font-family: var(--heading-font);
   font-size: var(--heading-size);
   padding: 1rem;
+  margin-top: 10px;
 }
 
 article.homepage-article {
   width: 90%;
+  height: 120px;
   margin: auto;
+  display: flex;
   box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  padding: 1rem;
+  padding: 0 1rem;
+  align-items: center;
+}
+
+.homepage .homepage-article:first-of-type {
+  padding-top: 12px;
+  align-items: flex-start;
+  text-align: center;
 }
 
 article.homepage-article p {
@@ -27,10 +43,26 @@ article.homepage-article p {
   line-height: 1.4;
 }
 
+.homepage a p {
+  text-align: center;
+}
+
+article.homepage-article p strong {
+  font-family: var(--body-highlight-font);
+}
+
+.superwrapper {
+  position: relative;
+}
+
 .homepage-button-wrapper {
   display: flex;
+  width: 100%;
+  margin: auto;
   justify-content: space-around;
   padding: 1rem;
+  position: absolute;
+  top: -30px;
 }
 
 .homepage-button-wrapper button {
@@ -44,8 +76,13 @@ article.homepage-article p {
   background-color: var(--button-color);
   border-radius: 10px;
   width: 113px;
-  height: 35px;
+  height: 28px;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.homepage-button-wrapper button img {
+  width: 15px;
+  height: 15px;
 }
 
 .homepage-button-wrapper a {
@@ -67,6 +104,7 @@ article.homepage-article p {
   justify-content: space-between;
   align-items: center;
   margin-right: 16px;
+  margin-top: 30px;
 }
 
 .homepage-subtitle-wrapper p {

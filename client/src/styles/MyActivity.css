@@ -4,6 +4,7 @@
   align-items: center;
   font-family: var(--heading-font);
   color: var(--dark-color);
+  margin-bottom: 8rem;
 
   & > h1 {
     margin-top: 1rem;
@@ -12,8 +13,8 @@
 }
 
 .cards-myactivities {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto;
   gap: 1rem;
   justify-content: center;
 }
@@ -27,5 +28,11 @@
 
   #my-activities h1 {
     font-size: var(--heading-desktop-size);
+  }
+}
+
+@media (min-width: 1440px) {
+  .cards-myactivities {
+    grid-template-columns: repeat(auto-fit, 400px);
   }
 }
