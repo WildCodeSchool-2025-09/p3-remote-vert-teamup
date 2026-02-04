@@ -38,34 +38,36 @@ class ActivityRepository {
     const conditions = [];
     const params = [];
 
-    if (filters.sport) {
-      conditions.push("s.name = ?");
-      params.push(filters.sport);
-    }
-    if (filters.city) {
-      conditions.push("a.city = ?");
-      params.push(filters.city);
-    }
-    if (filters.playingAt) {
-      conditions.push("a.playing_at = ?");
-      params.push(filters.playingAt);
-    }
+    if (filters) {
+      if (filters.sport) {
+        conditions.push("s.name = ?");
+        params.push(filters.sport);
+      }
+      if (filters.city) {
+        conditions.push("a.city = ?");
+        params.push(filters.city);
+      }
+      if (filters.playingAt) {
+        conditions.push("a.playing_at = ?");
+        params.push(filters.playingAt);
+      }
 
-    filters.locker && conditions.push("a.locker = 1");
-    filters.shower && conditions.push("a.shower = 1");
-    filters.toilet && conditions.push("a.toilet = 1");
-    filters.air_conditioning && conditions.push("a.air_conditioning = 1");
+      filters.locker && conditions.push("a.locker = 1");
+      filters.shower && conditions.push("a.shower = 1");
+      filters.toilet && conditions.push("a.toilet = 1");
+      filters.air_conditioning && conditions.push("a.air_conditioning = 1");
 
-    if (filters.level) {
-      conditions.push("(a.level IS NULL OR a.level = ?)");
-      params.push(filters.level);
-    }
-    if (filters.price !== null && filters.price !== undefined) {
-      conditions.push("(a.price IS NULL OR a.price <= ?)");
-      params.push(filters.price);
-    }
+      if (filters.level) {
+        conditions.push("(a.level IS NULL OR a.level = ?)");
+        params.push(filters.level);
+      }
+      if (filters.price !== null && filters.price !== undefined) {
+        conditions.push("(a.price IS NULL OR a.price <= ?)");
+        params.push(filters.price);
+      }
 
-    filters.disabled && conditions.push("a.disabled = 1");
+      filters.disabled && conditions.push("a.disabled = 1");
+    }
 
     const query =
       conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
@@ -78,7 +80,7 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id
       WHERE a.visibility = 1
       ${query}
-      GROUP BY a.id ORDER BY a.id ASC LIMIT ? OFFSET ?`,
+      GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
 
@@ -123,7 +125,7 @@ class ActivityRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, p.status,
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
       COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
       FROM activity AS a JOIN user AS u ON u.id = a.user_id
       JOIN sport AS s ON s.id = a.sport_id

@@ -7,7 +7,27 @@ type newUserType = {
   status?: string;
 };
 
-class ParticipationRepository {
+class participationRepository {
+  async readAllParticipants(activityId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT participation.id, participation.status, user.id as userId, user.username, user.picture FROM participation
+      JOIN user ON participation.user_id = user.id
+      WHERE participation.activity_id = ?
+      ORDER BY FIELD(participation.status, 'request', 'accepted', 'inviting', 'refused')`,
+      [activityId],
+    );
+
+    return rows as Participant[];
+  }
+
+  async patch(id: number, status: string) {
+    const [result] = await databaseClient.query<Result>(
+      "UPDATE participation SET status = ? WHERE participation.id = ?",
+      [status, id],
+    );
+    return result.affectedRows;
+  }
+
   async create(newParticipant: newUserType) {
     const [Result] = await databaseClient.query<Result>(
       `INSERT INTO participation (status, user_id, activity_id)
@@ -62,4 +82,4 @@ class ParticipationRepository {
   }
 }
 
-export default new ParticipationRepository();
+export default new participationRepository();
