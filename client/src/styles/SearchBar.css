@@ -119,6 +119,16 @@ section.searchbar article ul.dropdown button {
   height: 30px;
 }
 
+.date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .date-input {
   color: #787878;
 }
