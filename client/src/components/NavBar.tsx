@@ -1,7 +1,11 @@
-import { NavLink } from "react-router";
+import { NavLink, useMatch } from "react-router";
 import "../styles/NavBar.css";
+import { useMediaQuery } from "react-responsive";
+
 
 function NavBar() {
+  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+  const match = useMatch("/activities/page/:page")
   return (
     <>
       <nav className="navbar">
@@ -28,9 +32,7 @@ function NavBar() {
             Accueil
           </NavLink>
           <NavLink
-            className={({ isActive }) =>
-              isActive ? "navbar-link link-active" : "navbar-link"
-            }
+            className={match ? "navbar-link link-active" : "navbar-link"}
             to="/activities/page/1"
           >
             <svg viewBox="0 0 109 106">
@@ -52,7 +54,6 @@ function NavBar() {
             }
             to="/publication"
           >
-            <span className="nav-indicator" />
             <svg viewBox="0 0 28 28">
               <title>icon add</title>
               <g clip-path="url(#clip0_52_153)">
@@ -65,7 +66,7 @@ function NavBar() {
                 </clipPath>
               </defs>
             </svg>
-            <p>Créer</p>
+            {!isMobile && <p>Créer</p>}
           </NavLink>
         </div>
         <div className="bottom-navbar">

@@ -8,7 +8,7 @@ import SearchFilters from "../components/SearchFilters";
 import { useMediaQuery } from "react-responsive";
 
 const LIMIT = 10;
-const userId = 1; // Replace userId with context loged in variable
+const userId = 25 // Replace userId with context loged in variable
 
 function Activities() {
   const { page } = useParams();

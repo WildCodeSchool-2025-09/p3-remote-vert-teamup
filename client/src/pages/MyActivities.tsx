@@ -8,7 +8,7 @@ import ActivityCard from "../components/ActivityCard.tsx";
 function MyActivities() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<string>("incoming");
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
   const [showParticpants, setShowParticipants] = useState<number | null>();
 
@@ -26,21 +26,13 @@ function MyActivities() {
     }
   }, [location.state, location.pathname, navigate]);
 
-  let status = "";
-
-  if (selectedTab === 0) {
-    status = "incoming";
-  } else if (selectedTab === 1) {
-    status = "published";
-  } else if (selectedTab === 2) {
-    status = "pending";
-  }
-
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities/me?status=${selectedTab}`,
+    )
       .then((response) => response.json())
       .then((myActivities) => setMyActivities(myActivities));
-  }, [status]);
+  }, [selectedTab]);
 
   useEffect(() => {
     selectedTab && setShowParticipants(null);
@@ -62,7 +54,8 @@ function MyActivities() {
             <ActivityCard
               activity={myActivity}
               key={myActivity.id}
-              status={status}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
               participantsListIsOpen={showParticpants === myActivity.id}
               onClickListParticipant={() =>
                 setShowParticipants(

@@ -3,7 +3,7 @@
 }
 
 .hero-wrapper {
-  background: url("logo-op.png");
+  background-image: url("logo-op.png");
   background-repeat: no-repeat;
   background-size: 280px;
   height: 280px;
@@ -134,6 +134,15 @@ article.homepage-article p strong {
     justify-content: space-around;
     align-items: center;
     width: 100%;
+  }
+
+  .hero-wrapper {
+    background-image: url("/logo-op.png");
+    background-repeat: no-repeat;
+    background-size: 300px;
+    height: 300px;
+    padding-top: 40px;
+    background-position: right;
   }
 
   .hero-wrapper .homepage-article {

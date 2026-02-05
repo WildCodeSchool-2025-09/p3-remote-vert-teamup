@@ -6,14 +6,16 @@ import ParticipantsList from "./ParticipantsList";
 
 type ActivityCardType = {
   activity: Activity;
-  status?: string;
+  selectedTab?: string;
+  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
 };
 
 function ActivityCard({
   activity,
-  status,
+  selectedTab,
+  setSelectedTab,
   participantsListIsOpen,
   onClickListParticipant,
 }: ActivityCardType) {
@@ -72,7 +74,10 @@ function ActivityCard({
     }
   };
 
-  const acceptInvitation = async (activityId: number) => {
+  const acceptOrRefuseInvitation = async (
+    activityId: number,
+    status: string,
+  ) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/participation`,
@@ -80,35 +85,17 @@ function ActivityCard({
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: 1,
+            userId: 25,
             activityId: activityId,
-            status: "accepted",
+            status: status,
             participantUsername: "CurrentUser",
           }),
         },
       );
 
       if (!response.ok) throw new Error("Failed to accept invitation");
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  const refuseInvitation = async (activityId: number) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: 25,
-            activityId: activityId,
-          }),
-        },
-      );
-
-      if (!response.ok) throw new Error("Failed to refuse invitation");
+      setSelectedTab("incoming");
     } catch (err) {
       console.error(err);
     }
@@ -191,21 +178,21 @@ function ActivityCard({
             {" "}
           </div>
         </div>
-        {status !== "published" && (
+        {selectedTab !== "published" && (
           <>
             <div className="card-footer">
               <div className="user-organizer">
                 <img src={activity.user_picture} alt="user" />
                 <p>{activity.username}</p>
               </div>
-              {status === "incoming" && (
+              {selectedTab === "incoming" && (
                 <img
                   src="/icons/check.png"
                   alt="validate"
                   className="tag-status"
                 />
               )}
-              {!status && (
+              {!selectedTab && (
                 <button
                   type="button"
                   onClick={() => makeReservation(activity, nbAvailableSpots)}
@@ -232,7 +219,7 @@ function ActivityCard({
             </div>
           </>
         )}
-        {status === "published" && (
+        {selectedTab === "published" && (
           <button
             type="button"
             className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
@@ -247,23 +234,25 @@ function ActivityCard({
           </button>
         )}
 
-        {status === "pending" && (
+        {selectedTab === "pending" && !activity.visibility ? (
           <div className="invitation-buttons">
             <button
               type="button"
               className="refuse-button"
-              onClick={() => refuseInvitation(activity.id)}
+              onClick={() => acceptOrRefuseInvitation(activity.id, "refused")}
             >
               Refuser
             </button>
             <button
               type="button"
               className="accept-button"
-              onClick={() => acceptInvitation(activity.id)}
+              onClick={() => acceptOrRefuseInvitation(activity.id, "accepted")}
             >
               Accepter
             </button>
           </div>
+        ) : (
+          selectedTab === "pending" && <div>j'attends</div>
         )}
 
         {participantsListIsOpen && (
