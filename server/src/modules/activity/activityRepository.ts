@@ -37,7 +37,6 @@ class ActivityRepository {
 
     const conditions = [];
     const params = [];
-
     if (filters) {
       if (filters.sport) {
         conditions.push("s.name = ?");

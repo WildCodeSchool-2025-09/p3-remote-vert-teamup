@@ -75,7 +75,7 @@ function Activities() {
           <div className="header-activity">
             <h1>Activités disponibles</h1>
             {totalActivities === 0 ? (
-              <p>Aucun résultat</p>
+              ""
             ) : totalActivities < 2 ? (
               <p>{totalActivities} résultat</p>
             ) : (
@@ -83,14 +83,20 @@ function Activities() {
             )}
           </div>
           <section className="cards-activity">
-            {activities.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} />
-            ))}
+            {totalActivities ? (
+              activities.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))
+            ) : (
+              <p>Aucun résultat</p>
+            )}
           </section>
         </div>
-        <div className="filters-desktop">
-          {!isMobile && <SearchFilters setFilters={setFilters} />}
-        </div>
+        {!isMobile && (
+          <div className="filters-desktop">
+            <SearchFilters setFilters={setFilters} />
+          </div>
+        )}
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
