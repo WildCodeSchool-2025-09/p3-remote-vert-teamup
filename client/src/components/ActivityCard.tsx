@@ -40,7 +40,7 @@ function ActivityCard({
     }
 
     const newParticipant = {
-      userId: 25,
+      userId: 1,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };

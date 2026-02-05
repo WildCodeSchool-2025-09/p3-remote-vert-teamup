@@ -20,7 +20,7 @@ const tagLabelTranslations = [
 ];
 
 const LIMIT = 10;
-const userId = 25; // Replace userId with context loged in variable
+const userId = 1; // Replace userId with context loged in variable
 const excludeFromFilterTags = ["sport", "playingAt", "city"];
 
 function Activities() {
