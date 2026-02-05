@@ -45,7 +45,7 @@ const initialState = {
   toilet: false,
   air_conditioning: false,
   level: null,
-  price: 0,
+  price: null,
   disabled: false,
 };
 
@@ -70,15 +70,8 @@ function SearchFilters({ filters, setFilters, onClose }: SearchFilterProps) {
       };
     });
   }, [filters]);
-  const navigate = useNavigate();
 
-  const resetFilters = () => {
-    setOptionalFilters(initialState);
-    setFilters?.((prev) => ({
-      ...prev,
-      optionalFilters,
-    }));
-  };
+  const navigate = useNavigate();
 
   const updateFilters = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked, value } = e.target;
@@ -107,6 +100,14 @@ function SearchFilters({ filters, setFilters, onClose }: SearchFilterProps) {
     });
     onClose?.();
     navigate("/activities/page/1");
+  };
+
+  const resetFilters = () => {
+    setOptionalFilters(initialState);
+    setFilters?.((prev) => ({
+      ...prev,
+      ...initialState,
+    }));
   };
 
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });

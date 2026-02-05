@@ -33,6 +33,13 @@
   justify-content: center;
 }
 
+.filter-tag-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
 @media (min-width: 1024px) {
   .page-activities {
     width: calc(100% - 8rem);

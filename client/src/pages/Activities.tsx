@@ -144,11 +144,17 @@ function Activities() {
               <p>{totalActivities} résultats</p>
             )}
           </div>
-          <div className="filter-tags">
+          <div className="filter-tag-container">
             {filterTags.map(({ key, value }) => (
-              <button type="button" key={key} onClick={() => removeTag(key)}>
+              <button
+                type="button"
+                className="criteria-tag"
+                key={key}
+                onClick={() => removeTag(key)}
+              >
                 {" "}
-                {value}{" "}
+                {value}
+                {"  ✕"}
               </button>
             ))}
           </div>
@@ -158,9 +164,10 @@ function Activities() {
             ))}
           </section>
         </div>
-        <SearchFilters setFilters={setFilters} filters={filters} />
         <div className="filters-desktop">
-          {!isMobile && <SearchFilters setFilters={setFilters} />}
+          {!isMobile && (
+            <SearchFilters setFilters={setFilters} filters={filters} />
+          )}
         </div>
       </section>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
