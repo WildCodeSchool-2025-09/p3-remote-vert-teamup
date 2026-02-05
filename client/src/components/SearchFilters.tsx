@@ -189,7 +189,7 @@ function SearchFilters({ filters, setFilters, onClose }: SearchFilterProps) {
               Payant
               <div className="range-price">
                 <span className={`price-tag ${isFree && "slider-disabled"}`}>
-                  {optionalFilters.price}€
+                  {optionalFilters.price ? optionalFilters.price : 0}€
                 </span>
                 <input
                   className={`slider ${isFree && "slider-disabled"}`}

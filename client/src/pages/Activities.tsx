@@ -137,7 +137,7 @@ function Activities() {
           <div className="header-activity">
             <h1>Activités disponibles</h1>
             {totalActivities === 0 ? (
-              <p>Aucun résultat</p>
+              ""
             ) : totalActivities < 2 ? (
               <p>{totalActivities} résultat</p>
             ) : (
@@ -148,7 +148,7 @@ function Activities() {
             {filterTags.map(({ key, value }) => (
               <button
                 type="button"
-                className="criteria-tag"
+                className="criteria-tag filter-tags"
                 key={key}
                 onClick={() => removeTag(key)}
               >
@@ -159,9 +159,13 @@ function Activities() {
             ))}
           </div>
           <section className="cards-activity">
-            {activities.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} />
-            ))}
+            {totalActivities ? (
+              activities.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))
+            ) : (
+              <p>Aucun résultat</p>
+            )}
           </section>
         </div>
         <div className="filters-desktop">

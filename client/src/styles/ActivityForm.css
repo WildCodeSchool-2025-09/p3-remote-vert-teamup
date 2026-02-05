@@ -1280,7 +1280,7 @@ fieldset {
   .publication-page {
     width: calc(100vw - 12rem);
     margin-left: 10rem;
-    margin-right: 3rem;
+    padding-right: 3rem;
     gap: 5rem;
   }
 
@@ -1347,5 +1347,11 @@ fieldset {
 
   .required-fields {
     align-self: flex-start;
+  }
+}
+
+@media (max-width: 375px) {
+  .btn-publish {
+    width: 260px;
   }
 }

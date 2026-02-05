@@ -31,6 +31,12 @@
   grid-template-columns: 320px;
   gap: 1rem;
   justify-content: center;
+
+  & > p {
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    text-align: center;
+  }
 }
 
 .filter-tag-container {
@@ -38,6 +44,10 @@
   display: flex;
   justify-content: flex-start;
   gap: 8px;
+}
+
+.filter-tags {
+  cursor: pointer;
 }
 
 @media (min-width: 1024px) {
@@ -63,6 +73,10 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+
+    & > p {
+      font-size: var(--font-desktop-size);
+    }
   }
 
   .header-activity {
