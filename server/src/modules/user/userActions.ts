@@ -21,5 +21,21 @@ const readByEmail: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+function hasCode(err: unknown): err is { code: string } {
+  return typeof err === "object" && err !== null && "code" in err;
+}
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const password = req.body.hashed_password;
+    const insertId = await userRepository.create(req.body);
+    res.status(200).json({ insertId });
+  } catch (err: unknown) {
+    if (hasCode(err) && err.code === "ER_DUP_ENTRY") {
+      res.status(409).json(err);
+    } else {
+      next(err);
+    }
+  }
+};
 
-export default { readByEmail };
+export default { readByEmail, add };
