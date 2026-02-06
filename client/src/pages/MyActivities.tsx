@@ -42,7 +42,7 @@ function MyActivities() {
     <>
       <div id="my-activities">
         <h1>Mes Activités</h1>
-        <Toaster position="top-center" />
+        <Toaster position="top-right" />
 
         <ActivityTabs
           selectedTab={selectedTab}

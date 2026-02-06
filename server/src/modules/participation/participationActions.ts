@@ -19,11 +19,16 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    req.body.userId = 25;
     const response = await participationRepository.create(req.body);
 
     res.json(response);
-  } catch (err) {
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      (err as { code?: string }).code === "ER_DUP_ENTRY"
+    ) {
+      res.sendStatus(409);
+    }
     next(err);
   }
 };
@@ -55,7 +60,7 @@ const browseSome: RequestHandler = async (req, res, next) => {
       });
       return;
     }
-    
+
     const activitiesUserEnrolled = await participationRepository.read({
       userId,
     });

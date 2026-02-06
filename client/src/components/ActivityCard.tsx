@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type ActivityCardType = {
   activity: Activity;
@@ -66,7 +66,9 @@ function ActivityCard({
       if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
-        state: {selectedTab : activity.auto_validation ? "incoming" : "pending"},
+        state: {
+          selectedTab: activity.auto_validation ? "incoming" : "pending",
+        },
       });
     } catch (err) {
       console.error(err);
@@ -105,7 +107,6 @@ function ActivityCard({
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <article
         className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >

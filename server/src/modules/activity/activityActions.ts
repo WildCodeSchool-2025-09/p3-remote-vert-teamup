@@ -68,6 +68,8 @@ const browseMine: RequestHandler = async (req, res, next) => {
       status,
     );
 
+    console.log(activities);
+
     res.status(200).json(activities);
   } catch (err) {
     next(err);
