@@ -19,6 +19,12 @@ const tagLabelTranslations = [
   { key: "advance", label: "Confirmé" },
 ];
 
+const sortingCondition = [
+  { key: "recent", label: "Plus récentes" },
+  { key: "old", label: "Plus récentes" },
+  { key: "price", label: "Prix" },
+];
+
 const LIMIT = 10;
 const userId = 1; // Replace userId with context loged in variable
 const excludeFromFilterTags = ["sport", "playingAt", "city"];
@@ -35,6 +41,7 @@ function Activities() {
     city: "",
   });
   const [totalPages, setTotalPages] = useState(1);
+  const [sortOpen, setSortOpen] = useState(false);
   const navigate = useNavigate();
 
   const translateTaglables = useCallback((key: string, value: string) => {
@@ -128,6 +135,13 @@ function Activities() {
     fetchAndFilterActivities();
   }, [currentPage, filters]);
 
+  const sortActivities = (item: string) => {
+    console.log(activities);
+    setSortOpen(false);
+  };
+
+  console.log(activities);
+
   return (
     <>
       {!isMobile && <p className="tagline">Que recherchez-vous ?</p>}
@@ -136,12 +150,56 @@ function Activities() {
           <SearchBar setFilters={setFilters} />
           <div className="header-activity">
             <h1>Activités disponibles</h1>
-            {totalActivities === 0 ? (
-              ""
-            ) : totalActivities < 2 ? (
-              <p>{totalActivities} résultat</p>
+            {!sortOpen ? (
+              <div className="sort-dropdown-wrapper">
+                <button
+                  type="button"
+                  className="sort-button"
+                  onClick={() => setSortOpen(true)}
+                >
+                  Trier
+                </button>
+              </div>
             ) : (
-              <p>{totalActivities} résultats</p>
+              <div>
+                <button
+                  type="button"
+                  tabIndex={0}
+                  className="results-wrapper"
+                  onClick={() => setSortOpen(false)}
+                  onKeyUp={(e) => e.key === "Enter" && setSortOpen(false)}
+                >
+                  {totalActivities === 0 ? (
+                    ""
+                  ) : totalActivities < 2 ? (
+                    <p>{totalActivities} résultat</p>
+                  ) : (
+                    <p>{totalActivities} résultats</p>
+                  )}
+                </button>
+
+                <div className={`offscreen-menue ${sortOpen ? "active" : ""}`}>
+                  <h3>Trie Par</h3>
+
+                  {sortingCondition.map((item) => {
+                    return (
+                      <label key={item.key} className="criteria-label">
+                        {item.label}
+                        <input
+                          type="radio"
+                          className="sort-options"
+                          value={item.key}
+                          name="sort"
+                          onClick={() => {
+                            sortActivities(item.key);
+                            setSortOpen(false);
+                          }}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
             )}
           </div>
           <div className="filter-tag-container">
