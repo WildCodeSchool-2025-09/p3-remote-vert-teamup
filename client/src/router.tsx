@@ -4,11 +4,16 @@ import Activities from "./pages/Activities";
 import ActivityForm from "./pages/ActivityForm";
 import MyActivities from "./pages/MyActivities.tsx";
 import SignUp from "./pages/SignUp.tsx";
+import Home from "./pages/Home.tsx";
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
       {
         path: "/publication",
         element: <ActivityForm />,

@@ -7,18 +7,22 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const { activity, guestIds } = req.body;
 
+    if (!activity.visibility && guestIds.length === 0) {
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+        error: "Une activité privée doit avoir au moins un participant",
+      });
+      return;
+    }
+
     const activityId = await activityRepository.create(activity);
 
     if (!activity.visibility) {
-      if (guestIds.length === 0) {
-        res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-          error: "Une activité privée doit avoir au moins un participant",
-        });
-        return;
-      }
-
       guestIds.map(async (userId: number) => {
-        await participationRepository.create(userId, activityId);
+        await participationRepository.create({
+          userId,
+          activityId,
+          status: "inviting",
+        });
       });
     }
 
@@ -34,7 +38,8 @@ const browse: RequestHandler = async (req, res, next) => {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
 
-    const filters: Filters = JSON.parse(req.query.filters as string);
+    const filters: Filters =
+      req.query.filters && JSON.parse(req.query.filters as string);
 
     const { activities, totalActivities, totalPages } =
       await activityRepository.readAll(page, limit, filters);
@@ -55,7 +60,7 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const browseMine: RequestHandler = async (req, res, next) => {
   try {
-    const userId = 5;
+    const userId = 1;
     const status = req.query.status as string;
 
     const activities = await activityRepository.readAllByUserAndStatus(

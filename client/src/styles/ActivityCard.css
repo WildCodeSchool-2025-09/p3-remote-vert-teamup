@@ -1,10 +1,13 @@
 .card {
   background-color: var(--light-color);
   border-radius: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px 0px;
   position: relative;
+  overflow: hidden;
   animation: scale 0.5s cubic-bezier(0.5, 0, 0.5, 1) both, appear 0.5s linear
     both;
+  width: 320px;
+  flex-shrink: 0;
 }
 
 @keyframes appear {
@@ -35,9 +38,14 @@
   }
 }
 
+@media (min-width: 1440px) {
+  .card {
+    width: 400px;
+  }
+}
+
 .card-header {
   height: 7rem;
-  border-radius: 6px 6px 0 0;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -48,6 +56,7 @@
 
   & > h2 {
     text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    z-index: 2;
   }
 
   & .label-price {
@@ -60,6 +69,7 @@
     justify-content: center;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    z-index: 2;
   }
 
   & .free {
@@ -84,107 +94,141 @@
 }
 
 .Football {
-  background-image: url("../../public/img_sports/football.png");
+  background-image: url("/img_sports/football.png");
 }
 
 .Rugby {
-  background-image: url("../../public/img_sports/rugby.png");
+  background-image: url("/img_sports/rugby.png");
 }
 
 .Basketball {
-  background-image: url("../../public/img_sports/basketball.png");
+  background-image: url("/img_sports/basketball.png");
 }
 
 .Handball {
-  background-image: url("../../public/img_sports/handball.png");
+  background-image: url("/img_sports/handball.png");
 }
 
 .Volleyball {
-  background-image: url("../../public/img_sports/volleyball.png");
+  background-image: url("/img_sports/volleyball.png");
 }
 
 .Running {
-  background-image: url("../../public/img_sports/running.png");
+  background-image: url("/img_sports/running.png");
 }
 
 .Natation {
-  background-image: url("../../public/img_sports/natation.png");
+  background-image: url("/img_sports/natation.png");
 }
 
 .Cyclisme {
-  background-image: url("../../public/img_sports/cyclisme.png");
+  background-image: url("/img_sports/cyclisme.png");
 }
 
 .VTT {
-  background-image: url("../../public/img_sports/VTT.png");
+  background-image: url("/img_sports/VTT.png");
 }
 
 .Tennis {
-  background-image: url("../../public/img_sports/tennis.png");
+  background-image: url("/img_sports/tennis.png");
 }
 
 .Tennis-de-table {
-  background-image: url("../../public/img_sports/tennis_de_table.png");
+  background-image: url("/img_sports/tennis_de_table.png");
 }
 
 .Badminton {
-  background-image: url("../../public/img_sports/badminton.png");
+  background-image: url("/img_sports/badminton.png");
 }
 
 .Squash {
-  background-image: url("../../public/img_sports/squash.png");
+  background-image: url("/img_sports/squash.png");
 }
 
 .Padel {
-  background-image: url("../../public/img_sports/padel.png");
+  background-image: url("/img_sports/padel.png");
 }
 
 .Bowling {
-  background-image: url("../../public/img_sports/bowling.png");
+  background-image: url("/img_sports/bowling.png");
 }
 
 .Fléchettes {
-  background-image: url("../../public/img_sports/flechettes.png");
+  background-image: url("/img_sports/flechettes.png");
 }
 
 .Pétanque {
-  background-image: url("../../public/img_sports/petanque.png");
+  background-image: url("/img_sports/petanque.png");
 }
 
 .Karting {
-  background-image: url("../../public/img_sports/karting.png");
+  background-image: url("/img_sports/karting.png");
 }
 
 .Canoë {
-  background-image: url("../../public/img_sports/canoe.png");
+  background-image: url("/img_sports/canoe.png");
 }
 
 .Surf {
-  background-image: url("../../public/img_sports/surf.png");
+  background-image: url("/img_sports/surf.png");
 }
 
 .Ski {
-  background-image: url("../../public/img_sports/ski.png");
+  background-image: url("/img_sports/ski.png");
 }
 
 .Snowboard {
-  background-image: url("../../public/img_sports/snowboard.png");
+  background-image: url("/img_sports/snowboard.png");
 }
 
 .Patinage {
-  background-image: url("../../public/img_sports/patinage.png");
+  background-image: url("/img_sports/patinage.png");
 }
 
 .Escalade {
-  background-image: url("../../public/img_sports/escalade.png");
+  background-image: url("/img_sports/escalade.png");
 }
 
 .Randonnée {
-  background-image: url("../../public/img_sports/randonee.png");
+  background-image: url("/img_sports/randonee.png");
 }
 
 .Skateboard {
-  background-image: url("../../public/img_sports/skateboard.png");
+  background-image: url("/img_sports/skateboard.png");
+}
+
+.overlay-img {
+  width: 100%;
+  height: 4rem;
+  background: linear-gradient(to top, rgba(46, 46, 46, 0.95), rgba(0, 0, 0, 0));
+  position: absolute;
+  top: 3rem;
+  left: 0;
+}
+
+@media (min-width: 1024px) {
+  .overlay-img {
+    height: 3.5rem;
+    top: 5.2rem;
+  }
+}
+
+.tag-status {
+  width: 32px;
+  height: 32px;
+}
+
+.accepted {
+  color: var(--light-color);
+  font-family: var(--body-font);
+  font-size: var(--body-desktop-size);
+  width: 108px;
+  height: 28px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: var(--input-color);
 }
 
 .important-info {
@@ -238,6 +282,7 @@
   padding: 0 0.5rem 0.5rem 0.5rem;
   font-family: var(--tag-font);
   font-size: var(--tag-size);
+  height: 3rem;
 
   & .card-tag {
     background-color: var(--neutral-color);
@@ -401,6 +446,28 @@
   }
 }
 
+.dropdown-participation {
+  font-family: var(--button-font);
+  font-size: var(--button-size);
+  border: none;
+  background-color: var(--button-color);
+  color: var(--light-color);
+  height: 2rem;
+  width: 11rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  z-index: 1;
+  margin: 1rem auto;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 @media (min-width: 1024px) {
   .card-footer {
     padding: 0 0.5rem 1rem 0.5rem;
@@ -432,6 +499,11 @@
       }
     }
   }
+
+  .dropdown-participation {
+    font-size: var(--button-desktop-size);
+    width: 13rem;
+  }
 }
 
 .activity-full {
@@ -441,5 +513,61 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 10px;
+}
+
+.card-important {
+  grid-row: span 2;
+  align-self: flex-start;
+}
+
+.dropdown-open {
+  box-shadow: inset 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-participation img {
+  transition: all 0.2s ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.invitation-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.invitation-buttons button {
+  font-family: var(--body-highlight-font);
+  font-size: var(--body-size);
+  border: none;
+  color: var(--light-color);
+  height: 18px;
+  width: 69px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.refuse-button {
+  background-color: var(--refused-color);
+}
+
+.accept-button {
+  background-color: var(--input-color);
+}
+
+@media (min-width: 1024px) {
+  .invitation-buttons button {
+    height: 24px;
+    width: 80px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
 }
