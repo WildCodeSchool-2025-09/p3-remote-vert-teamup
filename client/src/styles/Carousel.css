@@ -2,8 +2,15 @@
   overflow: hidden;
 }
 
+.embla__viewport {
+  overflow: hidden; /* obligatoire */
+  cursor: grab;
+}
+
 .embla__container {
   display: flex;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .embla__slide {

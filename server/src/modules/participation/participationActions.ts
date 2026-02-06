@@ -55,7 +55,7 @@ const browseSome: RequestHandler = async (req, res, next) => {
       });
       return;
     }
-
+    
     const activitiesUserEnrolled = await participationRepository.read({
       userId,
     });

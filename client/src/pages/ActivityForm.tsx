@@ -136,7 +136,7 @@ function ActivityForm() {
       navigate("/my-activities", {
         state: {
           toast: "Activité créée avec succès !",
-          selectedTab: 1,
+          selectedTab: "published",
         },
       });
     } catch (err) {
@@ -190,8 +190,6 @@ function ActivityForm() {
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
   }, []);
-
-  console.log(activities);
 
   return (
     <section className="publication-page">

@@ -8,7 +8,7 @@ import SearchFilters from "../components/SearchFilters";
 import { useMediaQuery } from "react-responsive";
 
 const LIMIT = 10;
-const userId = 25 // Replace userId with context loged in variable
+const userId = 25; // Replace userId with context loged in variable
 
 function Activities() {
   const { page } = useParams();
@@ -51,6 +51,13 @@ function Activities() {
       );
 
       const activitiesData = await activitiesResponse.json();
+
+      const activitiesCreated = activitiesData.activities
+        .filter((a: Activity) => a.user_id === userId)
+        .map((a: Activity) => a.id);
+      for (let i = 0; i < activitiesCreated.length; i++) {
+        enrolledActivityIds.push(activitiesCreated[i]);
+      }
 
       const filteredActivities = userId
         ? activitiesData.activities.filter(

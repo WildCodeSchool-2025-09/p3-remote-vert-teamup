@@ -1,4 +1,5 @@
 import useEmblaCarousel from "embla-carousel-react";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import "../styles/Carousel.css";
@@ -12,7 +13,7 @@ function Carousel({ activities, renderActivity }: CarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
-  });
+  },[WheelGesturesPlugin()]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 

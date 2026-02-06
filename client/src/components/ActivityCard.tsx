@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 type ActivityCardType = {
   activity: Activity;
   selectedTab?: string;
-  setMyActivities: React.Dispatch<React.SetStateAction<Activity[]>>;
+  setMyActivities?: React.Dispatch<React.SetStateAction<Activity[]>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
 };
@@ -37,6 +37,7 @@ function ActivityCard({
     //  !User navigate to sign up (To implement when we will see connection)
 
     if (nbAvailableSpots === 0) {
+      return;
       // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
@@ -65,7 +66,7 @@ function ActivityCard({
       if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
-        state: activity.auto_validation ? 0 : 2,
+        state: {selectedTab : activity.auto_validation ? "incoming" : "pending"},
       });
     } catch (err) {
       console.error(err);
@@ -93,7 +94,7 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      setMyActivities((prev) => prev.filter((a) => a.id !== activity.id));
+      setMyActivities?.((prev) => prev.filter((a) => a.id !== activity.id));
       status === "accepted"
         ? toast.success("Invitation validée")
         : status === "refused" && toast.error("Invitation refusée");
@@ -200,7 +201,10 @@ function ActivityCard({
                   onClick={() => makeReservation(activity, nbAvailableSpots)}
                 >
                   {nbAvailableSpots === 0 ? (
-                    <img src="/icons/bell.png" alt="logo alert" />
+                    <>
+                      Complet
+                      <img src="/icons/bell.png" alt="logo alert" />
+                    </>
                   ) : (
                     "Réserver"
                   )}
