@@ -122,14 +122,6 @@ function Activities() {
 
       const activitiesData = await activitiesResponse.json();
 
-      const activitiesCreated = activitiesData.activities
-        .filter((a: Activity) => a.user_id === userId)
-        .map((a: Activity) => a.id);
-
-      for (let i = 0; i < activitiesCreated.length; i++) {
-        enrolledActivityIds.push(activitiesCreated[i]);
-      }
-
       const filteredActivities = userId
         ? activitiesData.activities.filter(
             (a: Activity) => !enrolledActivityIds.includes(a.id),
@@ -166,7 +158,6 @@ function Activities() {
     }
 
     setActivities(sortedActivities);
-    // setSortOpen(false);
   };
 
   return (
@@ -184,7 +175,6 @@ function Activities() {
                   className="sort-button"
                   onClick={() => setSortOpen(true)}
                 >
-                  {/* Trier */}
                   <img
                     src="/icons/Vector.svg"
                     alt="sort-icon"
