@@ -70,15 +70,11 @@ const editStatus: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId, status, participantUsername } = req.body;
 
-    console.log(req.body);
-
     const result = await ParticipationRepository.update(
       userId,
       activityId,
       status,
     );
-
-    console.log(result);
 
     if (status === "accepted") {
       const activity = await activityRepository.readWithOrganizer(activityId);

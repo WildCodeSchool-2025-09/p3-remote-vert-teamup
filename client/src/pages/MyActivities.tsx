@@ -55,7 +55,7 @@ function MyActivities() {
               activity={myActivity}
               key={myActivity.id}
               selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
+              setMyActivities={setMyActivities}
               participantsListIsOpen={showParticpants === myActivity.id}
               onClickListParticipant={() =>
                 setShowParticipants(

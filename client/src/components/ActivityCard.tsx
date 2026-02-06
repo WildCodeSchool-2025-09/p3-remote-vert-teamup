@@ -1,13 +1,13 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
+import toast, { Toaster } from "react-hot-toast";
 
 type ActivityCardType = {
   activity: Activity;
   selectedTab?: string;
-  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
+  setMyActivities: React.Dispatch<React.SetStateAction<Activity[]>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
 };
@@ -15,13 +15,12 @@ type ActivityCardType = {
 function ActivityCard({
   activity,
   selectedTab,
-  setSelectedTab,
+  setMyActivities,
   participantsListIsOpen,
   onClickListParticipant,
 }: ActivityCardType) {
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
-  const [alreadyParticipant, setAlreadyParticipant] = useState(false);
   const formattedPlayingAt = playing_at.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
@@ -60,7 +59,6 @@ function ActivityCard({
       );
 
       if (response.status === StatusCodes.CONFLICT) {
-        setAlreadyParticipant(true);
         return;
       }
 
@@ -95,7 +93,10 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      setSelectedTab("incoming");
+      setMyActivities((prev) => prev.filter((a) => a.id !== activity.id));
+      status === "accepted"
+        ? toast.success("Invitation validée")
+        : status === "refused" && toast.error("Invitation refusée");
     } catch (err) {
       console.error(err);
     }
@@ -103,6 +104,7 @@ function ActivityCard({
 
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
       <article
         className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >
@@ -198,22 +200,44 @@ function ActivityCard({
                   onClick={() => makeReservation(activity, nbAvailableSpots)}
                 >
                   {nbAvailableSpots === 0 ? (
-                    <>
-                      <img src="/icons/bell.png" alt="logo alert" />
-                    </>
+                    <img src="/icons/bell.png" alt="logo alert" />
                   ) : (
-                    <>
-                      {" "}
-                      {alreadyParticipant
-                        ? "Déjà inscrit"
-                        : status
-                          ? status
-                          : "Réserver"}
-                    </>
+                    "Réserver"
                   )}
                 </button>
               )}
+              {selectedTab === "pending" && !activity.visibility ? (
+                <div className="invitation-buttons">
+                  <button
+                    type="button"
+                    className="refuse-button"
+                    onClick={() =>
+                      acceptOrRefuseInvitation(activity.id, "refused")
+                    }
+                  >
+                    Refuser
+                  </button>
+                  <button
+                    type="button"
+                    className="accept-button"
+                    onClick={() =>
+                      acceptOrRefuseInvitation(activity.id, "accepted")
+                    }
+                  >
+                    Accepter
+                  </button>
+                </div>
+              ) : (
+                selectedTab === "pending" && (
+                  <img
+                    src="/icons/hourglass.png"
+                    alt="pending"
+                    className="tag-status"
+                  />
+                )
+              )}
             </div>
+
             <div className={nbAvailableSpots === 0 ? "activity-full" : ""}>
               {" "}
             </div>
@@ -232,27 +256,6 @@ function ActivityCard({
               className={`${participantsListIsOpen ? "rotate" : ""}`}
             />
           </button>
-        )}
-
-        {selectedTab === "pending" && !activity.visibility ? (
-          <div className="invitation-buttons">
-            <button
-              type="button"
-              className="refuse-button"
-              onClick={() => acceptOrRefuseInvitation(activity.id, "refused")}
-            >
-              Refuser
-            </button>
-            <button
-              type="button"
-              className="accept-button"
-              onClick={() => acceptOrRefuseInvitation(activity.id, "accepted")}
-            >
-              Accepter
-            </button>
-          </div>
-        ) : (
-          selectedTab === "pending" && <div>j'attends</div>
         )}
 
         {participantsListIsOpen && (
