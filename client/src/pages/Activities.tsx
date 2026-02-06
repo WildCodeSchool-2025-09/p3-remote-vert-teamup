@@ -21,7 +21,7 @@ const tagLabelTranslations = [
 
 const sortingCondition = [
   { key: "recent", label: "Plus récentes" },
-  { key: "old", label: "Plus récentes" },
+  { key: "oldest", label: "Plus récentes" },
   { key: "price", label: "Prix" },
 ];
 
@@ -93,6 +93,7 @@ function Activities() {
       return next;
     });
   };
+
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   useEffect(() => {
@@ -121,6 +122,14 @@ function Activities() {
 
       const activitiesData = await activitiesResponse.json();
 
+      const activitiesCreated = activitiesData.activities
+        .filter((a: Activity) => a.user_id === userId)
+        .map((a: Activity) => a.id);
+
+      for (let i = 0; i < activitiesCreated.length; i++) {
+        enrolledActivityIds.push(activitiesCreated[i]);
+      }
+
       const filteredActivities = userId
         ? activitiesData.activities.filter(
             (a: Activity) => !enrolledActivityIds.includes(a.id),
@@ -136,11 +145,29 @@ function Activities() {
   }, [currentPage, filters]);
 
   const sortActivities = (item: string) => {
-    console.log(activities);
-    setSortOpen(false);
-  };
+    const sortedActivities = [...activities];
 
-  console.log(activities);
+    if (item === "recent") {
+      sortedActivities.sort(
+        (a, b) =>
+          new Date(b.playing_at).getTime() - new Date(a.playing_at).getTime(),
+      );
+    }
+
+    if (item === "oldest") {
+      sortedActivities.sort(
+        (a, b) =>
+          new Date(a.playing_at).getTime() - new Date(b.playing_at).getTime(),
+      );
+    }
+
+    if (item === "price") {
+      sortedActivities.sort((a, b) => Number(a.price) - Number(b.price));
+    }
+
+    setActivities(sortedActivities);
+    // setSortOpen(false);
+  };
 
   return (
     <>
@@ -157,7 +184,12 @@ function Activities() {
                   className="sort-button"
                   onClick={() => setSortOpen(true)}
                 >
-                  Trier
+                  {/* Trier */}
+                  <img
+                    src="/icons/Vector.svg"
+                    alt="sort-icon"
+                    className="sort-icon"
+                  />
                 </button>
               </div>
             ) : (
@@ -179,8 +211,16 @@ function Activities() {
                 </button>
 
                 <div className={`offscreen-menue ${sortOpen ? "active" : ""}`}>
-                  <h3>Trie Par</h3>
-
+                  <div className="sort-header">
+                    <h3>Trie Par</h3>
+                    <button
+                      type="button"
+                      className="sort-close-btn"
+                      onClick={() => setSortOpen(false)}
+                    >
+                      <img className="xbtn" src="/icons/x.svg" alt="Close" />
+                    </button>
+                  </div>
                   {sortingCondition.map((item) => {
                     return (
                       <label key={item.key} className="criteria-label">
@@ -192,7 +232,6 @@ function Activities() {
                           name="sort"
                           onClick={() => {
                             sortActivities(item.key);
-                            setSortOpen(false);
                           }}
                         />
                       </label>
