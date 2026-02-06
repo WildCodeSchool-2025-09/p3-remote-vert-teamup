@@ -20,13 +20,12 @@ function Home() {
       <div className="hero-wrapper">
         <h1 className="homepage-title">TeamUp</h1>
         <article className="homepage-article">
-          <p>
+          <p className="presentation">
             Envie de bouger, mais pas seul ? <br />
             TeamUp te permet de créer ou rejoindre des activités sportives avec
             des personnes qui partagent la même motivation.
-            <br /> <br />
-            <strong>Trouve ton équipe. Passe à l’action.</strong>
           </p>
+          <p>Trouve ton équipe. Passe à l’action.</p>
         </article>
         <div className="superwrapper">
           <div className="homepage-button-wrapper">

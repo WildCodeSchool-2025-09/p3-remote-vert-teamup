@@ -7,7 +7,7 @@ import ParticipantsList from "./ParticipantsList";
 type ActivityCardType = {
   activity: Activity;
   selectedTab?: string;
-  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
 };
@@ -95,7 +95,7 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      setSelectedTab("incoming");
+      setSelectedTab?.("incoming");
     } catch (err) {
       console.error(err);
     }

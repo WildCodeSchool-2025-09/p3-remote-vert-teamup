@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import "../styles/Header.css";
 
 function Header() {
@@ -7,7 +8,9 @@ function Header() {
         <p>Bonjour</p>
         <p>User</p>
       </div>
-      <img src="/logo.png" alt="logo team up" />
+      <NavLink to="/">
+        <img src="/logo.png" alt="logo team up" />
+      </NavLink>
       <div className="btn-chat">
         <img src="/icons/message.png" alt="icon message" />
       </div>
