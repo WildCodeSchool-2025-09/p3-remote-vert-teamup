@@ -21,6 +21,7 @@ const readByEmail: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+
 function hasCode(err: unknown): err is { code: string } {
   return typeof err === "object" && err !== null && "code" in err;
 }
