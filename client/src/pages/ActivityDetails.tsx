@@ -1,0 +1,201 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import "../styles/ActivityCard.css";
+import "../styles/ActivityDetails.css";
+
+function ActivityDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [activity, setActivity] = useState<Activity | null>(null);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities/${id}`)
+      .then((response) => response.json())
+      .then((activity) => setActivity(activity));
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${id}`)
+      .then((response) => response.json())
+      .then((participants) => setParticipants(participants));
+  }, [id]);
+
+  if (!activity) {
+    return <p>Chargement...</p>;
+  }
+
+  const price = Number(activity.price);
+  const playingAt = new Date(activity.playing_at);
+  const formattedDate = playingAt.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+  });
+
+  const startTime = activity.playing_time.slice(0, 5).replace(":", "h");
+  const startHour = Number(activity.playing_time.slice(0, 2));
+  const startMinutes = Number(activity.playing_time.slice(3, 5));
+  const endTotalMinutes = startHour * 60 + startMinutes + activity.playing_duration;
+  const endHour = Math.floor(endTotalMinutes / 60);
+  const endMinutes = endTotalMinutes % 60;
+  const endTime = `${endHour}h${endMinutes > 0 ? endMinutes.toString().padStart(2, "0") : ""}`;
+
+  const availableSpots = activity.nb_spots - activity.nb_participant;
+  const acceptedParticipants = participants.filter(
+    (participant) => participant.status === "accepted"
+  );
+
+  function goBack() {
+    navigate(-1);
+  }
+
+  function getInitial(username: string) {
+    return username.charAt(0).toUpperCase();
+  }
+
+  return (
+    <main className="activity-details">
+      <button type="button" className="back-button" onClick={goBack}>
+        <img src="/icons/arrow-left.png" alt="" />
+        Retour
+      </button>
+
+      <h1>Détails de l'activité</h1>
+
+      <header className={`activity-image ${activity.name}`}>
+        <div className="image-overlay" />
+        <section className="image-content">
+          <h2>{activity.name}</h2>
+          <p className={`price-tag ${price === 0 ? "free" : "paid"}`}>
+            {price === 0 ? "Gratuit" : `${price}€`}
+          </p>
+        </section>
+      </header>
+
+      <section className="activity-schedule">
+        <p className="activity-date">
+          <img src="/icons/calendar.png" alt="" />
+          {formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}
+        </p>
+        <div className="activity-time">
+          <img src="/icons/clock.png" alt="" />
+          <span>{startTime}</span>
+          <div className="duration-bar">
+            <span className="duration-label">{activity.playing_duration / 60}h</span>
+          </div>
+          <span>{endTime}</span>
+        </div>
+      </section>
+
+      <section className="activity-location">
+        <div className="address-info">
+          <img src="/icons/pin.png" alt="" />
+          <div>
+            <p>Adresse</p>
+            <p>{activity.address} {activity.zip_code} {activity.city}</p>
+          </div>
+        </div>
+        <a href="#" className="map-link">Voir Carte</a>
+      </section>
+
+      <section className={`spots-bar ${activity.nb_participant / activity.nb_spots >= 0.5 ? "filled" : ""}`}>
+        <div
+          className="spots-bar-fill"
+          style={{ width: `${(activity.nb_participant / activity.nb_spots) * 100}%` }}
+        />
+        <p>{availableSpots} {availableSpots <= 1 ? "place restante" : "places restantes"} / {activity.nb_spots}</p>
+      </section>
+
+      <section className="good-to-know">
+        <h3>Bon à savoir</h3>
+        <div className="tags-container">
+          {{"all": "Tous niveaux", "beginner": "Débutant", "amateur": "Intermédiaire", "advanced": "Confirmé"}[activity.level] && (
+            <p className="tag level-tag">
+              {{"all": "Tous niveaux", "beginner": "Débutant", "amateur": "Intermédiaire", "advanced": "Confirmé"}[activity.level]}
+            </p>
+          )}
+          {!!activity.toilet && (
+            <p className="tag">
+              <img src="/icons/toilet.png" alt="" />
+              Toilettes
+            </p>
+          )}
+          {!!activity.shower && (
+            <p className="tag">
+              <img src="/icons/shower.png" alt="" />
+              Douches
+            </p>
+          )}
+          {!!activity.locker && (
+            <p className="tag">
+              <img src="/icons/locker.png" alt="" />
+              Vestiaires
+            </p>
+          )}
+          {!!activity.disabled && (
+            <p className="tag">
+              <img src="/icons/disabled.png" alt="" />
+              Handisport
+            </p>
+          )}
+          {!!activity.air_conditioning && (
+            <p className="tag">
+              <img src="/icons/air-conditionning.png" alt="" />
+              Clim
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section className="activity-description">
+        <h3>Description</h3>
+        <div className="description-box">
+          <p>{activity.description || "Aucune description fournie."}</p>
+        </div>
+      </section>
+
+      <section className="organizer-section">
+        <h3>Organisateur</h3>
+        <div className="organizer-box">
+          <div className="avatar">
+            {activity.user_picture ? (
+              <img src={activity.user_picture} alt="" />
+            ) : (
+              <span>{getInitial(activity.username)}</span>
+            )}
+          </div>
+          <p>{activity.username}</p>
+        </div>
+      </section>
+
+      <section className="participants-section">
+        <h3>Participants</h3>
+        <div className="participants-box">
+          {acceptedParticipants.length > 0 ? (
+            <ul className="participants-list">
+              {acceptedParticipants.map((participant) => (
+                <li key={participant.id}>
+                  <div className="avatar">
+                    {participant.picture ? (
+                      <img src={participant.picture} alt="" />
+                    ) : (
+                      <span>{getInitial(participant.username)}</span>
+                    )}
+                  </div>
+                  <p>{participant.username}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="no-participants">Aucun participant pour le moment.</p>
+          )}
+        </div>
+      </section>
+
+      <button type="button" className="reserve-button">
+        Réserver
+      </button>
+    </main>
+  );
+}
+
+export default ActivityDetails;
