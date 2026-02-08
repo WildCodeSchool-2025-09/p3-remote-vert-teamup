@@ -41,6 +41,11 @@ function ActivityDetails() {
   const endHour = Math.floor(endTotalMinutes / 60);
   const endMinutes = endTotalMinutes % 60;
   const endTime = `${endHour}h${endMinutes > 0 ? endMinutes.toString().padStart(2, "0") : ""}`;
+  const durationHours = Math.floor(activity.playing_duration / 60);
+  const durationMinutes = activity.playing_duration % 60;
+  const durationLabel = durationHours > 0
+    ? `${durationHours}h${durationMinutes > 0 ? durationMinutes.toString().padStart(2, "0") : ""}`
+    : `${durationMinutes}min`;
 
   const availableSpots = activity.nb_spots - activity.nb_participant;
   const acceptedParticipants = participants.filter(
@@ -86,7 +91,7 @@ function ActivityDetails() {
           <img src="/icons/clock.png" alt="" />
           <span>{startTime}</span>
           <div className="duration-bar">
-            <span className="duration-label">{activity.playing_duration / 60}h</span>
+            <span className="duration-label">{durationLabel}</span>
           </div>
           <span>{endTime}</span>
         </div>

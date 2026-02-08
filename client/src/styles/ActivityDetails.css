@@ -493,7 +493,7 @@
 /* ==================== TABLET (768px+) ==================== */
 @media (min-width: 768px) {
   .activity-details {
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 2rem 12rem;
     max-width: 900px;
   }
 
