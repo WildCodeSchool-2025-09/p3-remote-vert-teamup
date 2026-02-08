@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "../styles/ActivityCard.css";
 import "../styles/ActivityDetails.css";
@@ -8,6 +8,9 @@ function ActivityDetails() {
   const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const mapModalRef = useRef<HTMLDialogElement>(null);
+  const openMapModal = () => mapModalRef.current?.showModal();
+  const closeMapModal = () => mapModalRef.current?.close();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/activities/${id}`)
@@ -43,6 +46,9 @@ function ActivityDetails() {
   const acceptedParticipants = participants.filter(
     (participant) => participant.status === "accepted"
   );
+
+  const mapQuery = encodeURIComponent(`${activity.address} ${activity.zip_code} ${activity.city}`);
+  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=${mapQuery}`;
 
   function goBack() {
     navigate(-1);
@@ -94,8 +100,36 @@ function ActivityDetails() {
             <p>{activity.address} {activity.zip_code} {activity.city}</p>
           </div>
         </div>
-        <a href="#" className="map-link">Voir Carte</a>
+        <button type="button" className="map-link" onClick={openMapModal}>Voir Carte</button>
       </section>
+
+      <dialog
+        className="map-modal"
+        ref={mapModalRef}
+        onClick={(e) => { if (e.target === e.currentTarget) closeMapModal(); }}
+      >
+        <div className="map-modal-content">
+          <div className="map-modal-header">
+            <h3>Localisation</h3>
+            <button type="button" className="map-modal-close" onClick={closeMapModal}>
+              &times;
+            </button>
+          </div>
+          <p className="map-modal-address">
+            <img src="/icons/pin.png" alt="" />
+            {activity.address} {activity.zip_code} {activity.city}
+          </p>
+          <div className="map-iframe-container">
+            <iframe
+              title="Google Maps"
+              src={mapEmbedUrl}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </div>
+      </dialog>
 
       <section className={`spots-bar ${activity.nb_participant / activity.nb_spots >= 0.5 ? "filled" : ""}`}>
         <div
