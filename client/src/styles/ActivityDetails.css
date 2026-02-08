@@ -490,6 +490,12 @@
   appearance: none;
 }
 
+.reserve-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
 /* ==================== TABLET (768px+) ==================== */
 @media (min-width: 768px) {
   .activity-details {

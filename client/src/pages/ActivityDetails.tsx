@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { StatusCodes } from "http-status-codes";
 import "../styles/ActivityCard.css";
 import "../styles/ActivityDetails.css";
 
@@ -8,6 +9,7 @@ function ActivityDetails() {
   const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [reservationStatus, setReservationStatus] = useState<"idle" | "loading" | "already">("idle");
   const mapModalRef = useRef<HTMLDialogElement>(null);
   const openMapModal = () => mapModalRef.current?.showModal();
   const closeMapModal = () => mapModalRef.current?.close();
@@ -62,6 +64,47 @@ function ActivityDetails() {
   function getInitial(username: string) {
     return username.charAt(0).toUpperCase();
   }
+
+  const makeReservation = async () => {
+    if (availableSpots <= 0 || reservationStatus !== "idle") return;
+
+    setReservationStatus("loading");
+
+    const newParticipant = {
+      userId: 25, // TODO: remplacer après authentification
+      activityId: activity.id,
+      status: activity.auto_validation ? "accepted" : "request",
+    };
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participation`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newParticipant),
+        },
+      );
+
+      if (response.status === StatusCodes.CONFLICT) {
+        setReservationStatus("already");
+        return;
+      }
+
+      if (!response.ok) throw new Error("Failed to join activity");
+
+      if (activity.auto_validation) {
+        navigate("/my-activities", { state: 0 });
+      } else {
+        navigate("/my-activities", {
+          state: { toast: "Votre demande de réservation a été envoyée à l'organisateur de l'activité." },
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setReservationStatus("idle");
+    }
+  };
 
   return (
     <main className="activity-details">
@@ -230,8 +273,15 @@ function ActivityDetails() {
         </div>
       </section>
 
-      <button type="button" className="reserve-button">
-        Réserver
+      <button
+        type="button"
+        className="reserve-button"
+        onClick={makeReservation}
+        disabled={availableSpots <= 0 || reservationStatus !== "idle"}
+      >
+        {reservationStatus === "already" && "Déjà inscrit"}
+        {reservationStatus === "loading" && "Réservation..."}
+        {reservationStatus === "idle" && (availableSpots <= 0 ? "Complet" : "Réserver")}
       </button>
     </main>
   );
