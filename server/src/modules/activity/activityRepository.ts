@@ -55,6 +55,7 @@ class ActivityRepository {
       filters.shower && conditions.push("a.shower = 1");
       filters.toilet && conditions.push("a.toilet = 1");
       filters.air_conditioning && conditions.push("a.air_conditioning = 1");
+      filters.disabled && conditions.push("a.disabled = 1");
 
       if (filters.level) {
         conditions.push("(a.level IS NULL OR a.level = ?)");
@@ -64,8 +65,6 @@ class ActivityRepository {
         conditions.push("(a.price IS NULL OR a.price <= ?)");
         params.push(filters.price);
       }
-
-      filters.disabled && conditions.push("a.disabled = 1");
     }
 
     const query =
@@ -124,14 +123,18 @@ class ActivityRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
-      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
-      FROM activity AS a JOIN user AS u ON u.id = a.user_id
-      JOIN sport AS s ON s.id = a.sport_id
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, pcount.nb_participant AS nb_participant 
+      FROM activity AS a 
+      JOIN user AS u ON u.id = a.user_id 
+      JOIN sport AS s ON s.id = a.sport_id 
       LEFT JOIN participation AS p ON p.activity_id = a.id 
-      ${query}
-      AND a.playing_at >= CURDATE()
-      GROUP BY a.id  
+      LEFT JOIN 
+        (SELECT a.id, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
+         FROM activity AS a 
+         LEFT JOIN participation AS p ON p.activity_id = a.id 
+         GROUP BY a.id) AS pcount ON pcount.id = a.id 
+      ${query} 
+      AND a.playing_at >= CURDATE() 
       ORDER BY a.playing_at ASC`,
       [userId],
     );

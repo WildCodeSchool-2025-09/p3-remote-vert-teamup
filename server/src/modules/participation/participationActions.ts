@@ -19,7 +19,6 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    req.body.userId = 25;
     const response = await participationRepository.create(req.body);
 
     res.json(response);
@@ -70,15 +69,11 @@ const editStatus: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId, status, participantUsername } = req.body;
 
-    console.log(req.body);
-
     const result = await ParticipationRepository.update(
       userId,
       activityId,
       status,
     );
-
-    console.log(result);
 
     if (status === "accepted") {
       const activity = await activityRepository.readWithOrganizer(activityId);
