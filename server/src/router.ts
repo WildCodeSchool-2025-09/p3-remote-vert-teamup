@@ -14,6 +14,7 @@ router.post("/api/activity", activityActions.add);
 
 router.get("/api/activities", activityActions.browse);
 router.get("/api/activities/me", activityActions.browseMine);
+router.get("/api/activities/:id", activityActions.read);
 
 router.get("/api/participations", participationActions.browseSome);
 router.get("/api/participants", participationActions.browseByActivity);
