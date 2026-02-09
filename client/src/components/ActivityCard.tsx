@@ -104,7 +104,7 @@ function ActivityCard({
       console.error(err);
     }
   };
-
+  console.log(activity);
   return (
     <>
       <article
@@ -253,6 +253,7 @@ function ActivityCard({
             type="button"
             className={`dropdown-participation ${participantsListIsOpen ? "dropdown-open" : ""}`}
             onClick={onClickListParticipant}
+            disabled={!activity.total_participant}
           >
             Participants
             <img

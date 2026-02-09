@@ -136,12 +136,14 @@ class ActivityRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, COALESCE(pcount.nb_participant, 0) AS nb_participant
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, 
+      COALESCE(pcount.nb_participant, 0) AS nb_participant,
+      COALESCE(pcount.total_participant, 0) AS total_participant
       FROM activity AS a 
       JOIN user AS u ON u.id = a.user_id 
       JOIN sport AS s ON s.id = a.sport_id  
       LEFT JOIN 
-        (SELECT a.id, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
+        (SELECT a.id, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant, COUNT(*) AS total_participant 
          FROM activity AS a 
          JOIN participation AS p ON p.activity_id = a.id 
          GROUP BY a.id) AS pcount ON pcount.id = a.id 

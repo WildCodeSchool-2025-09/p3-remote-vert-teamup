@@ -44,6 +44,8 @@ function ActivityForm() {
 
   const isMobile = useMediaQuery({ query: "(max-width: 1439px)" });
 
+  const userId = 25; // Replace userId with context loged in variable
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
       .then((res) => res.json())
@@ -186,7 +188,9 @@ function ActivityForm() {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${userId}`,
+    )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
   }, []);
