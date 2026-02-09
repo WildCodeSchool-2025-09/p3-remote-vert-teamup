@@ -21,7 +21,7 @@ const tagLabelTranslations = [
 
 const sortingCondition = [
   { key: "recent", label: "Plus récentes" },
-  { key: "oldest", label: "Plus récentes" },
+  { key: "oldest", label: "Plus anciennes" },
   { key: "price", label: "Prix" },
 ];
 
