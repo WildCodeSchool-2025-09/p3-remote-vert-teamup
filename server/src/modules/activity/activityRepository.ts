@@ -84,6 +84,7 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id 
       WHERE a.visibility = 1
       ${query}
+      AND a.playing_at >= CURDATE() 
       GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
@@ -132,16 +133,19 @@ class ActivityRepository {
 
     if (status === "pending") {
       query +=
-        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status IN ('request', 'inviting'))";
+        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status IN ('request', 'inviting', 'refused'))";
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, 
-      COALESCE(pcount.nb_participant, 0) AS nb_participant,
-      COALESCE(pcount.total_participant, 0) AS total_participant
-      FROM activity AS a 
-      JOIN user AS u ON u.id = a.user_id 
-      JOIN sport AS s ON s.id = a.sport_id  
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, pu.status AS participation_status,
+        COALESCE(pcount.nb_participant, 0) AS nb_participant,
+        COALESCE(pcount.total_participant, 0) AS total_participant
+      FROM activity AS a
+      JOIN user AS u ON u.id = a.user_id
+      JOIN sport AS s ON s.id = a.sport_id
+      LEFT JOIN participation pu
+      ON pu.activity_id = a.id
+      AND pu.user_id = ?
       LEFT JOIN 
         (SELECT a.id, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant, COUNT(*) AS total_participant 
          FROM activity AS a 
@@ -150,7 +154,7 @@ class ActivityRepository {
       ${query} 
       AND a.playing_at >= CURDATE() 
       ORDER BY a.playing_at ASC`,
-      [userId],
+      [userId, userId],
     );
     return rows as Activity[];
   }

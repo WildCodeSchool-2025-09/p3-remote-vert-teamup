@@ -28,6 +28,7 @@ type Activity = {
   name: string;
   nb_participant: number;
   total_participant: number;
+  participation_status: string;
 };
 
 type User = {
