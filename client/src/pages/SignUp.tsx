@@ -1,31 +1,22 @@
 import { Box, Button, TextField } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
 import "../styles/signUp.css";
 
-type SignUpForm = {
-  username: string;
-  password: string;
+type NewUser = Omit<User, "id"> & {
   confirmPassword: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  address: string;
-  city: string;
-  zipCode: string;
-  phone: string;
-  picture: string;
 };
 
 function SignUp() {
-  const [signUpForm, setSignUpForm] = useState<SignUpForm>({
+  const [user, setUser] = useState<NewUser>({
     username: "",
     password: "",
     confirmPassword: "",
     email: "",
     firstName: "",
     lastName: "",
-    dateOfBirth: "",
+    born_at: "",
     address: "",
     city: "",
     zipCode: "",
@@ -46,15 +37,15 @@ function SignUp() {
   const Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3310/api/users", {
+      const response = await fetch(import.meta.env.VITE_API_URL + "/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signUpForm),
+        body: JSON.stringify(user),
       });
       if (!response.ok) {
         switch (response.status) {
           case 400:
-            setMessage("Données saissi invalides");
+            setMessage("Données saisies invalides");
             break;
           case 409:
             setMessage("Nom d'utilisateur déjà existant");
@@ -71,7 +62,7 @@ function SignUp() {
   };
   const ChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setSignUpForm((prev) => ({
+    setUser((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -80,147 +71,149 @@ function SignUp() {
   return (
     <div id="sign-up">
       <h1>CÉER UN COMPTE</h1>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={Submit}
-        sx={{
-          marginTop: "2vh",
-          mx: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "3vh",
-        }}
-      >
-        <TextField
-          label="Nom d'utilisateur"
-          required
-          variant="outlined"
-          size="small"
-          name="username"
-          value={signUpForm.username}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Mot de passe"
-          type="password"
-          autoComplete="password"
-          required
-          variant="outlined"
-          size="small"
-          name="password"
-          value={signUpForm.password}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Confirme mot de passe"
-          type="password"
-          autoComplete="confirmPassword"
-          required
-          variant="outlined"
-          size="small"
-          name="confirmPassword"
-          value={signUpForm.confirmPassword}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Email"
-          required
-          variant="outlined"
-          size="small"
-          name="email"
-          value={signUpForm.email}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Prénom"
-          required
-          variant="outlined"
-          size="small"
-          name="firstName"
-          value={signUpForm.firstName}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Nom"
-          required
-          variant="outlined"
-          size="small"
-          name="lastName"
-          value={signUpForm.lastName}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Date de naissance"
-          type="date"
-          required
-          variant="outlined"
-          size="small"
-          name="dateOfBirth"
-          value={signUpForm.dateOfBirth}
-          onChange={ChangeInput}
-          slotProps={{ inputLabel: { shrink: true } }}
-        />
-        <TextField
-          label="Address"
-          required
-          variant="outlined"
-          size="small"
-          name="address"
-          value={signUpForm.address}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Ville"
-          required
-          variant="outlined"
-          size="small"
-          name="city"
-          value={signUpForm.city}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Code postal"
-          required
-          variant="outlined"
-          size="small"
-          name="zipCode"
-          value={signUpForm.zipCode}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="Téléphone"
-          required
-          variant="outlined"
-          size="small"
-          name="phone"
-          value={signUpForm.phone}
-          onChange={ChangeInput}
-        />
-        <TextField
-          label="URL photo"
-          variant="outlined"
-          size="small"
-          name="picture"
-          value={signUpForm.picture}
-          onChange={ChangeInput}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
+      <ThemeProvider theme={muiTheme}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={Submit}
           sx={{
-            fontSize: "button-mobile",
-            backgroundColor: "var(--button-color)",
-            "&:hover": {
-              backgroundColor:
-                "color-mix(in srgb, var(--button-color) 85%, black)",
-            },
+            marginTop: "2vh",
+            mx: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "3vh",
           }}
         >
-          Envoyer
-        </Button>
-      </Box>
+          <TextField
+            label="Nom d'utilisateur"
+            required
+            variant="outlined"
+            size="small"
+            name="username"
+            value={user.username}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Mot de passe"
+            type="password"
+            autoComplete="password"
+            required
+            variant="outlined"
+            size="small"
+            name="password"
+            value={user.password}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Confirme mot de passe"
+            type="password"
+            autoComplete="confirmPassword"
+            required
+            variant="outlined"
+            size="small"
+            name="confirmPassword"
+            value={user.confirmPassword}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Email"
+            required
+            variant="outlined"
+            size="small"
+            name="email"
+            value={user.email}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Prénom"
+            required
+            variant="outlined"
+            size="small"
+            name="firstName"
+            value={user.firstName}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Nom"
+            required
+            variant="outlined"
+            size="small"
+            name="lastName"
+            value={user.lastName}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Date de naissance"
+            type="date"
+            required
+            variant="outlined"
+            size="small"
+            name="born_at"
+            value={user.born_at}
+            onChange={ChangeInput}
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+          <TextField
+            label="Address"
+            required
+            variant="outlined"
+            size="small"
+            name="address"
+            value={user.address}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Ville"
+            required
+            variant="outlined"
+            size="small"
+            name="city"
+            value={user.city}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Code postal"
+            required
+            variant="outlined"
+            size="small"
+            name="zipCode"
+            value={user.zipCode}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="Téléphone"
+            required
+            variant="outlined"
+            size="small"
+            name="phone"
+            value={user.phone}
+            onChange={ChangeInput}
+          />
+          <TextField
+            label="URL photo"
+            variant="outlined"
+            size="small"
+            name="picture"
+            value={user.picture}
+            onChange={ChangeInput}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            sx={{
+              fontSize: "button-mobile",
+              backgroundColor: "var(--button-color)",
+              "&:hover": {
+                backgroundColor:
+                  "color-mix(in srgb, var(--button-color) 85%, black)",
+              },
+            }}
+          >
+            Envoyer
+          </Button>
+        </Box>
+      </ThemeProvider>
       <p
         ref={messageRef}
         className={

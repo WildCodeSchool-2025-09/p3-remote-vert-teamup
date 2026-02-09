@@ -7,7 +7,7 @@ type NewUser = {
   email: string;
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
+  born_at: string;
   address: string;
   city: string;
   zipCode: string;
@@ -47,7 +47,7 @@ class userRepository {
         newUser.email,
         newUser.firstName,
         newUser.lastName,
-        newUser.dateOfBirth,
+        newUser.born_at,
         newUser.address,
         newUser.city,
         newUser.zipCode,
