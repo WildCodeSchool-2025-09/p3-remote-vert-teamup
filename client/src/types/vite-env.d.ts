@@ -35,3 +35,10 @@ type User = {
   id: number;
   email: string;
 };
+
+type Participant = {
+  id: number;
+  username: string;
+  picture: string;
+  status: string;
+};
