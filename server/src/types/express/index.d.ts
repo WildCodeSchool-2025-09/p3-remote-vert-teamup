@@ -36,6 +36,7 @@ type Activity = {
   user_picture: string;
   name: string;
   nb_participant: number;
+  total_participant: number;
 };
 
 type User = {

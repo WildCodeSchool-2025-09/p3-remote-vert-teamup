@@ -37,12 +37,13 @@ const browse: RequestHandler = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
+    const userId = Number(req.query.userId);
 
     const filters: Filters =
       req.query.filters && JSON.parse(req.query.filters as string);
 
     const { activities, totalActivities, totalPages } =
-      await activityRepository.readAll(page, limit, filters);
+      await activityRepository.readAll(page, limit, filters, userId);
 
     res.json({
       activities: activities,

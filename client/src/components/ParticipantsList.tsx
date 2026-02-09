@@ -52,7 +52,6 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
         status: "inviting",
       };
 
-      console.log(newGuest);
       const invitationResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/participation`,
         {

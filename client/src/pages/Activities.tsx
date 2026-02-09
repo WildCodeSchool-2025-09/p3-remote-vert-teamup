@@ -7,7 +7,6 @@ import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 import { useMediaQuery } from "react-responsive";
 
-const LIMIT = 10;
 const userId = 25; // Replace userId with context loged in variable
 
 function Activities() {
@@ -32,45 +31,21 @@ function Activities() {
   }, [filters, navigate]);
 
   useEffect(() => {
-    const fetchAndFilterActivities = async () => {
-      let enrolledActivityIds: number[] = [];
+    const LIMIT = 10;
 
-      if (userId) {
-        const enrollmentsResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
-        );
-        enrolledActivityIds = await enrollmentsResponse.json();
-      }
+    const queryString = new URLSearchParams({
+      filters: JSON.stringify(filters),
+    }).toString();
 
-      const queryString = new URLSearchParams({
-        filters: JSON.stringify(filters),
-      }).toString();
-
-      const activitiesResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
-      );
-
-      const activitiesData = await activitiesResponse.json();
-
-      const activitiesCreated = activitiesData.activities
-        .filter((a: Activity) => a.user_id === userId)
-        .map((a: Activity) => a.id);
-      for (let i = 0; i < activitiesCreated.length; i++) {
-        enrolledActivityIds.push(activitiesCreated[i]);
-      }
-
-      const filteredActivities = userId
-        ? activitiesData.activities.filter(
-            (a: Activity) => !enrolledActivityIds.includes(a.id),
-          )
-        : activitiesData.activities;
-
-      setActivities(filteredActivities);
-      setTotalPages(activitiesData.pagination.totalPages);
-      setTotalActivities(activitiesData.pagination.totalActivities);
-    };
-
-    fetchAndFilterActivities();
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}&userId=${userId}`,
+    )
+      .then((response) => response.json())
+      .then((activities) => {
+        setActivities(activities.activities);
+        setTotalPages(activities.pagination.totalPages);
+        setTotalActivities(activities.pagination.totalActivities);
+      });
   }, [currentPage, filters]);
 
   return (

@@ -5,12 +5,15 @@ import "../styles/Home.css";
 import { useEffect, useState } from "react";
 
 const LIMIT = 10;
+const userId = 25; // Replace userId with context loged in variable
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${userId}`,
+    )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
   }, []);
