@@ -23,10 +23,12 @@ const add: RequestHandler = async (req, res, next) => {
     }));
 
     if (!activity.visibility) {
-      newsParticipants.map(async (newParticipant: newUserType) => {
+      const activityData =
+        await activityRepository.readWithOrganizer(activityId);
+
+      for (const newParticipant of newsParticipants) {
         await participationRepository.create(newParticipant);
 
-        const activity = await activityRepository.readWithOrganizer(activityId);
         const participantEmail = guests.find(
           (guest: Partial<User>) => guest.id === newParticipant.userId,
         ).email;
@@ -36,11 +38,11 @@ const add: RequestHandler = async (req, res, next) => {
 
         await mailService.sendInvitationEmail({
           participantEmail,
-          organizerUsername: activity.organizer_username,
-          activityName: activity.name,
+          organizerUsername: activityData.organizer_username,
+          activityName: activityData.name,
           participantUsername,
         });
-      });
+      }
     }
 
     res.status(StatusCodes.CREATED).json();
