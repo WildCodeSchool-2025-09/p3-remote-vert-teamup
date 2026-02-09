@@ -25,7 +25,7 @@ async function sendAnswerInvitationEmail({
 
   if (status === "refused") {
     const response = await resend.emails.send({
-      from: "TeamUp <onboarding@resend.dev>",
+      from: "TeamUp <noreply@linkrefine.com>",
       to: organizerEmail,
       subject: `${participantUsername} a réfusé votre invitation`,
       html: `
@@ -44,7 +44,7 @@ async function sendInvitationEmail({
   participantUsername,
 }: InvitationEmail) {
   const response = await resend.emails.send({
-    from: "TeamUp <onboarding@resend.dev>",
+    from: "TeamUp <noreply@linkrefine.com>",
     to: participantEmail,
     subject: `${organizerUsername} vous a invité à son activité !`,
     html: `
