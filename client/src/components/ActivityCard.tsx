@@ -183,70 +183,64 @@ function ActivityCard({
           </div>
         </div>
         {selectedTab !== "published" && (
-          <>
-            <div className="card-footer">
-              <div className="user-organizer">
-                <img src={activity.user_picture} alt="user" />
-                <p>{activity.username}</p>
-              </div>
-              {selectedTab === "incoming" && (
-                <img
-                  src="/icons/check.png"
-                  alt="validate"
-                  className="tag-status"
-                />
-              )}
-              {!selectedTab && (
+          <div className="card-footer">
+            <div className="user-organizer">
+              <img src={activity.user_picture} alt="user" />
+              <p>{activity.username}</p>
+            </div>
+            {selectedTab === "incoming" && (
+              <img
+                src="/icons/check.png"
+                alt="validate"
+                className="tag-status"
+              />
+            )}
+            {!selectedTab && (
+              <button
+                type="button"
+                onClick={() => makeReservation(activity, nbAvailableSpots)}
+              >
+                {nbAvailableSpots === 0 ? (
+                  <>
+                    Complet
+                    <img src="/icons/bell.png" alt="logo alert" />
+                  </>
+                ) : (
+                  "Réserver"
+                )}
+              </button>
+            )}
+            {selectedTab === "pending" && !activity.visibility ? (
+              <div className="invitation-buttons">
                 <button
                   type="button"
-                  onClick={() => makeReservation(activity, nbAvailableSpots)}
+                  className="refuse-button"
+                  onClick={() =>
+                    acceptOrRefuseInvitation(activity.id, "refused")
+                  }
                 >
-                  {nbAvailableSpots === 0 ? (
-                    <>
-                      Complet
-                      <img src="/icons/bell.png" alt="logo alert" />
-                    </>
-                  ) : (
-                    "Réserver"
-                  )}
+                  Refuser
                 </button>
-              )}
-              {selectedTab === "pending" && !activity.visibility ? (
-                <div className="invitation-buttons">
-                  <button
-                    type="button"
-                    className="refuse-button"
-                    onClick={() =>
-                      acceptOrRefuseInvitation(activity.id, "refused")
-                    }
-                  >
-                    Refuser
-                  </button>
-                  <button
-                    type="button"
-                    className="accept-button"
-                    onClick={() =>
-                      acceptOrRefuseInvitation(activity.id, "accepted")
-                    }
-                  >
-                    Accepter
-                  </button>
-                </div>
-              ) : (
-                selectedTab === "pending" && (
-                  <img
-                    src="/icons/hourglass.png"
-                    alt="pending"
-                    className="tag-status"
-                  />
-                )
-              )}
-            </div>
-
-            <div className={nbAvailableSpots === 0 ? "activity-full" : ""}>
-              {" "}
-            </div>
-          </>
+                <button
+                  type="button"
+                  className="accept-button"
+                  onClick={() =>
+                    acceptOrRefuseInvitation(activity.id, "accepted")
+                  }
+                >
+                  Accepter
+                </button>
+              </div>
+            ) : (
+              selectedTab === "pending" && (
+                <img
+                  src="/icons/hourglass.png"
+                  alt="pending"
+                  className="tag-status"
+                />
+              )
+            )}
+          </div>
         )}
         {selectedTab === "published" && (
           <button
@@ -262,6 +256,14 @@ function ActivityCard({
             />
           </button>
         )}
+
+        <div
+          className={
+            nbAvailableSpots === 0 && !selectedTab ? "activity-full" : ""
+          }
+        >
+          {" "}
+        </div>
 
         {participantsListIsOpen && (
           <ParticipantsList

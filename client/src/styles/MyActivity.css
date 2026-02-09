@@ -20,6 +20,11 @@
 }
 
 @media (min-width: 1024px) {
+  #my-activities {
+    width: calc(100% - 8rem);
+    margin-left: 8rem;
+  }
+
   .cards-myactivities {
     width: 100%;
     grid-template-columns: repeat(auto-fit, 320px);
