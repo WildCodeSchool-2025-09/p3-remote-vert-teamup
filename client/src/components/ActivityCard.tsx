@@ -104,7 +104,7 @@ function ActivityCard({
       console.error(err);
     }
   };
-  console.log(activity);
+
   return (
     <>
       <article
@@ -210,7 +210,8 @@ function ActivityCard({
                 )}
               </button>
             )}
-            {selectedTab === "pending" && !activity.visibility ? (
+            {selectedTab === "pending" &&
+            activity.participation_status === "inviting" ? (
               <div className="invitation-buttons">
                 <button
                   type="button"
@@ -231,11 +232,19 @@ function ActivityCard({
                   Accepter
                 </button>
               </div>
+            ) : selectedTab === "pending" &&
+              activity.participation_status === "request" ? (
+              <img
+                src="/icons/hourglass.png"
+                alt="pending"
+                className="tag-status"
+              />
             ) : (
-              selectedTab === "pending" && (
+              selectedTab === "pending" &&
+              activity.participation_status === "refused" && (
                 <img
-                  src="/icons/hourglass.png"
-                  alt="pending"
+                  src="/icons/cross.png"
+                  alt="refused"
                   className="tag-status"
                 />
               )

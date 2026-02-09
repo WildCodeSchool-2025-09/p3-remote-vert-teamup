@@ -37,30 +37,30 @@ class participationRepository {
     return Result;
   }
 
-  async read(newParticipant: newUserType) {
-    const conditions = [];
-    const params = [];
+  // async read(newParticipant: newUserType) {
+  //   const conditions = [];
+  //   const params = [];
 
-    if (newParticipant.userId) {
-      conditions.push("p.user_id = ?");
-      params.push(newParticipant.userId);
-    }
+  //   if (newParticipant.userId) {
+  //     conditions.push("p.user_id = ?");
+  //     params.push(newParticipant.userId);
+  //   }
 
-    if (newParticipant.activityId) {
-      conditions.push("p.activity_id = ?");
-      params.push(newParticipant.activityId);
-    }
+  //   if (newParticipant.activityId) {
+  //     conditions.push("p.activity_id = ?");
+  //     params.push(newParticipant.activityId);
+  //   }
 
-    const query = conditions.length > 0 && ` WHERE ${conditions.join(" AND ")}`;
+  //   const query = conditions.length > 0 && ` WHERE ${conditions.join(" AND ")}`;
 
-    const [rows] = await databaseClient.query<Rows>(
-      `SELECT * FROM participation AS p
-      ${query}`,
-      params,
-    );
+  //   const [rows] = await databaseClient.query<Rows>(
+  //     `SELECT * FROM participation AS p
+  //     ${query}`,
+  //     params,
+  //   );
 
-    return rows;
-  }
+  //   return rows;
+  // }
 
   async update(userId: number, activityId: number, status: string) {
     const [result] = await databaseClient.query<Result>(
