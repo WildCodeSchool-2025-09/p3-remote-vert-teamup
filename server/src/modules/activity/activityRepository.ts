@@ -61,6 +61,7 @@ class ActivityRepository {
       filters.shower && conditions.push("a.shower = 1");
       filters.toilet && conditions.push("a.toilet = 1");
       filters.air_conditioning && conditions.push("a.air_conditioning = 1");
+      filters.disabled && conditions.push("a.disabled = 1");
 
       if (filters.level) {
         conditions.push("(a.level IS NULL OR a.level = ?)");
@@ -70,8 +71,6 @@ class ActivityRepository {
         conditions.push("(a.price IS NULL OR a.price <= ?)");
         params.push(filters.price);
       }
-
-      filters.disabled && conditions.push("a.disabled = 1");
     }
 
     const query =

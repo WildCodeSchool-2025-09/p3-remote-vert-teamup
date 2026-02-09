@@ -10,10 +10,13 @@ type CarouselProps = {
 };
 
 function Carousel({ activities, renderActivity }: CarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "center",
-  },[WheelGesturesPlugin()]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "center",
+    },
+    [WheelGesturesPlugin()],
+  );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
