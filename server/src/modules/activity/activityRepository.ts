@@ -84,6 +84,7 @@ class ActivityRepository {
       LEFT JOIN participation AS p ON p.activity_id = a.id 
       WHERE a.visibility = 1
       ${query}
+      AND a.playing_at >= CURDATE() 
       GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
@@ -132,7 +133,7 @@ class ActivityRepository {
 
     if (status === "pending") {
       query +=
-        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status IN ('request', 'inviting'))";
+        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status IN ('request', 'inviting', 'refused'))";
     }
 
     const [rows] = await databaseClient.query<Rows>(
