@@ -111,7 +111,8 @@ class ActivityRepository {
   async readAllByUserAndStatus(userId: number, status: string) {
     let query = "";
     if (status === "incoming") {
-      query += "WHERE p.user_id = ? AND p.status = 'accepted'";
+      query +=
+        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status = 'accepted')";
     }
 
     if (status === "published") {
@@ -119,19 +120,19 @@ class ActivityRepository {
     }
 
     if (status === "pending") {
-      query += "WHERE p.user_id = ? AND p.status IN ('request', 'inviting') ";
+      query +=
+        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status IN ('request', 'inviting'))";
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name, pcount.nb_participant AS nb_participant 
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, COALESCE(pcount.nb_participant, 0) AS nb_participant
       FROM activity AS a 
       JOIN user AS u ON u.id = a.user_id 
-      JOIN sport AS s ON s.id = a.sport_id 
-      LEFT JOIN participation AS p ON p.activity_id = a.id 
+      JOIN sport AS s ON s.id = a.sport_id  
       LEFT JOIN 
         (SELECT a.id, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant 
          FROM activity AS a 
-         LEFT JOIN participation AS p ON p.activity_id = a.id 
+         JOIN participation AS p ON p.activity_id = a.id 
          GROUP BY a.id) AS pcount ON pcount.id = a.id 
       ${query} 
       AND a.playing_at >= CURDATE() 

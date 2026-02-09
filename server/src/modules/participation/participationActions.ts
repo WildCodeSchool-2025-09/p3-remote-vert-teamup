@@ -22,7 +22,13 @@ const add: RequestHandler = async (req, res, next) => {
     const response = await participationRepository.create(req.body);
 
     res.json(response);
-  } catch (err) {
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      (err as { code?: string }).code === "ER_DUP_ENTRY"
+    ) {
+      res.sendStatus(409);
+    }
     next(err);
   }
 };

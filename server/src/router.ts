@@ -17,9 +17,13 @@ router.get("/api/activities/me", activityActions.browseMine);
 
 router.get("/api/participations", participationActions.browseSome);
 router.get("/api/participants", participationActions.browseByActivity);
+
 router.post("/api/participation", participationActions.add);
+
 router.put("/api/participation", participationActions.editStatus);
+
 router.patch("/api/participant/:id", participationActions.edit);
+
 router.delete("/api/participation", participationActions.deleteParticipation);
 
 export default router;

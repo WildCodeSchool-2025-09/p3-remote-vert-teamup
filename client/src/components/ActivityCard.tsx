@@ -2,12 +2,11 @@ import { useNavigate } from "react-router";
 import "../styles/ActivityCard.css";
 import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type ActivityCardType = {
   activity: Activity;
   selectedTab?: string;
-  setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
   setMyActivities?: React.Dispatch<React.SetStateAction<Activity[]>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
@@ -19,7 +18,6 @@ function ActivityCard({
   setMyActivities,
   participantsListIsOpen,
   onClickListParticipant,
-  setSelectedTab,
 }: ActivityCardType) {
   const price = Number(activity.price);
   const playing_at = new Date(activity.playing_at);
@@ -39,6 +37,7 @@ function ActivityCard({
     //  !User navigate to sign up (To implement when we will see connection)
 
     if (nbAvailableSpots === 0) {
+      return;
       // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
     }
 
@@ -67,7 +66,9 @@ function ActivityCard({
       if (!response.ok) throw new Error("Failed to join activity");
 
       navigate("/my-activities", {
-        state: activity.auto_validation ? 0 : 2,
+        state: {
+          selectedTab: activity.auto_validation ? "incoming" : "pending",
+        },
       });
     } catch (err) {
       console.error(err);
@@ -95,7 +96,6 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      setSelectedTab?.("incoming");
       setMyActivities?.((prev) => prev.filter((a) => a.id !== activity.id));
       status === "accepted"
         ? toast.success("Invitation validée")
@@ -107,7 +107,6 @@ function ActivityCard({
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <article
         className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >
@@ -203,7 +202,10 @@ function ActivityCard({
                   onClick={() => makeReservation(activity, nbAvailableSpots)}
                 >
                   {nbAvailableSpots === 0 ? (
-                    <img src="/icons/bell.png" alt="logo alert" />
+                    <>
+                      Complet
+                      <img src="/icons/bell.png" alt="logo alert" />
+                    </>
                   ) : (
                     "Réserver"
                   )}
