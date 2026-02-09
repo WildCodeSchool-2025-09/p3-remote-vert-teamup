@@ -32,11 +32,17 @@ class ActivityRepository {
     return result.insertId;
   }
 
-  async readAll(page: number, limit: number, filters: Filters) {
+  async readAll(page: number, limit: number, filters: Filters, userId: number) {
     const offset = (page - 1) * limit;
 
     const conditions = [];
     const params = [];
+    if (userId) {
+      conditions.push(
+        "u.id != ? AND NOT EXISTS (SELECT 1 FROM participation AS p2 WHERE p2.activity_id = a.id AND p2.user_id = ?)",
+      );
+      params.push(userId, userId);
+    }
     if (filters) {
       if (filters.sport) {
         conditions.push("s.name = ?");
@@ -72,11 +78,11 @@ class ActivityRepository {
       conditions.length > 0 ? `AND ${conditions.join(" AND ")}` : "";
 
     const [activities] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.username, u.picture AS user_picture, s.name,
-      COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
-      FROM activity AS a JOIN user AS u ON u.id = a.user_id
+      `SELECT a.*, u.username, u.picture AS user_picture, s.name, COUNT(IF(p.status = 'accepted', 1, NULL)) AS nb_participant
+      FROM activity AS a 
+      JOIN user AS u ON u.id = a.user_id
       JOIN sport AS s ON s.id = a.sport_id
-      LEFT JOIN participation AS p ON p.activity_id = a.id
+      LEFT JOIN participation AS p ON p.activity_id = a.id 
       WHERE a.visibility = 1
       ${query}
       GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
@@ -84,7 +90,12 @@ class ActivityRepository {
     );
 
     const [totalResult] = await databaseClient.query<RowDataPacket[]>(
-      `SELECT COUNT(*) AS total_activity FROM activity AS a JOIN sport AS s ON s.id = a.sport_id WHERE a.visibility = 1 ${query}`,
+      `SELECT COUNT(*) AS total_activity 
+      FROM activity AS a
+      JOIN user AS u ON u.id = a.user_id 
+      JOIN sport AS s ON s.id = a.sport_id 
+      WHERE a.visibility = 1
+      ${query}`,
       [...params],
     );
 
@@ -113,7 +124,7 @@ class ActivityRepository {
     let query = "";
     if (status === "incoming") {
       query +=
-        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id AND p.user_id = ? AND p.status = 'accepted')";
+        "WHERE EXISTS (SELECT 1 FROM participation p WHERE p.activity_id = a.id  AND p.user_id = ? AND p.status = 'accepted')";
     }
 
     if (status === "published") {

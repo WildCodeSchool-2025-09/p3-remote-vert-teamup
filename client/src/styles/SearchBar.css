@@ -96,7 +96,6 @@ section.searchbar article ul.dropdown-false {
   overflow-y: auto;
   z-index: 2;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding-left: 10px;
 }
 
 section.searchbar article ul.dropdown-false {
@@ -121,7 +120,7 @@ section.searchbar article ul.dropdown button {
   font-family: var(--body-font);
   font-size: var(--body-size);
   text-align: start;
-  padding-left: 4px;
+  padding-left: 15px;
   height: 30px;
 }
 

@@ -86,7 +86,7 @@ function ActivityCard({
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: 25,
+            userId: 25, // Replace userId with context loged in variable
             activityId: activityId,
             status: status,
             participantUsername: "CurrentUser",

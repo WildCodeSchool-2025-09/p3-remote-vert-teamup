@@ -98,23 +98,10 @@ const editStatus: RequestHandler = async (req, res, next) => {
   }
 };
 
-const deleteParticipation: RequestHandler = async (req, res, next) => {
-  try {
-    const { userId, activityId } = req.body;
-
-    const result = await ParticipationRepository.delete(userId, activityId);
-
-    res.json({ message: "Participation deleted", result });
-  } catch (err) {
-    next(err);
-  }
-};
-
 export default {
   add,
   browseSome,
   editStatus,
-  deleteParticipation,
   edit,
   browseByActivity,
 };

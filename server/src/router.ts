@@ -24,6 +24,4 @@ router.put("/api/participation", participationActions.editStatus);
 
 router.patch("/api/participant/:id", participationActions.edit);
 
-router.delete("/api/participation", participationActions.deleteParticipation);
-
 export default router;
