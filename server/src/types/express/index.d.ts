@@ -102,8 +102,22 @@ type Sport = {
   name: string;
 };
 
-type InvitationAcceptedEmail = {
+type AnswerInvitationEmail = {
   organizerEmail: string;
+  organizerUsername: string;
+  activityName: string;
+  participantUsername: string;
+  status: string;
+};
+
+type newUserType = {
+  userId?: number;
+  activityId?: number;
+  status?: string;
+};
+
+type InvitationEmail = {
+  participantEmail: string;
   organizerUsername: string;
   activityName: string;
   participantUsername: string;

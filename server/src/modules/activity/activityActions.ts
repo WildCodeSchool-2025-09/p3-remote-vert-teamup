@@ -2,12 +2,13 @@ import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import participationRepository from "../participation/participationRepository";
 import activityRepository from "./activityRepository";
+import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const { activity, guestIds } = req.body;
+    const { activity, guests } = req.body;
 
-    if (!activity.visibility && guestIds.length === 0) {
+    if (!activity.visibility && guests.length === 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         error: "Une activité privée doit avoir au moins un participant",
       });
@@ -15,13 +16,29 @@ const add: RequestHandler = async (req, res, next) => {
     }
 
     const activityId = await activityRepository.create(activity);
+    const newsParticipants = guests.map((guest: Partial<User>) => ({
+      userId: guest.id,
+      activityId: activityId,
+      status: "inviting",
+    }));
 
     if (!activity.visibility) {
-      guestIds.map(async (userId: number) => {
-        await participationRepository.create({
-          userId,
-          activityId,
-          status: "inviting",
+      newsParticipants.map(async (newParticipant: newUserType) => {
+        await participationRepository.create(newParticipant);
+
+        const activity = await activityRepository.readWithOrganizer(activityId);
+        const participantEmail = guests.find(
+          (guest: Partial<User>) => guest.id === newParticipant.userId,
+        ).email;
+        const participantUsername = guests.find(
+          (guest: Partial<User>) => guest.id === newParticipant.userId,
+        ).username;
+
+        await mailService.sendInvitationEmail({
+          participantEmail,
+          organizerUsername: activity.organizer_username,
+          activityName: activity.name,
+          participantUsername,
         });
       });
     }

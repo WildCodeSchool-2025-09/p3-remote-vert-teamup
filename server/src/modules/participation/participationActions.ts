@@ -81,14 +81,15 @@ const editStatus: RequestHandler = async (req, res, next) => {
       status,
     );
 
-    if (status === "accepted") {
+    if (status === "accepted" || status === "refused") {
       const activity = await activityRepository.readWithOrganizer(activityId);
 
-      await mailService.sendInvitationAcceptedEmail({
+      await mailService.sendAnswerInvitationEmail({
         organizerEmail: activity.organizer_email,
         organizerUsername: activity.organizer_username,
         activityName: activity.name,
         participantUsername: participantUsername,
+        status: status,
       });
     }
 

@@ -94,8 +94,6 @@ function ActivityForm() {
     setError((prev) => ({ ...prev, addActivity: "" }));
     setIsSubmitting(true);
 
-    const guestIds = guests.map((guest) => guest.id);
-
     const activityData = {
       activity: {
         user_id: 25, // TODO: remplacer après authentification !
@@ -117,7 +115,7 @@ function ActivityForm() {
         toilet: toilet,
         air_conditioning: airConditioning,
       },
-      guestIds,
+      guests,
     };
 
     try {

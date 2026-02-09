@@ -1,12 +1,6 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
-type newUserType = {
-  userId?: number;
-  activityId?: number;
-  status?: string;
-};
-
 class participationRepository {
   async readAllParticipants(activityId: number) {
     const [rows] = await databaseClient.query<Rows>(

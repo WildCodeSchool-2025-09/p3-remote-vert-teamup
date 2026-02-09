@@ -89,7 +89,7 @@ function ActivityCard({
             userId: 25, // Replace userId with context loged in variable
             activityId: activityId,
             status: status,
-            participantUsername: "CurrentUser",
+            participantUsername: "CurrentUser", //connexion
           }),
         },
       );
@@ -104,7 +104,7 @@ function ActivityCard({
       console.error(err);
     }
   };
-  console.log(activity);
+
   return (
     <>
       <article
