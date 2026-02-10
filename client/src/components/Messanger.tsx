@@ -17,6 +17,8 @@ function Messanger() {
     UsersActivities[] | undefined
   >();
 
+  const isMobile = window.innerWidth < 768;
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`)
       .then((res) => res.json())

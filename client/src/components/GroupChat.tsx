@@ -1,13 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
+import { format, isToday, isYesterday } from "date-fns";
 
 type MessageType = {
   activity_id: number;
   content: string;
-  created_at: Date;
-  deleted_at: Date;
+  created_at: string;
+  deleted_at: string;
   id: number;
-  updated_at: Date;
+  updated_at: string;
   user_id: number;
   username: string;
 };
@@ -16,16 +17,20 @@ function GroupChat() {
   const location = useLocation();
   const activity = location.state.activity;
   const userId = location.state.userId; // Replace with login state
+
   const [typeMessage, setTypeMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
 
-  const otherMessages = useMemo(() => {
-    return messages.filter((m: MessageType) => m.user_id !== userId);
-  }, [messages, userId]);
+  const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString.replace(" ", "T"));
 
-  const userMessages = useMemo(() => {
-    return messages.filter((m: MessageType) => m.user_id === userId);
-  }, [messages, userId]);
+    const time = format(date, "HH:mm");
+
+    if (isToday(date)) return `aujourd'hui a ${time}`;
+    if (isYesterday(date)) return `Hier à ${time}`;
+
+    return format(date, "dd MMM 'à' HH:mm");
+  };
 
   useEffect(() => {
     const getMessages = async () => {
@@ -44,6 +49,8 @@ function GroupChat() {
 
     getMessages();
   }, [userId, activity.id]);
+
+  console.log(messages);
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
@@ -79,25 +86,25 @@ function GroupChat() {
   };
 
   return (
-    <div className="chat-container">
-      <div className="messages">
-        <p>Group Chat for {activity.id}</p>
-        <div className="user-messages">
-          {userMessages.map((m) => (
-            <div key={m.id}>
+    <div className="chat-room">
+      <p>Group Chat for {activity.id}</p>
+      <div className="messages-display">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={`single-message ${m.user_id === userId ? "chat-right" : "chat-left"}`}
+          >
+            <div
+              className={`username-date ${m.user_id === userId && "userrow-reverse"}`}
+            >
               <h3>{m.username}</h3>
-              <p>{m.content}</p>
+              <small className="message-date">
+                {formatMessageTime(m.created_at)}
+              </small>
             </div>
-          ))}
-        </div>
-        <div className="other-messages">
-          {otherMessages.map((m) => (
-            <div key={m.id}>
-              <h3>{m.username}</h3>
-              <p>{m.content}</p>
-            </div>
-          ))}
-        </div>
+            <p>{m.content}</p>
+          </div>
+        ))}
       </div>
       <div>
         <input

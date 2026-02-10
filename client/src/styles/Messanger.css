@@ -20,13 +20,48 @@
   padding: 0.4rem 0.6rem;
 }
 
-/* Chat */
+/* Chat-room */
 
-.chat-container {
+.chat-room {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   height: 100vh;
-  padding: 5rem;
+  padding: 3rem 15rem;
+  gap: 1rem;
+}
+
+.single-message {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--neutral-color);
+  border-radius: 5px;
+}
+
+.username-date {
+  display: flex;
+  gap: 1rem;
+}
+
+.message-date {
+  display: flex;
+  align-items: flex-end;
+  font-size: 0.7rem;
+  color: #555;
+}
+
+.chat-right {
+  align-items: flex-end;
+}
+
+.chat-left {
+  align-items: flex-start;
+}
+
+.userrow-reverse {
+  flex-direction: row-reverse;
 }
