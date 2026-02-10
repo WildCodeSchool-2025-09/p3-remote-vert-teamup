@@ -108,28 +108,18 @@ class ActivityRepository {
     };
   }
 
-  async readWithOrganizer(activityId: number, userId?: number) {
-    let query = "";
-    let selectOption = "";
-    const params = [];
-
-    if (userId) {
-      query =
-        "JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ? JOIN user AS u2 ON p.user_id = u2.id";
-      selectOption =
-        ", u2.email AS participant_email, u2.username AS participant_username";
-      params.push(userId);
-    }
+  async readWithOrganizer(activityId: number, userId: number) {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username
-      ${selectOption}
+      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username, s.name,
+      u2.email AS participant_email, u2.username AS participant_username
       FROM activity AS a
       JOIN user AS u ON u.id = a.user_id
-      ${query}
+      JOIN sport AS s ON s.id = a.sport_id
+      JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ? JOIN user AS u2 ON p.user_id = u2.id
       WHERE a.id = ?`,
-      [...params, activityId],
+      [userId, activityId],
     );
-    return rows[0];
+    return rows[0] as MailData;
   }
 
   async readOne(activityId: number) {

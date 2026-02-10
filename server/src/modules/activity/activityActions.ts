@@ -23,25 +23,14 @@ const add: RequestHandler = async (req, res, next) => {
     }));
 
     if (!activity.visibility) {
-      const activityData =
-        await activityRepository.readWithOrganizer(activityId); //check ça
-
       for (const newParticipant of newsParticipants) {
         await participationRepository.create(newParticipant);
+        const mailData = await activityRepository.readWithOrganizer(
+          activityId,
+          newParticipant.userId,
+        );
 
-        const participantEmail = guests.find(
-          (guest: Partial<User>) => guest.id === newParticipant.userId,
-        ).email;
-        const participantUsername = guests.find(
-          (guest: Partial<User>) => guest.id === newParticipant.userId,
-        ).username;
-
-        await mailService.sendInvitationEmail({
-          participantEmail,
-          organizerUsername: activityData.organizer_username,
-          activityName: activityData.name,
-          participantUsername,
-        });
+        await mailService.sendInvitationEmail(mailData);
       }
     }
 

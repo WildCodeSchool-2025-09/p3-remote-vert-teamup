@@ -21,28 +21,17 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const response = await participationRepository.create(req.body);
 
-    const activityData = await activityRepository.readWithOrganizer(
+    const mailData = await activityRepository.readWithOrganizer(
       req.body.activityId,
       req.body.userId,
     );
 
-    if (!activityData.visibility) {
-      await mailService.sendInvitationEmail({
-        participantEmail: activityData.participant_email,
-        organizerUsername: activityData.organizer_username,
-        activityName: activityData.name,
-        participantUsername: activityData.participant_username,
-      });
+    if (!mailData.visibility) {
+      await mailService.sendInvitationEmail(mailData);
     }
 
-    if (activityData.visibility) {
-      await mailService.sendRequestEmail({
-        organizerEmail: activityData.organizer_email,
-        organizerUsername: activityData.organizer_username,
-        activityName: activityData.name,
-        participantUsername: activityData.participant_username,
-        autoValidation: activityData.auto_validation,
-      });
+    if (mailData.visibility) {
+      await mailService.sendRequestEmail(mailData);
     }
 
     res.json(response);
@@ -71,34 +60,21 @@ const editStatus: RequestHandler = async (req, res, next) => {
       (status === "accepted" || status === "refused") &&
       type === "invitation"
     ) {
-      const activity = await activityRepository.readWithOrganizer(
-        userId,
+      const mailData = await activityRepository.readWithOrganizer(
         activityId,
+        userId,
       );
 
-      await mailService.sendAnswerInvitationEmail({
-        organizerEmail: activity.organizer_email,
-        organizerUsername: activity.organizer_username,
-        activityName: activity.name,
-        participantUsername: participantUsername,
-        status: status,
-      });
-    } else if (
-      (status === "accepted" || status === "refused") &&
-      type === "request"
-    ) {
-      const activity = await activityRepository.readWithOrganizer(
-        userId,
+      await mailService.sendAnswerInvitationEmail(mailData, status);
+    }
+
+    if ((status === "accepted" || status === "refused") && type === "request") {
+      const mailData = await activityRepository.readWithOrganizer(
         activityId,
+        userId,
       );
 
-      await mailService.sendAnswerRequestEmail({
-        participantEmail: activity.participant_email,
-        participantUsername: participantUsername,
-        organizerUsername: activity.organizer_username,
-        activityName: activity.name,
-        status: status,
-      });
+      await mailService.sendAnswerRequestEmail(mailData, status);
     }
 
     res.json({ message: "Participation updated", result });
