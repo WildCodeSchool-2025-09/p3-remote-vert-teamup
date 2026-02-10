@@ -49,7 +49,7 @@ function ActivityCard({
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "POST",
           headers: {
@@ -81,7 +81,7 @@ function ActivityCard({
   ) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

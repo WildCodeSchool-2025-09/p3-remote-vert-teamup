@@ -10,19 +10,13 @@ router.get("/api/sports", sportActions.browse);
 
 router.get("/api/users", userActions.readByEmail);
 
-router.post("/api/activity", activityActions.add);
-
 router.get("/api/activities", activityActions.browse);
 router.get("/api/activities/me", activityActions.browseMine);
 router.get("/api/activities/:id", activityActions.read);
+router.post("/api/activities", activityActions.add);
 
-// router.get("/api/participations", participationActions.browseSome);
-router.get("/api/participants", participationActions.browseByActivity);
-
-router.post("/api/participation", participationActions.add);
-
-router.put("/api/participation", participationActions.editStatus);
-
-router.patch("/api/participant/:id", participationActions.edit);
+router.get("/api/participations", participationActions.browseByActivity);
+router.post("/api/participations", participationActions.add);
+router.put("/api/participations", participationActions.editStatus);
 
 export default router;

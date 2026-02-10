@@ -33,44 +33,6 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-const edit: RequestHandler = async (req, res, next) => {
-  try {
-    const id = Number(req.params.id);
-    const { status } = req.body;
-
-    const affectedRows = await participationRepository.patch(id, status);
-
-    if (affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-  } catch (err) {
-    next(err);
-  }
-};
-
-// const browseSome: RequestHandler = async (req, res, next) => {
-//   try {
-//     const userId = Number(req.query.userId);
-
-//     if (!userId) {
-//       res.json({
-//         message: "User is not enrolled in any activity",
-//       });
-//       return;
-//     }
-
-//     const activitiesUserEnrolled = await participationRepository.read({
-//       userId,
-//     });
-
-//     res.status(201).json(activitiesUserEnrolled.map((a) => a.activity_id));
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId, status, participantUsername } = req.body;
@@ -102,6 +64,5 @@ const editStatus: RequestHandler = async (req, res, next) => {
 export default {
   add,
   editStatus,
-  edit,
   browseByActivity,
 };

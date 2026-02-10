@@ -120,7 +120,7 @@ function ActivityForm() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activity`,
+        `${import.meta.env.VITE_API_URL}/api/activities`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

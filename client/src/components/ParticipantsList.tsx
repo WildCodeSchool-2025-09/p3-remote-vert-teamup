@@ -21,7 +21,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/participations?id=${activityId}`)
       .then((response) => response.json())
       .then((participants) => setParticipants(participants));
   }, [activityId]);
@@ -53,7 +53,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       };
 
       const invitationResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "POST",
           headers: {
@@ -88,16 +88,26 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
     setInputGuest("");
   }
 
-  async function acceptOrRefuseRequest(id: number, newStatus: string) {
+  async function acceptOrRefuseRequest(
+    id: number,
+    newStatus: string,
+    username: string,
+    userId: number,
+  ) {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participant/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({
+            status: newStatus,
+            userId,
+            activityId,
+            participantUsername: username,
+          }),
         },
       );
 
@@ -151,7 +161,12 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
                 type="button"
                 className="btn-accepted"
                 onClick={() =>
-                  acceptOrRefuseRequest(participant.id, "accepted")
+                  acceptOrRefuseRequest(
+                    participant.id,
+                    "accepted",
+                    participant.username,
+                    participant.userId,
+                  )
                 }
               >
                 Accepter
@@ -159,7 +174,14 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
               <button
                 type="button"
                 className="btn-refused"
-                onClick={() => acceptOrRefuseRequest(participant.id, "refused")}
+                onClick={() =>
+                  acceptOrRefuseRequest(
+                    participant.id,
+                    "refused",
+                    participant.username,
+                    participant.userId,
+                  )
+                }
               >
                 Refuser
               </button>
