@@ -28,7 +28,7 @@ const readByEmail: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    req.body.hashedPassword = await argon2.hash(req.body.password, {
+    req.body.password = await argon2.hash(req.body.password, {
       type: argon2.argon2id,
       memoryCost: 19 * 2 ** 10 /* 19 Mio en kio (19 * 1024 kio) */,
       timeCost: 2,
@@ -50,7 +50,7 @@ const validate: RequestHandler = async (req, res, next) => {
     email: Joi.string().trim().email().required(),
     firstName: Joi.string().trim().min(1).max(50).required(),
     lastName: Joi.string().trim().min(1).max(50).required(),
-    dateOfBirth: Joi.string().required(),
+    born_at: Joi.string().required(),
     address: Joi.string().trim().required(),
     city: Joi.string().trim().required(),
     zipCode: Joi.string().trim().required(),
