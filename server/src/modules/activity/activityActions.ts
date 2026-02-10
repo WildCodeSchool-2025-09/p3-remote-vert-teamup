@@ -24,7 +24,7 @@ const add: RequestHandler = async (req, res, next) => {
 
     if (!activity.visibility) {
       const activityData =
-        await activityRepository.readWithOrganizer(activityId);
+        await activityRepository.readWithOrganizer(activityId); //check ça
 
       for (const newParticipant of newsParticipants) {
         await participationRepository.create(newParticipant);

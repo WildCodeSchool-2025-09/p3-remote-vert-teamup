@@ -21,6 +21,30 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const response = await participationRepository.create(req.body);
 
+    const activityData = await activityRepository.readWithOrganizer(
+      req.body.activityId,
+      req.body.userId,
+    );
+
+    if (!activityData.visibility) {
+      await mailService.sendInvitationEmail({
+        participantEmail: activityData.participant_email,
+        organizerUsername: activityData.organizer_username,
+        activityName: activityData.name,
+        participantUsername: activityData.participant_username,
+      });
+    }
+
+    if (activityData.visibility) {
+      await mailService.sendRequestEmail({
+        organizerEmail: activityData.organizer_email,
+        organizerUsername: activityData.organizer_username,
+        activityName: activityData.name,
+        participantUsername: activityData.participant_username,
+        autoValidation: activityData.auto_validation,
+      });
+    }
+
     res.json(response);
   } catch (err: unknown) {
     if (
@@ -68,7 +92,6 @@ const editStatus: RequestHandler = async (req, res, next) => {
         activityId,
       );
 
-      console.log(activity);
       await mailService.sendAnswerRequestEmail({
         participantEmail: activity.participant_email,
         participantUsername: participantUsername,

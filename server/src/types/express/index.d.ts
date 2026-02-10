@@ -131,3 +131,11 @@ type InvitationEmail = {
   activityName: string;
   participantUsername: string;
 };
+
+type RequestEmail = {
+  organizerEmail: string;
+  organizerUsername: string;
+  activityName: string;
+  participantUsername: string;
+  autoValidation: boolean;
+};

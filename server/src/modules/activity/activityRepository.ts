@@ -108,16 +108,26 @@ class ActivityRepository {
     };
   }
 
-  async readWithOrganizer(userId: number, activityId: number) {
+  async readWithOrganizer(activityId: number, userId?: number) {
+    let query = "";
+    let selectOption = "";
+    const params = [];
+
+    if (userId) {
+      query =
+        "JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ? JOIN user AS u2 ON p.user_id = u2.id";
+      selectOption =
+        ", u2.email AS participant_email, u2.username AS participant_username";
+      params.push(userId);
+    }
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username,
-      u2.email AS participant_email, u2.username AS participant_username
+      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username
+      ${selectOption}
       FROM activity AS a
       JOIN user AS u ON u.id = a.user_id
-      JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ?
-      JOIN user AS u2 ON p.user_id = u2.id
+      ${query}
       WHERE a.id = ?`,
-      [userId, activityId],
+      [...params, activityId],
     );
     return rows[0];
   }
