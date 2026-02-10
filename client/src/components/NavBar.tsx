@@ -69,10 +69,15 @@ function NavBar() {
           </NavLink>
         </div>
         <div className="bottom-navbar">
-          <div className="btn-chat">
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "navbar-link link-active" : "navbar-link"
+            }
+            to="/messanger"
+          >
             <img src="/icons/message.png" alt="icon message" />
             <p>Messages</p>
-          </div>
+          </NavLink>
           <NavLink
             className={({ isActive }) =>
               isActive ? "navbar-link link-active" : "navbar-link"

@@ -122,6 +122,14 @@ function Activities() {
 
       const activitiesData = await activitiesResponse.json();
 
+      const usersActivities = activitiesData.activities
+        .filter((a: Activity) => a.id === userId)
+        .map((a: Activity) => a.id);
+
+      enrolledActivityIds.push(...usersActivities);
+
+      console.log(enrolledActivityIds);
+
       const filteredActivities = userId
         ? activitiesData.activities.filter(
             (a: Activity) => !enrolledActivityIds.includes(a.id),
