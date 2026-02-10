@@ -216,21 +216,21 @@ function ActivityCard({
               <div className="invitation-buttons">
                 <button
                   type="button"
-                  className="refuse-button"
-                  onClick={() =>
-                    acceptOrRefuseInvitation(activity.id, "refused")
-                  }
-                >
-                  Refuser
-                </button>
-                <button
-                  type="button"
                   className="accept-button"
                   onClick={() =>
                     acceptOrRefuseInvitation(activity.id, "accepted")
                   }
                 >
                   Accepter
+                </button>
+                <button
+                  type="button"
+                  className="refuse-button"
+                  onClick={() =>
+                    acceptOrRefuseInvitation(activity.id, "refused")
+                  }
+                >
+                  Refuser
                 </button>
               </div>
             ) : selectedTab === "pending" &&
