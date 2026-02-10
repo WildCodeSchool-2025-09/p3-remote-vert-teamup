@@ -1,0 +1,32 @@
+.chats-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 4rem;
+  gap: 1rem;
+}
+
+.chat-wrapper {
+  border: 1px black solid;
+  display: flex;
+  padding: 0.4rem 0.6rem;
+  gap: 1rem;
+  width: 45%;
+}
+
+.chat-btn {
+  background: var(--button-color);
+  padding: 0.4rem 0.6rem;
+}
+
+/* Chat */
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  padding: 5rem;
+}
