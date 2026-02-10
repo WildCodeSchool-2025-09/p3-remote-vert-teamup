@@ -90,6 +90,7 @@ function ActivityCard({
             activityId: activityId,
             status: status,
             participantUsername: "CurrentUser", //connexion
+            type: "invitation",
           }),
         },
       );

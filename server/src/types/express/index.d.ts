@@ -111,6 +111,14 @@ type AnswerInvitationEmail = {
   status: string;
 };
 
+type AnswerRequestEmail = {
+  participantEmail: string;
+  organizerUsername: string;
+  activityName: string;
+  participantUsername: string;
+  status: string;
+};
+
 type newUserType = {
   userId?: number;
   activityId?: number;

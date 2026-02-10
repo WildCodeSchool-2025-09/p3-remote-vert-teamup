@@ -35,7 +35,7 @@ const add: RequestHandler = async (req, res, next) => {
 
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId, status, participantUsername } = req.body;
+    const { userId, activityId, status, participantUsername, type } = req.body;
 
     const result = await ParticipationRepository.update(
       userId,
@@ -43,14 +43,37 @@ const editStatus: RequestHandler = async (req, res, next) => {
       status,
     );
 
-    if (status === "accepted" || status === "refused") {
-      const activity = await activityRepository.readWithOrganizer(activityId);
+    if (
+      (status === "accepted" || status === "refused") &&
+      type === "invitation"
+    ) {
+      const activity = await activityRepository.readWithOrganizer(
+        userId,
+        activityId,
+      );
 
       await mailService.sendAnswerInvitationEmail({
         organizerEmail: activity.organizer_email,
         organizerUsername: activity.organizer_username,
         activityName: activity.name,
         participantUsername: participantUsername,
+        status: status,
+      });
+    } else if (
+      (status === "accepted" || status === "refused") &&
+      type === "request"
+    ) {
+      const activity = await activityRepository.readWithOrganizer(
+        userId,
+        activityId,
+      );
+
+      console.log(activity);
+      await mailService.sendAnswerRequestEmail({
+        participantEmail: activity.participant_email,
+        participantUsername: participantUsername,
+        organizerUsername: activity.organizer_username,
+        activityName: activity.name,
         status: status,
       });
     }

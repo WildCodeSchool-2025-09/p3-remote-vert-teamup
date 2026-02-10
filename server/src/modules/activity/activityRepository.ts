@@ -108,15 +108,17 @@ class ActivityRepository {
     };
   }
 
-  async readWithOrganizer(activityId: number) {
+  async readWithOrganizer(userId: number, activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username
-       FROM activity AS a
-       JOIN user AS u ON u.id = a.user_id
-       WHERE a.id = ?`,
-      [activityId],
+      `SELECT a.*, u.email AS organizer_email, u.username AS organizer_username,
+      u2.email AS participant_email, u2.username AS participant_username
+      FROM activity AS a
+      JOIN user AS u ON u.id = a.user_id
+      JOIN participation AS p ON p.activity_id = a.id AND p.user_id = ?
+      JOIN user AS u2 ON p.user_id = u2.id
+      WHERE a.id = ?`,
+      [userId, activityId],
     );
-
     return rows[0];
   }
 

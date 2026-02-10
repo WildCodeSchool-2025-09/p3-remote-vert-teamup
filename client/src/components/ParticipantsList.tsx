@@ -104,9 +104,10 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
           },
           body: JSON.stringify({
             status: newStatus,
-            userId,
+            userId, //participant
             activityId,
             participantUsername: username,
+            type: "request",
           }),
         },
       );
