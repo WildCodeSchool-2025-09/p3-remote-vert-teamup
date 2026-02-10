@@ -57,6 +57,16 @@ CREATE TABLE participation (
   FOREIGN KEY (activity_id) REFERENCES activity(id) ON DELETE CASCADE
 );
 
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  activity_id INTEGER NOT NULL REFERENCES activity(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
 INSERT INTO sport(name)
 VALUES
   ("Football"),
