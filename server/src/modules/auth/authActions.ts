@@ -58,8 +58,6 @@ const verifyToken: RequestHandler = (req, res, next) => {
 
     req.auth = jwt.verify(token, process.env.APP_SECRET as string) as MyPayload;
 
-    console.log(req.auth);
-
     next();
   } catch (err) {
     console.error(err);

@@ -6,6 +6,7 @@ import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 import { useMediaQuery } from "react-responsive";
+import { useAuth } from "../context/AuthContext";
 
 const tagLabelTranslations = [
   { key: "locker", label: "Vestiaires" },
@@ -26,7 +27,6 @@ const sortingCondition = [
 ];
 
 const LIMIT = 10;
-const userId = 1; // Replace userId with context loged in variable
 const excludeFromFilterTags = ["sport", "playingAt", "city"];
 
 function Activities() {
@@ -43,6 +43,8 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const [sortOpen, setSortOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { auth } = useAuth();
 
   const translateTaglables = useCallback((key: string, value: string) => {
     const translateOptions = tagLabelTranslations.find((item) => {
@@ -102,12 +104,24 @@ function Activities() {
   }, [filters, navigate]);
 
   useEffect(() => {
+    let userId = 0;
+    if (auth) {
+      userId = auth.user.id;
+    }
+
     const fetchAndFilterActivities = async () => {
       let enrolledActivityIds: number[] = [];
 
-      if (userId) {
+      if (auth) {
         const enrollmentsResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`,
+          `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth.user.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+          },
         );
         enrolledActivityIds = await enrollmentsResponse.json();
       }
@@ -134,7 +148,7 @@ function Activities() {
     };
 
     fetchAndFilterActivities();
-  }, [currentPage, filters]);
+  }, [currentPage, filters, auth]);
 
   const sortActivities = (item: string) => {
     const sortedActivities = [...activities];

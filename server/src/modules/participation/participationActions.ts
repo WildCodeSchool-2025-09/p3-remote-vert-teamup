@@ -1,11 +1,17 @@
 import type { RequestHandler } from "express";
+import { StatusCodes } from "http-status-codes";
 import participationRepository from "./participationRepository";
 import ParticipationRepository from "./participationRepository";
-import activityRepository from "../activity/activityRepository";
+import activityRepository from "../Activity/activityRepository";
 import mailService from "../../services/mailService";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const activityId = Number(req.query.id);
 
     const participants =
@@ -19,6 +25,11 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const response = await participationRepository.create(req.body);
 
     res.json(response);
@@ -67,17 +78,18 @@ const browseSome: RequestHandler = async (req, res, next) => {
 
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
-    const { userId, activityId, status, participantUsername } = req.body;
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
 
-    console.log(req.body);
+    const { userId, activityId, status, participantUsername } = req.body;
 
     const result = await ParticipationRepository.update(
       userId,
       activityId,
       status,
     );
-
-    console.log(result);
 
     if (status === "accepted") {
       const activity = await activityRepository.readWithOrganizer(activityId);
@@ -98,6 +110,11 @@ const editStatus: RequestHandler = async (req, res, next) => {
 
 const deleteParticipation: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const { userId, activityId } = req.body;
 
     const result = await ParticipationRepository.delete(userId, activityId);

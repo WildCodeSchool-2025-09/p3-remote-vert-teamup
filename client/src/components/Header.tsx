@@ -1,11 +1,14 @@
 import "../styles/Header.css";
+import { useAuth } from "../context/AuthContext";
 
 function Header() {
+  const { auth } = useAuth();
+
   return (
     <header className="header-navbar">
       <div>
         <p>Bonjour</p>
-        <p>User</p>
+        {auth && <p>{auth.user.username}</p>}
       </div>
       <img src="/logo.png" alt="logo team up" />
       <div className="btn-chat">

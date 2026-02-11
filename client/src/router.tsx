@@ -6,6 +6,7 @@ import ActivityForm from "./pages/ActivityForm";
 import MyActivities from "./pages/MyActivities.tsx";
 import SignUp from "./pages/SignUp.tsx";
 import Home from "./pages/Home.tsx";
+import SignIn from "./pages/SignIn.tsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/sign-up",
         element: <SignUp />,
+      },
+      {
+        path: "/sign-in",
+        element: <SignIn />,
       },
     ],
   },

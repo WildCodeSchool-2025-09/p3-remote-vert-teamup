@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { StatusCodes } from "http-status-codes";
 import "../styles/ParticipantsList.css";
+import { useOutletContext } from "react-router";
 
 type ParticipantsListProps = {
   activityId: number;
@@ -20,11 +21,19 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
   const [inputGuest, setInputGuest] = useState("");
   const [error, setError] = useState("");
 
+  const { auth } = useOutletContext() as Auth;
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth.token}`,
+      },
+    })
       .then((response) => response.json())
       .then((participants) => setParticipants(participants));
-  }, [activityId]);
+  }, [activityId, auth]);
 
   async function addGuest() {
     try {
@@ -58,6 +67,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify(newGuest),
         },

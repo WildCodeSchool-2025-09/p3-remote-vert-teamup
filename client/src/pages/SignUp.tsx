@@ -14,12 +14,12 @@ function SignUp() {
     password: "",
     confirmPassword: "",
     email: "",
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     born_at: "",
     address: "",
     city: "",
-    zipCode: "",
+    zip_code: "",
     phone: "",
     picture: "",
   });
@@ -37,11 +37,14 @@ function SignUp() {
   const Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + "/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        },
+      );
       if (!response.ok) {
         switch (response.status) {
           case 400:
@@ -129,8 +132,8 @@ function SignUp() {
             required
             variant="outlined"
             size="small"
-            name="firstName"
-            value={user.firstName}
+            name="firstname"
+            value={user.firstname}
             onChange={ChangeInput}
           />
           <TextField
@@ -138,8 +141,8 @@ function SignUp() {
             required
             variant="outlined"
             size="small"
-            name="lastName"
-            value={user.lastName}
+            name="lastname"
+            value={user.lastname}
             onChange={ChangeInput}
           />
           <TextField
@@ -176,8 +179,8 @@ function SignUp() {
             required
             variant="outlined"
             size="small"
-            name="zipCode"
-            value={user.zipCode}
+            name="zip_code"
+            value={user.zip_code}
             onChange={ChangeInput}
           />
           <TextField

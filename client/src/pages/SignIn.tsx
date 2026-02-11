@@ -1,21 +1,20 @@
 import { useRef } from "react";
-import { useNavigate, useOutletContext } from "react-router";
-
-type Auth = {
-  user: User;
-  token: string;
-};
+import { useNavigate } from "react-router";
+import "../styles/SignIn.css";
+import { useAuth } from "../context/AuthContext";
 
 function SignIn() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const { setAuth } = useOutletContext() as {
+  const { setAuth } = useAuth() as {
     setAuth: (auth: Auth | null) => void;
   };
 
-  async function login() {
+  async function login(e: React.FormEvent) {
+    e.preventDefault();
+
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -37,17 +36,22 @@ function SignIn() {
   }
 
   return (
-    <form onSubmit={login}>
-      <div>
-        <label htmlFor="email">email</label>{" "}
-        <input ref={emailRef} type="email" id="email" />
-      </div>
-      <div>
-        <label htmlFor="password">password</label>{" "}
-        <input type="password" id="password" ref={passwordRef} />
-      </div>
-      <button type="submit">Send</button>
-    </form>
+    <div className="signin-container">
+      <h1>Connexion</h1>
+      <form onSubmit={(e) => login(e)} className="signin-form">
+        <div>
+          <label htmlFor="email">Email</label>{" "}
+          <input ref={emailRef} type="email" id="email" />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>{" "}
+          <input type="password" id="password" ref={passwordRef} />
+        </div>
+        <button className="send-btn" type="submit">
+          Connecter
+        </button>
+      </form>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ import "../styles/myActivity.css";
 import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
 import ActivityCard from "../components/ActivityCard.tsx";
+import { useAuth } from "../context/AuthContext.tsx";
 
 function MyActivities() {
   const location = useLocation();
@@ -11,6 +12,8 @@ function MyActivities() {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
   const [showParticpants, setShowParticipants] = useState<number | null>();
+
+  const { auth } = useAuth();
 
   useEffect(() => {
     if (location.state) {
@@ -37,10 +40,23 @@ function MyActivities() {
   }
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities/me?status=${status}`)
+    if (!auth?.token) {
+      return;
+    }
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/me/activities?status=${status}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+      },
+    )
       .then((response) => response.json())
       .then((myActivities) => setMyActivities(myActivities));
-  }, [status]);
+  }, [status, auth]);
 
   useEffect(() => {
     selectedTab && setShowParticipants(null);

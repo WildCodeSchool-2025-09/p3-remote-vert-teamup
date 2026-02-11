@@ -9,7 +9,9 @@ function ActivityDetails() {
   const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [reservationStatus, setReservationStatus] = useState<"idle" | "loading" | "already">("idle");
+  const [reservationStatus, setReservationStatus] = useState<
+    "idle" | "loading" | "already"
+  >("idle");
   const mapModalRef = useRef<HTMLDialogElement>(null);
   const openMapModal = () => mapModalRef.current?.showModal();
   const closeMapModal = () => mapModalRef.current?.close();
@@ -39,22 +41,26 @@ function ActivityDetails() {
   const startTime = activity.playing_time.slice(0, 5).replace(":", "h");
   const startHour = Number(activity.playing_time.slice(0, 2));
   const startMinutes = Number(activity.playing_time.slice(3, 5));
-  const endTotalMinutes = startHour * 60 + startMinutes + activity.playing_duration;
+  const endTotalMinutes =
+    startHour * 60 + startMinutes + activity.playing_duration;
   const endHour = Math.floor(endTotalMinutes / 60);
   const endMinutes = endTotalMinutes % 60;
   const endTime = `${endHour}h${endMinutes > 0 ? endMinutes.toString().padStart(2, "0") : ""}`;
   const durationHours = Math.floor(activity.playing_duration / 60);
   const durationMinutes = activity.playing_duration % 60;
-  const durationLabel = durationHours > 0
-    ? `${durationHours}h${durationMinutes > 0 ? durationMinutes.toString().padStart(2, "0") : ""}`
-    : `${durationMinutes}min`;
+  const durationLabel =
+    durationHours > 0
+      ? `${durationHours}h${durationMinutes > 0 ? durationMinutes.toString().padStart(2, "0") : ""}`
+      : `${durationMinutes}min`;
 
   const availableSpots = activity.nb_spots - activity.nb_participant;
   const acceptedParticipants = participants.filter(
-    (participant) => participant.status === "accepted"
+    (participant) => participant.status === "accepted",
   );
 
-  const mapQuery = encodeURIComponent(`${activity.address} ${activity.zip_code} ${activity.city}`);
+  const mapQuery = encodeURIComponent(
+    `${activity.address} ${activity.zip_code} ${activity.city}`,
+  );
   const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=${mapQuery}`;
 
   function goBack() {
@@ -97,7 +103,10 @@ function ActivityDetails() {
         navigate("/my-activities", { state: 0 });
       } else {
         navigate("/my-activities", {
-          state: { toast: "Votre demande de réservation a été envoyée à l'organisateur de l'activité." },
+          state: {
+            toast:
+              "Votre demande de réservation a été envoyée à l'organisateur de l'activité.",
+          },
         });
       }
     } catch (err) {
@@ -145,21 +154,31 @@ function ActivityDetails() {
           <img src="/icons/pin.png" alt="" />
           <div>
             <p>Adresse</p>
-            <p>{activity.address} {activity.zip_code} {activity.city}</p>
+            <p>
+              {activity.address} {activity.zip_code} {activity.city}
+            </p>
           </div>
         </div>
-        <button type="button" className="map-link" onClick={openMapModal}>Voir Carte</button>
+        <button type="button" className="map-link" onClick={openMapModal}>
+          Voir Carte
+        </button>
       </section>
 
       <dialog
         className="map-modal"
         ref={mapModalRef}
-        onClick={(e) => { if (e.target === e.currentTarget) closeMapModal(); }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeMapModal();
+        }}
       >
         <div className="map-modal-content">
           <div className="map-modal-header">
             <h3>Localisation</h3>
-            <button type="button" className="map-modal-close" onClick={closeMapModal}>
+            <button
+              type="button"
+              className="map-modal-close"
+              onClick={closeMapModal}
+            >
               &times;
             </button>
           </div>
@@ -179,20 +198,40 @@ function ActivityDetails() {
         </div>
       </dialog>
 
-      <section className={`spots-bar ${activity.nb_participant / activity.nb_spots >= 0.5 ? "filled" : ""}`}>
+      <section
+        className={`spots-bar ${activity.nb_participant / activity.nb_spots >= 0.5 ? "filled" : ""}`}
+      >
         <div
           className="spots-bar-fill"
-          style={{ width: `${(activity.nb_participant / activity.nb_spots) * 100}%` }}
+          style={{
+            width: `${(activity.nb_participant / activity.nb_spots) * 100}%`,
+          }}
         />
-        <p>{availableSpots} {availableSpots <= 1 ? "place restante" : "places restantes"} / {activity.nb_spots}</p>
+        <p>
+          {availableSpots}{" "}
+          {availableSpots <= 1 ? "place restante" : "places restantes"} /{" "}
+          {activity.nb_spots}
+        </p>
       </section>
 
       <section className="good-to-know">
         <h3>Bon à savoir</h3>
         <div className="tags-container">
-          {{"all": "Tous niveaux", "beginner": "Débutant", "amateur": "Intermédiaire", "advanced": "Confirmé"}[activity.level] && (
+          {{
+            all: "Tous niveaux",
+            beginner: "Débutant",
+            amateur: "Intermédiaire",
+            advanced: "Confirmé",
+          }[activity.level] && (
             <p className="tag level-tag">
-              {{"all": "Tous niveaux", "beginner": "Débutant", "amateur": "Intermédiaire", "advanced": "Confirmé"}[activity.level]}
+              {
+                {
+                  all: "Tous niveaux",
+                  beginner: "Débutant",
+                  amateur: "Intermédiaire",
+                  advanced: "Confirmé",
+                }[activity.level]
+              }
             </p>
           )}
           {!!activity.toilet && (
@@ -281,7 +320,8 @@ function ActivityDetails() {
       >
         {reservationStatus === "already" && "Déjà inscrit"}
         {reservationStatus === "loading" && "Réservation..."}
-        {reservationStatus === "idle" && (availableSpots <= 0 ? "Complet" : "Réserver")}
+        {reservationStatus === "idle" &&
+          (availableSpots <= 0 ? "Complet" : "Réserver")}
       </button>
     </main>
   );
