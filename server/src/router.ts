@@ -3,6 +3,7 @@ import activityActions from "./modules/activity/activityActions";
 import sportActions from "./modules/sport/sportActions";
 import userActions from "./modules/user/userActions";
 import participationActions from "./modules/participation/participationActions";
+import authActions from "./modules/auth/authActions";
 
 const router = express.Router();
 
@@ -22,5 +23,7 @@ router.post("/api/participation", participationActions.add);
 router.put("/api/participation", participationActions.editStatus);
 router.patch("/api/participant/:id", participationActions.edit);
 router.delete("/api/participation", participationActions.deleteParticipation);
+
+router.post("/api/login", authActions.logIn);
 
 export default router;
