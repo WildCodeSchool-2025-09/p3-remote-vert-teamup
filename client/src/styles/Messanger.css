@@ -1,5 +1,15 @@
-.chats-container {
+.messanger-layout {
   display: flex;
+  height: 100vh;
+  margin-left: 100px;
+}
+
+.chats-container {
+  flex: 0 0 350px; /* Fixed width for chat list */
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+
+  /* display: flex; */
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -7,12 +17,17 @@
   gap: 1rem;
 }
 
+.chat-panel {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .chat-wrapper {
   border: 1px black solid;
   display: flex;
   padding: 0.4rem 0.6rem;
   gap: 1rem;
-  width: 45%;
+  cursor: pointer;
 }
 
 .chat-btn {
@@ -42,16 +57,21 @@
   border-radius: 5px;
 }
 
-.username-date {
+.username {
   display: flex;
   gap: 1rem;
+  color: var(--input-color);
+}
+
+.username-none {
+  display: none;
 }
 
 .message-date {
   display: flex;
   align-items: flex-end;
   font-size: 0.7rem;
-  color: #555;
+  color: var(--accent-color);
 }
 
 .chat-right {
@@ -63,5 +83,5 @@
 }
 
 .userrow-reverse {
-  flex-direction: row-reverse;
+  align-items: flex-end;
 }

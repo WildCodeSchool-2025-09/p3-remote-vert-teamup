@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/Messanger.css";
 import { useNavigate } from "react-router";
+import GroupChat from "./GroupChat";
 
 type UsersActivities = {
   id: number;
@@ -16,6 +17,7 @@ function Messanger() {
   const [userActivities, setUserActivities] = useState<
     UsersActivities[] | undefined
   >();
+  const [selectedActivity, setSelectedActivity] = useState();
 
   const isMobile = window.innerWidth < 768;
 
@@ -25,33 +27,52 @@ function Messanger() {
       .then((data) => setUserActivities(data));
   }, []);
 
-  console.log(userActivities);
+  const openChatroom = (a: UsersActivities) => {
+    if (isMobile) {
+      navigate(`/chat/${a.id}`, {
+        state: { activity: a, userId: userId },
+      });
+    } else {
+      setSelectedActivity(a);
+    }
+  };
 
   return (
-    <div className="chats-container">
-      {userActivities?.length === 0 && (
-        <h1>
-          Vos messages apparaîtront ici une fois que vous vous serez inscrit à
-          une activité.
-        </h1>
-      )}
-      {userActivities?.map((a) => (
-        <button
-          type="button"
-          key={a.id}
-          className="chat-wrapper"
-          onClick={() =>
-            navigate(`/chat/${a.id}`, {
-              state: { activity: a, userId: userId },
-            })
-          }
-        >
-          <h2>{a.sport_name}</h2>
-          <p>{a.city}</p>
-          <p>{a.playing_at}</p>
-        </button>
-      ))}
-    </div>
+    <>
+      <div className="messanger-layout">
+        <div className="chats-container">
+          {userActivities?.length === 0 && (
+            <h1>
+              Vos messages apparaîtront ici une fois que vous vous serez inscrit
+              à une activité.
+            </h1>
+          )}
+          {userActivities?.map((a) => (
+            <button
+              type="button"
+              key={a.id}
+              className="chat-wrapper"
+              onClick={() => openChatroom(a)}
+            >
+              <h2>{a.sport_name}</h2>
+              <p>{a.city}</p>
+              <p>{a.playing_at}</p>
+            </button>
+          ))}
+        </div>
+        {!isMobile && (
+          <div className="chat-panel">
+            {selectedActivity ? (
+              <GroupChat activity={selectedActivity} userId={userId} />
+            ) : (
+              <div className="no-chat-selected">
+                Sélectionnez une conversation
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

@@ -2,6 +2,16 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import { format, isToday, isYesterday } from "date-fns";
 
+type groupChatType = {
+  activity: {
+    id: number;
+    sport_name: string;
+    city: string;
+    playing_at: string;
+  };
+  userId: number;
+};
+
 type MessageType = {
   activity_id: number;
   content: string;
@@ -13,10 +23,14 @@ type MessageType = {
   username: string;
 };
 
-function GroupChat() {
+function GroupChat({
+  activity: activityProp,
+  userId: userIdProp,
+}: groupChatType) {
   const location = useLocation();
-  const activity = location.state.activity;
-  const userId = location.state.userId; // Replace with login state
+
+  const activity = activityProp ?? location.state?.activity;
+  const userId = userIdProp ?? location.state?.userId; // Replace with login state
 
   const [typeMessage, setTypeMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -92,17 +106,21 @@ function GroupChat() {
         {messages.map((m) => (
           <div
             key={m.id}
-            className={`single-message ${m.user_id === userId ? "chat-right" : "chat-left"}`}
+            className={`${m.user_id === userId ? "chat-right" : "chat-left"}`}
           >
             <div
-              className={`username-date ${m.user_id === userId && "userrow-reverse"}`}
+              className={` single-message ${m.user_id === userId && "userrow-reverse"}`}
             >
-              <h3>{m.username}</h3>
+              <h3
+                className={`username ${m.user_id === userId && "username-none"}`}
+              >
+                {m.username}
+              </h3>
+              <p>{m.content}</p>
               <small className="message-date">
                 {formatMessageTime(m.created_at)}
               </small>
             </div>
-            <p>{m.content}</p>
           </div>
         ))}
       </div>

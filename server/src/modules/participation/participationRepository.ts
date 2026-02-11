@@ -44,10 +44,10 @@ class participationRepository {
         FROM participation AS p
         JOIN activity AS a ON a.id = p.activity_id
         JOIN sport AS s ON s.id = a.sport_id
-        WHERE p.user_id = ?
+        WHERE p.user_id = ? OR a.user_id = ?
         AND p.status = 'accepted'
         ORDER BY playing_at ASC`,
-      [userId],
+      [userId, userId],
     );
 
     return rows;
