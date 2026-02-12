@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import "../styles/variables.css";
 import "../styles/ActivityForm.css";
 import { useMediaQuery } from "react-responsive";
@@ -45,7 +46,7 @@ function ActivityForm() {
 
   const isMobile = useMediaQuery({ query: "(max-width: 1439px)" });
 
-  const userId = 25; // Replace userId with context loged in variable
+  const { auth } = useAuth();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
@@ -97,7 +98,7 @@ function ActivityForm() {
 
     const activityData = {
       activity: {
-        user_id: 25, // TODO: remplacer après authentification !
+        user_id: auth?.user.id,
         sport_id: Number(sportId),
         address: addressRef.current?.value || "",
         city: cityRef.current?.value || "",
@@ -124,7 +125,10 @@ function ActivityForm() {
         `${import.meta.env.VITE_API_URL}/api/activities`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
+          },
           body: JSON.stringify(activityData),
         },
       );
@@ -188,11 +192,11 @@ function ActivityForm() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${userId}`,
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
     )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
-  }, []);
+  }, [auth]);
 
   return (
     <section className="publication-page">

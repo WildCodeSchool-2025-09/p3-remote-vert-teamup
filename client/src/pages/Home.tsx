@@ -4,9 +4,10 @@ import Carousel from "../components/Carousel";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const LIMIT = 10;
-const userId = 25; // Replace userId with context loged in variable
+
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -23,7 +24,7 @@ function Home() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${userId}`,
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`,
     )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));

@@ -1,10 +1,12 @@
 import { NavLink, useMatch } from "react-router";
 import "../styles/NavBar.css";
 import { useMediaQuery } from "react-responsive";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const match = useMatch("/activities/page/:page");
+  const { auth } = useAuth();
 
   return (
     <>
@@ -15,7 +17,7 @@ function NavBar() {
               <img src="/logo.png" alt="logo teamup" />
             </NavLink>
             <p>Bonjour</p>
-            <p>User</p>
+            {auth && <p>{auth.user.username}</p>}
           </div>
           <NavLink
             className={({ isActive }) =>
@@ -48,7 +50,7 @@ function NavBar() {
                 ? "navbar-link link-publication link-publication-active"
                 : "navbar-link link-publication"
             }
-            to="/publication"
+            to={auth ? "/publication" : "/sign-in"}
           >
             <svg viewBox="0 0 28 28">
               <title>icon add</title>
@@ -74,7 +76,7 @@ function NavBar() {
             className={({ isActive }) =>
               isActive ? "navbar-link link-active" : "navbar-link"
             }
-            to="/my-activities"
+            to={auth ? "/my-activities" : "/sign-in"}
           >
             <svg viewBox="0 0 27 27">
               <title>icon calendar</title>
@@ -86,7 +88,7 @@ function NavBar() {
             className={({ isActive }) =>
               isActive ? "navbar-link link-active" : "navbar-link"
             }
-            to="/profile"
+            to={auth ? "/profile" : "/sign-in"}
           >
             <svg viewBox="0 0 22 22">
               <title>icon profile</title>

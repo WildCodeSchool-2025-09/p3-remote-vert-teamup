@@ -16,12 +16,12 @@ function SignUp() {
     password: "",
     confirmPassword: "",
     email: "",
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     born_at: "",
     address: "",
     city: "",
-    zipCode: "",
+    zip_code: "",
     phone: "",
     picture: "",
   });
@@ -143,8 +143,8 @@ function SignUp() {
               required
               variant="outlined"
               size="small"
-              name="firstName"
-              value={user.firstName}
+              name="firstname"
+              value={user.firstname}
               onChange={ChangeInput}
             />
             <TextField
@@ -152,8 +152,8 @@ function SignUp() {
               required
               variant="outlined"
               size="small"
-              name="lastName"
-              value={user.lastName}
+              name="lastname"
+              value={user.lastname}
               onChange={ChangeInput}
             />
           </div>
@@ -181,8 +181,8 @@ function SignUp() {
               required
               variant="outlined"
               size="small"
-              name="zipCode"
-              value={user.zipCode}
+              name="zip_code"
+              value={user.zip_code}
               onChange={ChangeInput}
             />
           </div>

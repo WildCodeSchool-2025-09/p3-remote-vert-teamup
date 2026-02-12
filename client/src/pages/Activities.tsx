@@ -6,8 +6,8 @@ import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import SearchFilters from "../components/SearchFilters";
 import { useMediaQuery } from "react-responsive";
+import { useAuth } from "../context/AuthContext";
 
-const userId = 25; // Replace userId with context loged in variable
 const tagLabelTranslations = [
   { key: "locker", label: "Vestiaires" },
   { key: "shower", label: "Douches" },
@@ -26,6 +26,7 @@ const sortingCondition = [
   { key: "price", label: "Prix" },
 ];
 
+const LIMIT = 10;
 const excludeFromFilterTags = ["sport", "playingAt", "city"];
 
 function Activities() {
@@ -42,6 +43,8 @@ function Activities() {
   const [totalPages, setTotalPages] = useState(1);
   const [sortOpen, setSortOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { auth } = useAuth();
 
   const translateTaglables = useCallback((key: string, value: string) => {
     const translateOptions = tagLabelTranslations.find((item) => {
@@ -101,22 +104,51 @@ function Activities() {
   }, [filters, navigate]);
 
   useEffect(() => {
-    const LIMIT = 10;
+    let userId = 0;
+    if (auth) {
+      userId = auth.user.id;
+    }
 
-    const queryString = new URLSearchParams({
-      filters: JSON.stringify(filters),
-    }).toString();
+    const fetchAndFilterActivities = async () => {
+      let enrolledActivityIds: number[] = [];
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}&userId=${userId}`,
-    )
-      .then((response) => response.json())
-      .then((activities) => {
-        setActivities(activities.activities);
-        setTotalPages(activities.pagination.totalPages);
-        setTotalActivities(activities.pagination.totalActivities);
-      });
-  }, [currentPage, filters]);
+      if (auth) {
+        const enrollmentsResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth.user.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+          },
+        );
+        enrolledActivityIds = await enrollmentsResponse.json();
+      }
+
+      const queryString = new URLSearchParams({
+        filters: JSON.stringify(filters),
+      }).toString();
+
+      const activitiesResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
+      );
+
+      const activitiesData = await activitiesResponse.json();
+
+      const filteredActivities = userId
+        ? activitiesData.activities.filter(
+            (a: Activity) => !enrolledActivityIds.includes(a.id),
+          )
+        : activitiesData.activities;
+
+      setActivities(filteredActivities);
+      setTotalPages(activitiesData.pagination.totalPages);
+      setTotalActivities(activitiesData.pagination.totalActivities);
+    };
+
+    fetchAndFilterActivities();
+  }, [currentPage, filters, auth]);
 
   const sortActivities = (item: string) => {
     const sortedActivities = [...activities];

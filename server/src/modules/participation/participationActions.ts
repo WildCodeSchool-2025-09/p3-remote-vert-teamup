@@ -1,12 +1,17 @@
 import type { RequestHandler } from "express";
+import { StatusCodes } from "http-status-codes";
 import participationRepository from "./participationRepository";
 import ParticipationRepository from "./participationRepository";
 import activityRepository from "../activity/activityRepository";
 import mailService from "../../services/mailService";
-import { StatusCodes } from "http-status-codes";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const activityId = Number(req.query.id);
 
     const participants =
@@ -20,6 +25,11 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const response = await participationRepository.create(req.body);
 
     const mailData = await activityRepository.readWithOrganizer(
@@ -49,6 +59,11 @@ const add: RequestHandler = async (req, res, next) => {
 
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
+    if (!req.auth.sub) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+
     const { userId, activityId, status, participantUsername, type } = req.body;
 
     const result = await ParticipationRepository.update(

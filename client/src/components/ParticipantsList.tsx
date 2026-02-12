@@ -2,19 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { StatusCodes } from "http-status-codes";
 import "../styles/ParticipantsList.css";
 
+import { useAuth } from "../context/AuthContext";
+
 type ParticipantsListProps = {
   activityId: number;
   visibility: boolean;
   refreshMyActivities?: (() => void) | undefined;
   nbAvailableSpots: number;
-};
-
-type Participant = {
-  id: number;
-  userId: number;
-  username: string;
-  picture: string;
-  status: string;
 };
 
 function ParticipantsList({
@@ -27,11 +21,22 @@ function ParticipantsList({
   const [inputGuest, setInputGuest] = useState("");
   const [error, setError] = useState("");
 
+  const { auth } = useAuth();
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/participations?id=${activityId}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/participations?id=${activityId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+      },
+    )
       .then((response) => response.json())
       .then((participants) => setParticipants(participants));
-  }, [activityId]);
+  }, [activityId, auth]);
 
   async function addGuest() {
     try {
@@ -65,6 +70,7 @@ function ParticipantsList({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify(newGuest),
         },

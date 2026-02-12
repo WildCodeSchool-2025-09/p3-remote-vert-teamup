@@ -3,6 +3,7 @@ import "../styles/ActivityCard.css";
 import { StatusCodes } from "http-status-codes";
 import ParticipantsList from "./ParticipantsList";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 type ActivityCardType = {
   activity: Activity;
@@ -30,11 +31,16 @@ function ActivityCard({
   const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
   const navigate = useNavigate();
 
+  const { auth } = useAuth();
+
   const makeReservation = async (
     activity: Activity,
     nbAvailableSpots: number,
   ) => {
-    //  !User navigate to sign up (To implement when we will see connection)
+    if (!auth?.user) {
+      navigate("/sign-in");
+      return;
+    }
 
     if (nbAvailableSpots === 0) {
       return;
@@ -42,7 +48,7 @@ function ActivityCard({
     }
 
     const newParticipant = {
-      userId: 25, // Replace userId with context loged in variable
+      userId: auth.user.id,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };
@@ -54,6 +60,7 @@ function ActivityCard({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify(newParticipant),
         },
@@ -84,12 +91,15 @@ function ActivityCard({
         `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
+          },
           body: JSON.stringify({
-            userId: 25, // Replace userId with context loged in variable
+            userId: auth?.user.id,
             activityId: activityId,
             status: status,
-            participantUsername: "CurrentUser", //connexion
+            participantUsername: auth?.user.username,
             type: "invitation",
           }),
         },
