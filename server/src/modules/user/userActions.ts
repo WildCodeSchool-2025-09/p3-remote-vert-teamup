@@ -70,4 +70,21 @@ const validate: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { readByEmail, add, validate };
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number.parseInt(req.auth.sub, 10);
+    const user = await userRepository.readById(userId);
+
+    if (!user) {
+      res.sendStatus(StatusCodes.NOT_FOUND);
+      return;
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { readByEmail, add, validate, read };

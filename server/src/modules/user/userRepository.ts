@@ -34,6 +34,15 @@ class userRepository {
     >;
   }
 
+  async readById(id: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id, email, username, firstname, lastname, born_at, address, city, zip_code, phone, picture FROM user WHERE id = ?",
+      [id],
+    );
+
+    return rows[0] as User | undefined;
+  }
+
   async create(newUser: NewUser) {
     const [result] = await databaseClient.query<Result>(
       `INSERT INTO user (
