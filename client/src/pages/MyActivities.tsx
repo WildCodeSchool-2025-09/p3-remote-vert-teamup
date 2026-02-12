@@ -55,7 +55,11 @@ function MyActivities() {
               activity={myActivity}
               key={myActivity.id}
               selectedTab={selectedTab}
-              setMyActivities={setMyActivities}
+              refreshMyActivities={fetch(
+                `${import.meta.env.VITE_API_URL}/api/activities/me?status=${selectedTab}`,
+              )
+                .then((response) => response.json())
+                .then((myActivities) => setMyActivities(myActivities))}
               participantsListIsOpen={showParticpants === myActivity.id}
               onClickListParticipant={() =>
                 setShowParticipants(

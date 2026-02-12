@@ -35,9 +35,9 @@ const add: RequestHandler = async (req, res, next) => {
       parallelism: 1,
     });
     const insertId = await userRepository.create(req.body);
-    res.status(200).json({ insertId });
+    res.status(StatusCodes.OK).json({ insertId });
   } catch (err) {
-    res.status(409).json();
+    res.status(StatusCodes.CONFLICT).json();
     next(err);
   }
 };
@@ -60,7 +60,7 @@ const validate: RequestHandler = async (req, res, next) => {
   try {
     const { error, value } = createUserSchema.validate(req.body);
     if (error) {
-      res.status(400).json({ error: "VALIDATION_ERROR" });
+      res.status(StatusCodes.BAD_REQUEST).json({ error: "VALIDATION_ERROR" });
       return;
     }
     req.body = value;

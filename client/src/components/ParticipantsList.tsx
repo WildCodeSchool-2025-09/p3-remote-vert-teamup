@@ -5,6 +5,7 @@ import "../styles/ParticipantsList.css";
 type ParticipantsListProps = {
   activityId: number;
   visibility: boolean;
+  refreshMyActivities: Promise<void> | undefined;
 };
 
 type Participant = {
@@ -15,7 +16,11 @@ type Participant = {
   status: string;
 };
 
-function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
+function ParticipantsList({
+  activityId,
+  visibility,
+  refreshMyActivities,
+}: ParticipantsListProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [inputGuest, setInputGuest] = useState("");
   const [error, setError] = useState("");
@@ -119,6 +124,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       setParticipants((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
       );
+      refreshMyActivities;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     }
@@ -147,7 +153,13 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       {participants.map((participant) => (
         <li key={participant.username}>
           <div>
-            <img src={participant.picture} alt="participant" />
+            {participant.picture ? (
+              <img src={participant.picture} alt="participant" />
+            ) : (
+              <p className="no-picture">
+                {participant.username[0].toUpperCase()}
+              </p>
+            )}
             <p>{participant.username}</p>
           </div>
           {participant.status === "refused" ? (

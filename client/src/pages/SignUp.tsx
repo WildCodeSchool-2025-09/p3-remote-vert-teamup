@@ -3,6 +3,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
 import "../styles/SignUp.css";
+import { StatusCodes } from "http-status-codes";
 
 type NewUser = Omit<User, "id"> & {
   confirmPassword: string;
@@ -47,10 +48,10 @@ function SignUp() {
       );
       if (!response.ok) {
         switch (response.status) {
-          case 400:
+          case StatusCodes.BAD_REQUEST:
             setMessage("Données saisies invalides");
             break;
-          case 409:
+          case StatusCodes.CONFLICT:
             setMessage("Nom d'utilisateur déjà existant");
             break;
           default:

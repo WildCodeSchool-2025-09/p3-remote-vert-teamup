@@ -3,6 +3,7 @@ import participationRepository from "./participationRepository";
 import ParticipationRepository from "./participationRepository";
 import activityRepository from "../activity/activityRepository";
 import mailService from "../../services/mailService";
+import { StatusCodes } from "http-status-codes";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
@@ -40,7 +41,7 @@ const add: RequestHandler = async (req, res, next) => {
       err instanceof Error &&
       (err as { code?: string }).code === "ER_DUP_ENTRY"
     ) {
-      res.sendStatus(409);
+      res.status(StatusCodes.CONFLICT);
     }
     next(err);
   }

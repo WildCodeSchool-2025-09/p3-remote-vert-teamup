@@ -4,6 +4,7 @@ import "../styles/variables.css";
 import "../styles/ActivityForm.css";
 import { useMediaQuery } from "react-responsive";
 import ActivityCard from "../components/ActivityCard";
+import { StatusCodes } from "http-status-codes";
 
 const LIMIT = 6;
 
@@ -156,7 +157,7 @@ function ActivityForm() {
         `${import.meta.env.VITE_API_URL}/api/users?email=${guestInput}`,
       );
 
-      if (response.status === 200) {
+      if (response.status === StatusCodes.OK) {
         const user = await response.json();
 
         if (!guests.some((guest) => guest.id === user.id)) {
@@ -166,12 +167,12 @@ function ActivityForm() {
         } else {
           setError((prev) => ({ ...prev, addGuest: "Déjà invité" }));
         }
-      } else if (response.status === 204) {
+      } else if (response.status === StatusCodes.NO_CONTENT) {
         setError((prev) => ({
           ...prev,
           addGuest: "Veuillez remplir le champ",
         }));
-      } else if (response.status === 404) {
+      } else if (response.status === StatusCodes.NOT_FOUND) {
         setError((prev) => ({ ...prev, addGuest: "Email inexistant" }));
       } else {
         setError((prev) => ({ ...prev, addGuest: "Erreur serveur" }));

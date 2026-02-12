@@ -7,15 +7,15 @@ import toast from "react-hot-toast";
 type ActivityCardType = {
   activity: Activity;
   selectedTab?: string;
-  setMyActivities?: React.Dispatch<React.SetStateAction<Activity[]>>;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
+  refreshMyActivities?: Promise<void>;
 };
 
 function ActivityCard({
   activity,
   selectedTab,
-  setMyActivities,
+  refreshMyActivities,
   participantsListIsOpen,
   onClickListParticipant,
 }: ActivityCardType) {
@@ -97,7 +97,8 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      setMyActivities?.((prev) => prev.filter((a) => a.id !== activity.id));
+      refreshMyActivities;
+
       status === "accepted"
         ? toast.success("Invitation validée")
         : status === "refused" && toast.error("Invitation refusée");
@@ -186,7 +187,13 @@ function ActivityCard({
         {selectedTab !== "published" && (
           <div className="card-footer">
             <div className="user-organizer">
-              <img src={activity.user_picture} alt="user" />
+              {activity.user_picture ? (
+                <img src={activity.user_picture} alt="user" />
+              ) : (
+                <p className="no-picture">
+                  {activity.username[0].toUpperCase()}
+                </p>
+              )}
               <p>{activity.username}</p>
             </div>
             {selectedTab === "incoming" && (
@@ -280,6 +287,7 @@ function ActivityCard({
           <ParticipantsList
             activityId={activity.id}
             visibility={activity.visibility}
+            refreshMyActivities={refreshMyActivities}
           />
         )}
       </article>

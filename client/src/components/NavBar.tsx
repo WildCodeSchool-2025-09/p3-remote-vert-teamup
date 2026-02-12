@@ -5,6 +5,7 @@ import { useMediaQuery } from "react-responsive";
 function NavBar() {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const match = useMatch("/activities/page/:page");
+
   return (
     <>
       <nav className="navbar">

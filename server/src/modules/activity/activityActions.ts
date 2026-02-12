@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import participationRepository from "../participation/participationRepository";
-import activityRepository from "./activityRepository";
+import activityRepository from "../activity/activityRepository";
 import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {
@@ -77,7 +77,7 @@ const browseMine: RequestHandler = async (req, res, next) => {
       status,
     );
 
-    res.status(200).json(activities);
+    res.status(StatusCodes.OK).json(activities);
   } catch (err) {
     next(err);
   }
