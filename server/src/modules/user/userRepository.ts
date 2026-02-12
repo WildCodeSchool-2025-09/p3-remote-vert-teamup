@@ -5,12 +5,12 @@ type NewUser = {
   username: string;
   password: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   born_at: string;
   address: string;
   city: string;
-  zipCode: string;
+  zip_code: string;
   phone: string;
   picture: string;
 };
@@ -63,12 +63,12 @@ class userRepository {
         newUser.username,
         newUser.password,
         newUser.email,
-        newUser.firstName,
-        newUser.lastName,
+        newUser.firstname,
+        newUser.lastname,
         newUser.born_at,
         newUser.address,
         newUser.city,
-        newUser.zipCode,
+        newUser.zip_code,
         newUser.phone,
         newUser.picture,
       ],
