@@ -8,6 +8,7 @@
   justify-content: space-around;
   align-items: center;
   background-color: var(--dark-color);
+  z-index: 10;
 
   &::before {
     content: "";

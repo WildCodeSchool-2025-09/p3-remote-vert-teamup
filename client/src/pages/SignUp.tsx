@@ -37,11 +37,14 @@ function SignUp() {
   const Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + "/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        },
+      );
       if (!response.ok) {
         switch (response.status) {
           case 400:
@@ -70,7 +73,7 @@ function SignUp() {
 
   return (
     <div id="sign-up">
-      <h1>CÉER UN COMPTE</h1>
+      <h1>CRÉER UN COMPTE</h1>
       <ThemeProvider theme={muiTheme}>
         <Box
           component="form"
