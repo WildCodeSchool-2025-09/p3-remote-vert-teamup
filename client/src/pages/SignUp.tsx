@@ -2,7 +2,7 @@ import { Box, Button, TextField } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
-import "../styles/signUp.css";
+import "../styles/SignUp.css";
 
 type NewUser = Omit<User, "id"> & {
   confirmPassword: string;

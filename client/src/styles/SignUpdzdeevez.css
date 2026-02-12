@@ -22,3 +22,9 @@
     color: var(--refused-color);
   }
 }
+
+@media (min-width: 1024px) {
+  #sign-up {
+    margin-bottom: 0rem;
+  }
+}
