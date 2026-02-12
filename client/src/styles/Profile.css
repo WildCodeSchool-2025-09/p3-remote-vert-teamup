@@ -101,13 +101,13 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.25rem;
 }
 
 .profile-info-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.75rem;
   font-family: var(--button-font);
   font-size: var(--button-size);
   color: var(--dark-color);
@@ -136,13 +136,13 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.25rem;
 }
 
 .profile-action-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.75rem;
   font-family: var(--button-font);
   font-size: var(--button-size);
   color: var(--dark-color);

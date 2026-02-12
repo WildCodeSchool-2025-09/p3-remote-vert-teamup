@@ -105,7 +105,7 @@ function Profile() {
           </li>
           <li className="profile-info-row">
             <img src="/icons/mains.png" alt="Membre depuis" className="profile-icon" />
-            <span>Non renseigné</span>
+            <span>Membre depuis 2026</span>
           </li>
         </ul>
 
