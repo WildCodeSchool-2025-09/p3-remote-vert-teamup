@@ -197,7 +197,7 @@ ul.participant-list li p img.vector {
   border: 1px solid var(--refused-color);
   border-radius: 10px;
   margin: 0 auto 5px auto;
-  width: 185px;
+  width: 256px;
   height: 5px;
   animation: error-message-display 0.5s both;
 }

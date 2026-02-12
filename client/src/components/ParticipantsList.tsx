@@ -71,7 +71,15 @@ function ParticipantsList({
       );
 
       if (invitationResponse.status === StatusCodes.CONFLICT) {
-        throw new Error("Cette personne a déjà été invitée");
+        const errorData = await invitationResponse.json();
+        const errorMessage: Record<string, string> = {
+          ACTIVITY_FULL: "L'activité est complète",
+          ALREADY_INVITED: "Cette personne a déjà été invitée",
+        };
+
+        throw new Error(
+          errorMessage[errorData.error] || "Une erreur est survenu",
+        );
       }
 
       if (!response.ok) {

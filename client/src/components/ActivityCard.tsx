@@ -94,10 +94,12 @@ function ActivityCard({
           }),
         },
       );
+      if (response.status === StatusCodes.CONFLICT) {
+        toast.error("Désolé quelqu'un a été plus rapide que vous ;(");
+      }
+      refreshMyActivities?.();
 
       if (!response.ok) throw new Error("Failed to accept invitation");
-
-      refreshMyActivities?.();
 
       status === "accepted"
         ? toast.success("Invitation validée")

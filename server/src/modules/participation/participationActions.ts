@@ -41,7 +41,7 @@ const add: RequestHandler = async (req, res, next) => {
       err instanceof Error &&
       (err as { code?: string }).code === "ER_DUP_ENTRY"
     ) {
-      res.status(StatusCodes.CONFLICT);
+      res.status(StatusCodes.CONFLICT).json({ error: "ALREADY_INVITED" });
     }
     next(err);
   }

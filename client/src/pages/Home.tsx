@@ -1,14 +1,25 @@
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import ActivityCard from "../components/ActivityCard";
 import Carousel from "../components/Carousel";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const LIMIT = 10;
 const userId = 25; // Replace userId with context loged in variable
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state) {
+      toast.success(location.state.toast);
+
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   useEffect(() => {
     fetch(

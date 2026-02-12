@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
 import ActivityCard from "../components/ActivityCard.tsx";
 
@@ -46,13 +46,10 @@ function MyActivities() {
     <>
       <div id="my-activities">
         <h1>Mes Activités</h1>
-        <Toaster position="top-right" />
-
         <ActivityTabs
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
         />
-
         <section className="cards-myactivities">
           {myActivities.map((myActivity) => (
             <ActivityCard

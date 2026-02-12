@@ -4,6 +4,7 @@ import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
 import "../styles/SignUp.css";
 import { StatusCodes } from "http-status-codes";
+import { useNavigate } from "react-router";
 
 type NewUser = Omit<User, "id"> & {
   confirmPassword: string;
@@ -25,8 +26,9 @@ function SignUp() {
     picture: "",
   });
   const [message, setMessage] = useState<string>("");
-  const messageSuccess = "Compte créé avec succès !";
   const messageRef = useRef<HTMLParagraphElement | null>(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (message && messageRef.current) {
       messageRef.current.scrollIntoView({
@@ -59,7 +61,11 @@ function SignUp() {
         }
         return;
       }
-      setMessage(messageSuccess);
+      navigate("/", {
+        state: {
+          toast: "Compte créé avec succès !",
+        },
+      });
     } catch (error) {
       setMessage("Impossible de contacter le serveur");
     }
@@ -109,7 +115,7 @@ function SignUp() {
           </div>
           <div>
             <TextField
-              label="Mot de passe"
+              label="Mot de passe (8 char. min)"
               type="password"
               autoComplete="password"
               required
@@ -151,7 +157,6 @@ function SignUp() {
               onChange={ChangeInput}
             />
           </div>
-
           <TextField
             label="Addresse"
             required
@@ -228,12 +233,7 @@ function SignUp() {
           </Button>
         </Box>
       </ThemeProvider>
-      <p
-        ref={messageRef}
-        className={
-          message === messageSuccess ? "message-success" : "message-error"
-        }
-      >
+      <p ref={messageRef} className={"message-error"}>
         {message}
       </p>
     </div>

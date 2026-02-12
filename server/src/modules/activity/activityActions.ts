@@ -100,4 +100,23 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, browse, browseMine, read };
+const verifyNbAvaiableSpots: RequestHandler = async (req, res, next) => {
+  try {
+    const activityId = req.body.activityId;
+
+    const activity = await activityRepository.readOne(activityId);
+
+    if (activity?.nb_participant === activity?.nb_spots) {
+      res.status(StatusCodes.CONFLICT).json({
+        error: "ACTIVITY_FULL",
+      });
+      return;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, browse, browseMine, read, verifyNbAvaiableSpots };
