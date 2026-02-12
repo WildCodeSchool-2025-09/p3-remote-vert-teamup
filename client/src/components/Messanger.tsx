@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/Messanger.css";
 import { useNavigate } from "react-router";
 import GroupChat from "./GroupChat";
+import { formatMessageTime } from "../hooks/DataFormater";
 
 type UsersActivities = {
   id: number;
@@ -10,7 +11,7 @@ type UsersActivities = {
   playing_at: string;
 };
 
-const userId = 9; // replace with login state
+const userId = 7; // replace with login state
 
 function Messanger() {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ function Messanger() {
   const [selectedActivity, setSelectedActivity] = useState();
 
   const isMobile = window.innerWidth < 768;
+
+  console.log(selectedActivity);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`)
@@ -56,7 +59,7 @@ function Messanger() {
             >
               <h2>{a.sport_name}</h2>
               <p>{a.city}</p>
-              <p>{a.playing_at}</p>
+              <p className="message-date">{formatMessageTime(a.playing_at)}</p>
             </button>
           ))}
         </div>

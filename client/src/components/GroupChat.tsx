@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
-import { format, isToday, isYesterday } from "date-fns";
+import { formatMessageTime } from "../hooks/DataFormater";
 
 type groupChatType = {
   activity: {
@@ -35,17 +35,6 @@ function GroupChat({
   const [typeMessage, setTypeMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
 
-  const formatMessageTime = (dateString: string) => {
-    const date = new Date(dateString.replace(" ", "T"));
-
-    const time = format(date, "HH:mm");
-
-    if (isToday(date)) return `aujourd'hui a ${time}`;
-    if (isYesterday(date)) return `Hier à ${time}`;
-
-    return format(date, "dd MMM 'à' HH:mm");
-  };
-
   useEffect(() => {
     const getMessages = async () => {
       try {
@@ -63,8 +52,6 @@ function GroupChat({
 
     getMessages();
   }, [userId, activity.id]);
-
-  console.log(messages);
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
@@ -104,23 +91,18 @@ function GroupChat({
       <p>Group Chat for {activity.id}</p>
       <div className="messages-display">
         {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`${m.user_id === userId ? "chat-right" : "chat-left"}`}
-          >
-            <div
-              className={` single-message ${m.user_id === userId && "userrow-reverse"}`}
-            >
+          <div key={m.id} className="single-message">
+            <div className="user-date">
               <h3
-                className={`username ${m.user_id === userId && "username-none"}`}
+                className={`username ${m.user_id === userId && "my-username"}`}
               >
                 {m.username}
               </h3>
-              <p>{m.content}</p>
               <small className="message-date">
                 {formatMessageTime(m.created_at)}
               </small>
             </div>
+            <p>{m.content}</p>
           </div>
         ))}
       </div>
@@ -133,7 +115,11 @@ function GroupChat({
             setTypeMessage(e.target.value);
           }}
         />
-        <button type="button" onClick={() => sendMessage()}>
+        <button
+          type="button"
+          className="send-message"
+          onClick={() => sendMessage()}
+        >
           Send
         </button>
       </div>
