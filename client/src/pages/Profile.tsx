@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Profile.css";
 
@@ -38,7 +39,7 @@ function Profile() {
   }, [auth]);
 
   if (!auth) {
-    return <p>Veuillez vous connecter.</p>;
+    return <Navigate to="/sign-in" replace />;
   }
 
   if (!userProfile) {
