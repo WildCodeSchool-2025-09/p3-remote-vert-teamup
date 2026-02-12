@@ -5,7 +5,8 @@ import "../styles/ParticipantsList.css";
 type ParticipantsListProps = {
   activityId: number;
   visibility: boolean;
-  refreshMyActivities: (() => void) | undefined;
+  refreshMyActivities?: (() => void) | undefined;
+  nbAvailableSpots: number;
 };
 
 type Participant = {
@@ -20,6 +21,7 @@ function ParticipantsList({
   activityId,
   visibility,
   refreshMyActivities,
+  nbAvailableSpots,
 }: ParticipantsListProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [inputGuest, setInputGuest] = useState("");
@@ -168,7 +170,7 @@ function ParticipantsList({
             <img src="/icons/check.png" alt="validate" />
           ) : participant.status === "inviting" ? (
             <img src="/icons/hourglass.png" alt="pending" />
-          ) : (
+          ) : nbAvailableSpots > 0 ? (
             <div>
               <button
                 type="button"
@@ -199,6 +201,8 @@ function ParticipantsList({
                 Refuser
               </button>
             </div>
+          ) : (
+            <p>Complet</p>
           )}
         </li>
       ))}

@@ -220,26 +220,30 @@ function ActivityCard({
             )}
             {selectedTab === "pending" &&
             activity.participation_status === "inviting" ? (
-              <div className="invitation-buttons">
-                <button
-                  type="button"
-                  className="accept-button"
-                  onClick={() =>
-                    acceptOrRefuseInvitation(activity.id, "accepted")
-                  }
-                >
-                  Accepter
-                </button>
-                <button
-                  type="button"
-                  className="refuse-button"
-                  onClick={() =>
-                    acceptOrRefuseInvitation(activity.id, "refused")
-                  }
-                >
-                  Refuser
-                </button>
-              </div>
+              nbAvailableSpots > 0 ? (
+                <div className="invitation-buttons">
+                  <button
+                    type="button"
+                    className="accept-button"
+                    onClick={() =>
+                      acceptOrRefuseInvitation(activity.id, "accepted")
+                    }
+                  >
+                    Accepter
+                  </button>
+                  <button
+                    type="button"
+                    className="refuse-button"
+                    onClick={() =>
+                      acceptOrRefuseInvitation(activity.id, "refused")
+                    }
+                  >
+                    Refuser
+                  </button>
+                </div>
+              ) : (
+                <p>Complet</p>
+              )
             ) : selectedTab === "pending" &&
               activity.participation_status === "request" ? (
               <img
@@ -288,6 +292,7 @@ function ActivityCard({
             activityId={activity.id}
             visibility={activity.visibility}
             refreshMyActivities={refreshMyActivities}
+            nbAvailableSpots={nbAvailableSpots}
           />
         )}
       </article>

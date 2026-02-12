@@ -60,6 +60,7 @@ function MyActivities() {
               key={myActivity.id}
               selectedTab={selectedTab}
               refreshMyActivities={fetchMyActivities}
+              participantsListIsOpen={showParticpants === myActivity.id}
               onClickListParticipant={() =>
                 setShowParticipants(
                   showParticpants === myActivity.id ? null : myActivity.id,

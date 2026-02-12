@@ -82,83 +82,78 @@ function SignUp() {
           onSubmit={Submit}
           sx={{
             marginTop: "2vh",
-            mx: "auto",
             display: "flex",
             flexDirection: "column",
             gap: "3vh",
           }}
         >
+          <div>
+            <TextField
+              label="Nom d'utilisateur"
+              required
+              variant="outlined"
+              size="small"
+              name="username"
+              value={user.username}
+              onChange={ChangeInput}
+            />
+            <TextField
+              label="Email"
+              required
+              variant="outlined"
+              size="small"
+              name="email"
+              value={user.email}
+              onChange={ChangeInput}
+            />
+          </div>
+          <div>
+            <TextField
+              label="Mot de passe"
+              type="password"
+              autoComplete="password"
+              required
+              variant="outlined"
+              size="small"
+              name="password"
+              value={user.password}
+              onChange={ChangeInput}
+            />
+            <TextField
+              label="Confirme mot de passe"
+              type="password"
+              autoComplete="confirmPassword"
+              required
+              variant="outlined"
+              size="small"
+              name="confirmPassword"
+              value={user.confirmPassword}
+              onChange={ChangeInput}
+            />
+          </div>
+          <div>
+            <TextField
+              label="Prénom"
+              required
+              variant="outlined"
+              size="small"
+              name="firstName"
+              value={user.firstName}
+              onChange={ChangeInput}
+            />
+            <TextField
+              label="Nom"
+              required
+              variant="outlined"
+              size="small"
+              name="lastName"
+              value={user.lastName}
+              onChange={ChangeInput}
+            />
+          </div>
+
           <TextField
-            label="Nom d'utilisateur"
-            required
-            variant="outlined"
-            size="small"
-            name="username"
-            value={user.username}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Mot de passe"
-            type="password"
-            autoComplete="password"
-            required
-            variant="outlined"
-            size="small"
-            name="password"
-            value={user.password}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Confirme mot de passe"
-            type="password"
-            autoComplete="confirmPassword"
-            required
-            variant="outlined"
-            size="small"
-            name="confirmPassword"
-            value={user.confirmPassword}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Email"
-            required
-            variant="outlined"
-            size="small"
-            name="email"
-            value={user.email}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Prénom"
-            required
-            variant="outlined"
-            size="small"
-            name="firstName"
-            value={user.firstName}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Nom"
-            required
-            variant="outlined"
-            size="small"
-            name="lastName"
-            value={user.lastName}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Date de naissance"
-            type="date"
-            required
-            variant="outlined"
-            size="small"
-            name="born_at"
-            value={user.born_at}
-            onChange={ChangeInput}
-            slotProps={{ inputLabel: { shrink: true } }}
-          />
-          <TextField
-            label="Address"
+            label="Addresse"
             required
             variant="outlined"
             size="small"
@@ -166,33 +161,48 @@ function SignUp() {
             value={user.address}
             onChange={ChangeInput}
           />
-          <TextField
-            label="Ville"
-            required
-            variant="outlined"
-            size="small"
-            name="city"
-            value={user.city}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Code postal"
-            required
-            variant="outlined"
-            size="small"
-            name="zipCode"
-            value={user.zipCode}
-            onChange={ChangeInput}
-          />
-          <TextField
-            label="Téléphone"
-            required
-            variant="outlined"
-            size="small"
-            name="phone"
-            value={user.phone}
-            onChange={ChangeInput}
-          />
+          <div>
+            <TextField
+              label="Ville"
+              required
+              variant="outlined"
+              size="small"
+              name="city"
+              value={user.city}
+              onChange={ChangeInput}
+            />
+            <TextField
+              label="Code postal"
+              required
+              variant="outlined"
+              size="small"
+              name="zipCode"
+              value={user.zipCode}
+              onChange={ChangeInput}
+            />
+          </div>
+          <div>
+            <TextField
+              label="Téléphone"
+              required
+              variant="outlined"
+              size="small"
+              name="phone"
+              value={user.phone}
+              onChange={ChangeInput}
+            />
+            <TextField
+              label="Date de naissance"
+              type="date"
+              required
+              variant="outlined"
+              size="small"
+              name="born_at"
+              value={user.born_at}
+              onChange={ChangeInput}
+              slotProps={{ inputLabel: { shrink: true } }}
+            />
+          </div>
           <TextField
             label="URL photo"
             variant="outlined"
