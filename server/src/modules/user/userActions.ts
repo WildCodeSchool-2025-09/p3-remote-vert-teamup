@@ -48,12 +48,12 @@ const validate: RequestHandler = async (req, res, next) => {
     password: Joi.string().min(8).max(72).required(),
     confirmPassword: Joi.string().valid(Joi.ref("password")).required(),
     email: Joi.string().trim().email().required(),
-    firstName: Joi.string().trim().min(1).max(50).required(),
-    lastName: Joi.string().trim().min(1).max(50).required(),
+    firstname: Joi.string().trim().min(1).max(50).required(),
+    lastname: Joi.string().trim().min(1).max(50).required(),
     born_at: Joi.string().required(),
     address: Joi.string().trim().required(),
     city: Joi.string().trim().required(),
-    zipCode: Joi.string().trim().required(),
+    zip_code: Joi.string().trim().required(),
     phone: Joi.string().trim().required(),
     picture: Joi.string().trim().allow("").optional(),
   }).options({ abortEarly: false, stripUnknown: true });
@@ -70,4 +70,21 @@ const validate: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { readByEmail, add, validate };
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number.parseInt(req.auth.sub, 10);
+    const user = await userRepository.readById(userId);
+
+    if (!user) {
+      res.sendStatus(StatusCodes.NOT_FOUND);
+      return;
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { readByEmail, add, validate, read };

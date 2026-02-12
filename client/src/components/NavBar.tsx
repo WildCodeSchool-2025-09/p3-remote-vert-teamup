@@ -1,7 +1,10 @@
 import { NavLink } from "react-router";
 import "../styles/NavBar.css";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
+  const { auth } = useAuth();
+
   return (
     <>
       <nav className="navbar">
@@ -9,7 +12,7 @@ function NavBar() {
           <div className="hello">
             <img src="/logo.png" alt="logo teamup" />
             <p>Bonjour</p>
-            <p>User</p>
+            {auth && <p>{auth.user.username}</p>}
           </div>
           <NavLink
             className={({ isActive }) =>
@@ -20,8 +23,8 @@ function NavBar() {
             <svg viewBox="0 0 24 24">
               <title>icon home</title>
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M21.4498 10.275L11.9998 3.1875L2.5498 10.275L2.9998 11.625H3.7498V20.25H20.2498V11.625H20.9998L21.4498 10.275ZM5.2498 18.75V10.125L11.9998 5.0625L18.7498 10.125V18.75H14.9999V14.3333L14.2499 13.5833H9.74988L8.99988 14.3333V18.75H5.2498ZM10.4999 18.75H13.4999V15.0833H10.4999V18.75Z"
               />
             </svg>
@@ -36,8 +39,8 @@ function NavBar() {
             <svg viewBox="0 0 109 106">
               <title>icon search</title>
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M72.2255 81.5987C64.5518 87.2787 88.4134 62.8779 81.6233 72.1533C81.7932 72.1398 81.4783 72.6541 80.4225 73.9432C80.4225 73.9432 98.5566 91.9549 107.458 101.122C110.549 104.463 104.973 111.133 101.185 107.651C93.1236 99.8302 74.0493 80.3934 74.0198 80.3617L72.2255 81.5987Z"
               />
               <path d="M45.5796 90.7066C57.2475 90.5933 68.7977 85.7607 77.1035 77.5523C86.968 67.8034 92.0475 53.3804 90.2758 39.6099C87.2399 16.0134 67.8416 0 45.2896 0C28.1546 0 11.5023 10.7187 4.19792 26.2609C-1.39364 38.1599 -1.40497 52.5262 4.19792 64.4457C11.4502 79.8791 27.8307 90.5412 44.9973 90.7066C45.1921 90.7066 45.387 90.7066 45.5796 90.7066ZM45.0449 83.1462C27.62 82.9785 11.3618 69.5026 8.12878 52.2249C5.84956 40.0449 10.152 26.8635 19.1148 18.2134C29.5774 8.11094 46.0236 4.72836 59.6989 10.4536C71.9333 15.5762 81.091 27.4707 82.7789 40.5751C84.2243 51.808 80.1938 63.5802 72.2731 71.6889C65.3245 78.803 55.58 83.0488 45.532 83.1462C45.3689 83.1462 45.208 83.1462 45.0449 83.1462Z" />
@@ -50,12 +53,12 @@ function NavBar() {
                 ? "navbar-link link-publication link-publication-active"
                 : "navbar-link link-publication"
             }
-            to="/publication"
+            to={auth ? "/publication" : "/sign-in"}
           >
             <span className="nav-indicator" />
             <svg viewBox="0 0 28 28">
               <title>icon add</title>
-              <g clip-path="url(#clip0_52_153)">
+              <g clipPath="url(#clip0_52_153)">
                 <path d="M14 0C6.26817 0 0 6.26817 0 14C0 21.7318 6.26817 28 14 28C21.7318 28 28 21.7318 28 14C28 6.26817 21.7318 0 14 0ZM14 25.6666C7.55683 25.6666 2.33335 20.4432 2.33335 14C2.33335 7.55683 7.55683 2.33335 14 2.33335C20.4432 2.33335 25.6666 7.55683 25.6666 14C25.6666 20.4432 20.4432 25.6666 14 25.6666Z" />
                 <path d="M20.9998 12.8333H15.1667V6.99999C15.1667 6.35566 14.6443 5.83334 14 5.83334C13.3557 5.83334 12.8334 6.35566 12.8334 6.99999V12.8333H7.0021C6.35777 12.8333 5.83545 13.3557 5.83545 14C5.83545 14.6443 6.35777 15.1666 7.0021 15.1666H12.8333V21C12.8333 21.6443 13.3556 22.1666 14 22.1666C14.6443 22.1666 15.1666 21.6443 15.1666 21V15.1666H20.9997C21.644 15.1666 22.1663 14.6443 22.1663 14C22.1663 13.3557 21.6441 12.8333 20.9998 12.8333Z" />
               </g>
@@ -77,7 +80,7 @@ function NavBar() {
             className={({ isActive }) =>
               isActive ? "navbar-link link-active" : "navbar-link"
             }
-            to="/my-activities"
+            to={auth ? "/my-activities" : "/sign-in"}
           >
             <svg viewBox="0 0 27 27">
               <title>icon calendar</title>
@@ -89,7 +92,7 @@ function NavBar() {
             className={({ isActive }) =>
               isActive ? "navbar-link link-active" : "navbar-link"
             }
-            to="/profile"
+            to={auth ? "/profile" : "/sign-in"}
           >
             <svg viewBox="0 0 22 22">
               <title>icon profile</title>

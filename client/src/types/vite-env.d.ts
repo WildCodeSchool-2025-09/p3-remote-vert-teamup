@@ -34,19 +34,19 @@ type User = {
   email: string;
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   born_at: string;
   address: string;
   city: string;
-  zipCode: string;
+  zip_code: string;
   phone: string;
   picture: string;
 };
 
-type Participant = {
-  id: number;
-  username: string;
-  picture: string;
-  status: string;
+type UserProfile = Omit<User, "password">;
+
+type Auth = {
+  user: User;
+  token: string;
 };
