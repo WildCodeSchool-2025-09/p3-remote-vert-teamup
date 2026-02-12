@@ -5,7 +5,7 @@ import "../styles/ParticipantsList.css";
 type ParticipantsListProps = {
   activityId: number;
   visibility: boolean;
-  refreshMyActivities: Promise<void> | undefined;
+  refreshMyActivities: (() => void) | undefined;
 };
 
 type Participant = {
@@ -124,7 +124,7 @@ function ParticipantsList({
       setParticipants((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
       );
-      refreshMyActivities;
+      refreshMyActivities?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     }

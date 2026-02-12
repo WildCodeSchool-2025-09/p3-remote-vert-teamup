@@ -26,12 +26,16 @@ function MyActivities() {
     }
   }, [location.state, location.pathname, navigate]);
 
-  useEffect(() => {
+  const fetchMyActivities = () => {
     fetch(
       `${import.meta.env.VITE_API_URL}/api/activities/me?status=${selectedTab}`,
     )
       .then((response) => response.json())
       .then((myActivities) => setMyActivities(myActivities));
+  };
+
+  useEffect(() => {
+    fetchMyActivities();
   }, [selectedTab]);
 
   useEffect(() => {
@@ -55,12 +59,7 @@ function MyActivities() {
               activity={myActivity}
               key={myActivity.id}
               selectedTab={selectedTab}
-              refreshMyActivities={fetch(
-                `${import.meta.env.VITE_API_URL}/api/activities/me?status=${selectedTab}`,
-              )
-                .then((response) => response.json())
-                .then((myActivities) => setMyActivities(myActivities))}
-              participantsListIsOpen={showParticpants === myActivity.id}
+              refreshMyActivities={fetchMyActivities}
               onClickListParticipant={() =>
                 setShowParticipants(
                   showParticpants === myActivity.id ? null : myActivity.id,

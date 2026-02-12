@@ -9,7 +9,7 @@ type ActivityCardType = {
   selectedTab?: string;
   participantsListIsOpen?: boolean;
   onClickListParticipant?: () => void;
-  refreshMyActivities?: Promise<void>;
+  refreshMyActivities?: () => void;
 };
 
 function ActivityCard({
@@ -97,7 +97,7 @@ function ActivityCard({
 
       if (!response.ok) throw new Error("Failed to accept invitation");
 
-      refreshMyActivities;
+      refreshMyActivities?.();
 
       status === "accepted"
         ? toast.success("Invitation validée")
