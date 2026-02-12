@@ -44,6 +44,8 @@ type User = {
   picture: string;
 };
 
+type UserProfile = Omit<User, "password">;
+
 type Auth = {
   user: User;
   token: string;

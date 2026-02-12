@@ -19,6 +19,7 @@ router.post("/api/login", authActions.logIn);
 
 router.use(authActions.verifyToken);
 
+router.get("/api/profile", userActions.read);
 router.post("/api/activity", activityActions.add); //thomas
 router.get("/api/me/activities", activityActions.browseMine); //thomas
 router.get("/api/participants", participationActions.browseByActivity); // solo
