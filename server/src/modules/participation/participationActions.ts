@@ -50,7 +50,7 @@ const add: RequestHandler = async (req, res, next) => {
 const editStatus: RequestHandler = async (req, res, next) => {
   try {
     const { userId, activityId, status, participantUsername, type } = req.body;
-    //gestion nb avaiable spot
+
     const result = await ParticipationRepository.update(
       userId,
       activityId,
