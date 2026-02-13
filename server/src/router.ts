@@ -23,7 +23,8 @@ router.get("/api/profile", userActions.read);
 router.post("/api/activities", activityActions.add);
 router.get("/api/me/activities", activityActions.browseMine);
 
-router.get("/api/participations", participationActions.browseByActivity);
+router.get("/api/participants", participationActions.browseByActivity);
+router.get("/api/participations", participationActions.browseSome);
 router.post(
   "/api/participations",
   activityActions.verifyNbAvaiableSpots,

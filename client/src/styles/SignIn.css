@@ -35,15 +35,16 @@
 
 .signin-container div {
   width: 100%;
-}
-& input {
-  border: 1px solid var(--input-color);
-  border-radius: 8px;
-  height: 37px;
-  padding-left: 30px;
-  width: 100%;
-  font-family: var(--body-font);
-  font-size: var(--body-size);
+
+  & input {
+    border: 1px solid var(--input-color);
+    border-radius: 8px;
+    height: 37px;
+    padding-left: 30px;
+    width: 100%;
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+  }
 }
 
 @media (min-width: 1024px) {

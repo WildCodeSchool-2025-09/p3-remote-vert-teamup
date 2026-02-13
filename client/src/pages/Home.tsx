@@ -8,11 +8,11 @@ import { useAuth } from "../context/AuthContext";
 
 const LIMIT = 10;
 
-
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
     if (location.state) {
@@ -24,11 +24,11 @@ function Home() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`,
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
     )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
-  }, []);
+  }, [auth]);
 
   return (
     <section className="homepage">

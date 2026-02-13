@@ -24,16 +24,13 @@ function ParticipantsList({
   const { auth } = useAuth();
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/participations?id=${activityId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth?.token}`,
-        },
+    fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth?.token}`,
       },
-    )
+    })
       .then((response) => response.json())
       .then((participants) => setParticipants(participants));
   }, [activityId, auth]);

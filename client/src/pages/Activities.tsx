@@ -126,12 +126,14 @@ function Activities() {
         enrolledActivityIds = await enrollmentsResponse.json();
       }
 
+      // voir pour enrollementActivities ça ne prend que les activitié ou je suis enrollé mais pas créer
+
       const queryString = new URLSearchParams({
         filters: JSON.stringify(filters),
       }).toString();
 
       const activitiesResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
+        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}&userId=${auth?.user.id}`,
       );
 
       const activitiesData = await activitiesResponse.json();

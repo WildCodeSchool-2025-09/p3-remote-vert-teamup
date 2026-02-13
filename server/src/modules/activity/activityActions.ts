@@ -96,7 +96,7 @@ const browseMine: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const activityId = Number.parseInt(req.params.id, 10);
+    const activityId = Number(req.params.id);
 
     const activity = await activityRepository.readOne(activityId);
 
