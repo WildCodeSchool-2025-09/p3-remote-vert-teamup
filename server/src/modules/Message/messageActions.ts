@@ -1,5 +1,8 @@
 import type { RequestHandler } from "express";
 import MessageRepository from "./messageRepository";
+import LongPollManager from "../../services/longPolling";
+import messageRepository from "./messageRepository";
+import { StatusCodes } from "http-status-codes";
 
 const add: RequestHandler = async (req, res, next) => {
   const { userId, activityId, content } = req.body;
@@ -15,7 +18,35 @@ const add: RequestHandler = async (req, res, next) => {
       res.status(400).json({ message: "Message Cannot be created" });
     }
 
+    const [message] = await MessageRepository.readSigle(result.insertId);
+    const newMessage = message[0];
+    console.log("show difference btwn:", newMessage[0]);
+
+    LongPollManager.notifyWaiting(activityId.toString(), newMessage);
+
     res.status(201).json({ message: "Message Created", result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const addLike: RequestHandler = async (req, res, next) => {
+  try {
+    const { messageId, userId } = req.body;
+
+    const result = await messageRepository.createLike(messageId, userId);
+
+    if (!result.affectedRows) {
+      res.status(StatusCodes.CONFLICT).json({
+        error: "User has already liked this message",
+        affectedRows: 0,
+      });
+      return;
+    }
+
+    res.status(StatusCodes.CREATED).json({
+      affectedRows: result.affectedRows,
+    });
   } catch (err) {
     next(err);
   }
@@ -34,4 +65,44 @@ const brows: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, brows };
+const poll: RequestHandler = async (req, res) => {
+  const activityId = req.query.activityId as string;
+  let timeoutId: NodeJS.Timeout | null = null;
+  let responseSent = false;
+
+  console.log(`Poll Client connected for activity ${activityId}`);
+
+  // This function will be called when a message arrives
+  const sendResponse = (messages: any[]) => {
+    if (responseSent) {
+      return;
+    }
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    responseSent = true;
+
+    res.json({ messages });
+  };
+
+  LongPollManager.addWaiting(activityId, sendResponse);
+
+  // After 25 seconds, stop waiting and send empty response
+  timeoutId = setTimeout(() => {
+    LongPollManager.removeWaiting(activityId, sendResponse);
+    res.json({ messages: [] });
+  }, 25000);
+
+  // If client disconnects, remove from waiting
+  req.on("close", () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    LongPollManager.removeWaiting(activityId, sendResponse);
+  });
+};
+
+export default { add, brows, poll, addLike };

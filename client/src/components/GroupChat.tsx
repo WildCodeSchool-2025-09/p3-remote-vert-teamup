@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 import { formatMessageTime } from "../hooks/DataFormater";
 
@@ -35,6 +35,14 @@ function GroupChat({
   const [typeMessage, setTypeMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
 
+  const shouldPoll = useRef(true);
+  const isPollingRef = useRef(false);
+  // const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+  // }, []);
+
   useEffect(() => {
     const getMessages = async () => {
       try {
@@ -52,6 +60,41 @@ function GroupChat({
 
     getMessages();
   }, [userId, activity.id]);
+
+  useEffect(() => {
+    if (isPollingRef.current) {
+      return;
+    }
+
+    isPollingRef.current = true;
+    shouldPoll.current = true;
+    startPolling();
+
+    return () => {
+      shouldPoll.current = false;
+    };
+  }, []);
+
+  const startPolling = async () => {
+    if (!shouldPoll.current) return;
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
+      );
+
+      if (!response.ok) throw new Error("Poll request failed");
+
+      const data = await response.json();
+
+      if (data.messages && data.messages.length > 0) {
+        setMessages((prev) => [...prev, ...data.messages]);
+      }
+    } catch (err) {
+      console.error("Error polling:", err);
+    }
+    setTimeout(startPolling, 1000);
+  };
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
@@ -86,6 +129,34 @@ function GroupChat({
     }
   };
 
+  const addLike = async (m: MessageType) => {
+    console.log(m);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/message/likes`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messageId: m.id,
+            userId: userId,
+          }),
+        },
+      );
+
+      const likeStatus = await res.json();
+
+      console.log(
+        "THIS IS WHAT WE GET AS AFFECTED ROWS",
+        likeStatus.affectedRows,
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="chat-room">
       <p>Group Chat for {activity.id}</p>
@@ -103,25 +174,33 @@ function GroupChat({
               </small>
             </div>
             <p>{m.content}</p>
+            <button
+              type="button"
+              className="like-btn"
+              onClick={() => addLike(m)}
+            >
+              <img src="../../public/icons/thumbs-up.svg" alt="Like" />
+            </button>
           </div>
         ))}
       </div>
-      <div>
-        <input
-          type="text"
+      <div className="chat-input-container">
+        <textarea
+          // ref={messagesEndRef}
+          className="chat-input"
           value={typeMessage}
+          placeholder="Message"
           onChange={(e) => {
             e.preventDefault();
             setTypeMessage(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+            }
+          }}
         />
-        <button
-          type="button"
-          className="send-message"
-          onClick={() => sendMessage()}
-        >
-          Send
-        </button>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ class MessageRepository {
 
   async read(userId: number, activityId: number) {
     const rows = databaseClient.query<Rows>(
-      `SELECT m.*, u.username 
+      `SELECT m.*, u.username,
         FROM messages AS m
         JOIN user AS u ON m.user_id = u.id
       WHERE activity_id = ?`,
@@ -22,6 +22,28 @@ class MessageRepository {
     );
 
     return rows;
+  }
+
+  async readSigle(messageId: number) {
+    const rows = databaseClient.query<Rows>(
+      `SELECT m.*, u.username
+        FROM messages AS m
+        JOIN user AS u ON m.user_id = u.id
+        WHERE m.id = ?`,
+      [messageId],
+    );
+
+    return rows;
+  }
+
+  async createLike(messageId: number, userId: number) {
+    const [result] = await databaseClient.query<Result>(
+      `INSERT IGNORE INTO message_likes (message_id, user_id)
+        VALUES (?, ?)`,
+      [messageId, userId],
+    );
+
+    return { affectedRows: result.affectedRows };
   }
 }
 

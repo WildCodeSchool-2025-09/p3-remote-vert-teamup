@@ -58,13 +58,21 @@ CREATE TABLE participation (
 );
 
 CREATE TABLE messages (
-  id SERIAL PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   activity_id INTEGER NOT NULL REFERENCES activity(id) ON DELETE CASCADE,
-  user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES `user`(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP,
-  deleted_at TIMESTAMP
+  deleted_at TIMESTAMP,
+  like_count INT DEFAULT 0
+);
+
+CREATE TABLE message_likes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES `user`(id) ON DELETE CASCADE,
+  UNIQUE KEY (message_id, user_id)
 );
 
 INSERT INTO sport(name)

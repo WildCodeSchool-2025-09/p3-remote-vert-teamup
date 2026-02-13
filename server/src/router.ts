@@ -24,6 +24,8 @@ router.patch("/api/participant/:id", participationActions.edit);
 router.delete("/api/participation", participationActions.deleteParticipation);
 
 router.post("/api/message", messageActions.add);
+router.post("/api/message/likes", messageActions.addLike);
 router.get("/api/message", messageActions.brows);
+router.get("/api/message/poll", messageActions.poll);
 
 export default router;
