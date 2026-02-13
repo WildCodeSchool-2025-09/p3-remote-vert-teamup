@@ -47,10 +47,26 @@
   }
 }
 
+.link-to {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  text-decoration: none;
+  color: var(--dark-color);
+  & a {
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    color: var(--dark-color);
+  }
+}
+
 @media (min-width: 1024px) {
   .signin-container {
     width: 100vw;
     margin-top: 3rem;
+  }
+
+  .signin-container div input {
+    font-size: var(--body-desktop-size);
   }
 
   .send-btn {
@@ -59,5 +75,17 @@
     width: 7.5rem;
     border-radius: 12px;
     cursor: pointer;
+  }
+
+  .link-to {
+    font-size: var(--body-desktop-size);
+    & > a {
+      font-size: var(--body-desktop-size);
+      transition: all 0.3s ease-in-out;
+      &:hover {
+        text-decoration: underline;
+        font-size: larger;
+      }
+    }
   }
 }

@@ -33,55 +33,6 @@ function ActivityCard({
 
   const { auth } = useAuth();
 
-  const makeReservation = async (
-    activity: Activity,
-    nbAvailableSpots: number,
-  ) => {
-    if (!auth?.user) {
-      navigate("/sign-in");
-      return;
-    }
-
-    if (nbAvailableSpots === 0) {
-      return;
-      // ? button is showing alert, user can click to put oneself to wait list and receive email when nb !== 0 (reminder: probably I'll use useMemo)
-    }
-
-    const newParticipant = {
-      userId: auth.user.id,
-      activityId: activity.id,
-      status: activity.auto_validation ? "accepted" : "request",
-    };
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
-          body: JSON.stringify(newParticipant),
-        },
-      );
-
-      if (response.status === StatusCodes.CONFLICT) {
-        return;
-      }
-
-      if (!response.ok) throw new Error("Failed to join activity");
-
-      navigate("/my-activities", {
-        state: {
-          selectedTab: activity.auto_validation ? "incoming" : "pending",
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const acceptOrRefuseInvitation = async (
     activityId: number,
     status: string,
@@ -124,7 +75,15 @@ function ActivityCard({
       <article
         className={`card ${participantsListIsOpen ? "card-important" : ""}`}
       >
-        <div className={`card-header ${activity.name}`}>
+        <div
+          className={`card-header ${activity.name}`}
+          onClick={() => selectedTab && navigate(`/activities/${activity.id}`)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              selectedTab && navigate(`/activities/${activity.id}`);
+            }
+          }}
+        >
           <div className="overlay-img"> </div>
           <h2>{activity.name}</h2>
           <p className={`label-price ${price === 0 ? "free" : "paid"}`}>
@@ -218,7 +177,7 @@ function ActivityCard({
             {!selectedTab && (
               <button
                 type="button"
-                onClick={() => makeReservation(activity, nbAvailableSpots)}
+                onClick={() => navigate(`/activities/${activity.id}`)}
               >
                 {nbAvailableSpots === 0 ? (
                   <>
@@ -226,7 +185,7 @@ function ActivityCard({
                     <img src="/icons/bell.png" alt="logo alert" />
                   </>
                 ) : (
-                  "Réserver"
+                  <p>Détails &gt;</p>
                 )}
               </button>
             )}

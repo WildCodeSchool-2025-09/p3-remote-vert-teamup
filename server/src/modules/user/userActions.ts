@@ -27,6 +27,10 @@ const readByEmail: RequestHandler = async (req, res, next) => {
 };
 
 const add: RequestHandler = async (req, res, next) => {
+  function hasCode(err: unknown): err is { code: string } {
+    return typeof err === "object" && err !== null && "code" in err;
+  }
+
   try {
     req.body.password = await argon2.hash(req.body.password, {
       type: argon2.argon2id,
@@ -36,9 +40,12 @@ const add: RequestHandler = async (req, res, next) => {
     });
     const insertId = await userRepository.create(req.body);
     res.status(StatusCodes.OK).json({ insertId });
-  } catch (err) {
-    res.status(StatusCodes.CONFLICT).json();
-    next(err);
+  } catch (err: unknown) {
+    if (hasCode(err) && err.code === "ER_DUP_ENTRY") {
+      res.sendStatus(StatusCodes.CONFLICT);
+    } else {
+      next(err);
+    }
   }
 };
 
@@ -54,7 +61,7 @@ const validate: RequestHandler = async (req, res, next) => {
     address: Joi.string().trim().required(),
     city: Joi.string().trim().required(),
     zip_code: Joi.string().trim().required(),
-    phone: Joi.string().trim().required(),
+    phone: Joi.string().trim().replace(/\s+/g, "").required(),
     picture: Joi.string().trim().allow("").optional(),
   }).options({ abortEarly: false, stripUnknown: true });
   try {

@@ -7,10 +7,6 @@ import mailService from "../../services/mailService";
 
 const browseByActivity: RequestHandler = async (req, res, next) => {
   try {
-    if (!req.auth.sub) {
-      res.sendStatus(StatusCodes.UNAUTHORIZED);
-      return;
-    }
     const activityId = Number(req.query.id);
 
     const participants =

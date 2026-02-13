@@ -54,7 +54,7 @@ function SignUp() {
             setMessage("Données saisies invalides");
             break;
           case StatusCodes.CONFLICT:
-            setMessage("Nom d'utilisateur déjà existant");
+            setMessage("Nom d'utilisateur ou email déjà existant");
             break;
           default:
             setMessage("Erreur serveur");

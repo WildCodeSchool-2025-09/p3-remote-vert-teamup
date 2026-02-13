@@ -3,18 +3,18 @@ import { useNavigate, useParams } from "react-router";
 import { StatusCodes } from "http-status-codes";
 import "../styles/ActivityCard.css";
 import "../styles/ActivityDetails.css";
+import { useAuth } from "../context/AuthContext";
 
 function ActivityDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [reservationStatus, setReservationStatus] = useState<
-    "idle" | "loading" | "already"
-  >("idle");
   const mapModalRef = useRef<HTMLDialogElement>(null);
   const openMapModal = () => mapModalRef.current?.showModal();
   const closeMapModal = () => mapModalRef.current?.close();
+
+  const { auth } = useAuth();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/activities/${id}`)
@@ -53,10 +53,12 @@ function ActivityDetails() {
       ? `${durationHours}h${durationMinutes > 0 ? durationMinutes.toString().padStart(2, "0") : ""}`
       : `${durationMinutes}min`;
 
-  const availableSpots = activity.nb_spots - activity.nb_participant;
   const acceptedParticipants = participants.filter(
     (participant) => participant.status === "accepted",
   );
+
+  const nbAvailableSpots = activity.nb_spots - activity.nb_participant;
+  const widthProgressBar = (100 / activity.nb_spots) * activity.nb_participant;
 
   const mapQuery = encodeURIComponent(
     `${activity.address} ${activity.zip_code} ${activity.city}`,
@@ -71,47 +73,54 @@ function ActivityDetails() {
     return username.charAt(0).toUpperCase();
   }
 
-  const makeReservation = async () => {
-    if (availableSpots <= 0 || reservationStatus !== "idle") return;
+  const makeReservation = async (
+    activity: Activity,
+    nbAvailableSpots: number,
+  ) => {
+    if (!auth?.user) {
+      navigate("/sign-in");
+      return;
+    }
 
-    setReservationStatus("loading");
+    if (nbAvailableSpots === 0) {
+      return;
+    }
 
     const newParticipant = {
-      userId: 25, // TODO: remplacer après authentification
+      userId: auth.user.id,
       activityId: activity.id,
       status: activity.auto_validation ? "accepted" : "request",
     };
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
           body: JSON.stringify(newParticipant),
         },
       );
 
       if (response.status === StatusCodes.CONFLICT) {
-        setReservationStatus("already");
         return;
       }
 
       if (!response.ok) throw new Error("Failed to join activity");
 
-      if (activity.auto_validation) {
-        navigate("/my-activities", { state: 0 });
-      } else {
-        navigate("/my-activities", {
-          state: {
-            toast:
-              "Votre demande de réservation a été envoyée à l'organisateur de l'activité.",
-          },
-        });
-      }
+      navigate("/my-activities", {
+        state: {
+          selectedTab: activity.auto_validation ? "incoming" : "pending",
+          toast: activity.auto_validation
+            ? "Vous avez bien réservé votre place"
+            : "Votre demande réservation a bien été envoyée",
+        },
+      });
     } catch (err) {
       console.error(err);
-      setReservationStatus("idle");
     }
   };
 
@@ -203,14 +212,12 @@ function ActivityDetails() {
         className={`spots-bar ${activity.nb_participant / activity.nb_spots >= 0.5 ? "filled" : ""}`}
       >
         <div
-          className="spots-bar-fill"
-          style={{
-            width: `${(activity.nb_participant / activity.nb_spots) * 100}%`,
-          }}
+          className={`spots-bar-fill ${activity.nb_participant >= activity.nb_spots / 2 && "almost-full"} ${nbAvailableSpots === 0 && "full"}`}
+          style={{ "--size": `${widthProgressBar}%` } as React.CSSProperties}
         />
-        <p>
-          {availableSpots}{" "}
-          {availableSpots <= 1 ? "place restante" : "places restantes"} /{" "}
+        <p className={`${nbAvailableSpots === 0 && "full"}`}>
+          {nbAvailableSpots}{" "}
+          {nbAvailableSpots <= 1 ? "place restante" : "places restantes"} /{" "}
           {activity.nb_spots}
         </p>
       </section>
@@ -316,13 +323,12 @@ function ActivityDetails() {
       <button
         type="button"
         className="reserve-button"
-        onClick={makeReservation}
-        disabled={availableSpots <= 0 || reservationStatus !== "idle"}
+        onClick={() =>
+          makeReservation(activity, activity.nb_spots - activity.nb_participant)
+        }
+        disabled={nbAvailableSpots <= 0}
       >
-        {reservationStatus === "already" && "Déjà inscrit"}
-        {reservationStatus === "loading" && "Réservation..."}
-        {reservationStatus === "idle" &&
-          (availableSpots <= 0 ? "Complet" : "Réserver")}
+        {nbAvailableSpots <= 0 ? "Complet" : "Réserver"}
       </button>
     </main>
   );

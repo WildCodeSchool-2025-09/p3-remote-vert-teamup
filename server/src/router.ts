@@ -16,6 +16,7 @@ router.get("/api/activities", activityActions.browse);
 router.get("/api/activities/:id", activityActions.read);
 
 router.post("/api/login", authActions.logIn);
+router.get("/api/participants", participationActions.browseByActivity);
 
 router.use(authActions.verifyToken);
 
@@ -23,7 +24,6 @@ router.get("/api/profile", userActions.read);
 router.post("/api/activities", activityActions.add);
 router.get("/api/me/activities", activityActions.browseMine);
 
-router.get("/api/participants", participationActions.browseByActivity);
 router.get("/api/participations", participationActions.browseSome);
 router.post(
   "/api/participations",
