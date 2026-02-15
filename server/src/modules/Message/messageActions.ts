@@ -34,18 +34,26 @@ const addLike: RequestHandler = async (req, res, next) => {
   try {
     const { messageId, userId } = req.body;
 
-    const result = await messageRepository.createLike(messageId, userId);
+    const inserted = await messageRepository.createLike(messageId, userId);
 
-    if (!result.affectedRows) {
-      res.status(StatusCodes.CONFLICT).json({
-        error: "User has already liked this message",
-        affectedRows: 0,
-      });
+    if (!inserted) {
+      res
+        .status(StatusCodes.CONFLICT)
+        .json({ error: "User already liked this message" });
+      return;
+    }
+
+    const updatedCount = await messageRepository.updateLikeCount(messageId);
+
+    if (!updatedCount) {
+      res
+        .status(StatusCodes.CREATED)
+        .json({ error: "Like count is not updated", success: false });
       return;
     }
 
     res.status(StatusCodes.CREATED).json({
-      affectedRows: result.affectedRows,
+      success: true,
     });
   } catch (err) {
     next(err);
@@ -65,6 +73,19 @@ const brows: RequestHandler = async (req, res, next) => {
   }
 };
 
+const deleteMessage: RequestHandler = async (req, res, next) => {
+  const { userId, messageId } = req.body;
+
+  const [deleteResult] = await MessageRepository.delete(userId, messageId);
+
+  if (deleteResult.affectedRows === 0) {
+    res.status(StatusCodes.NOT_FOUND).json({ error: "Message not found" });
+    return;
+  }
+
+  res.status(StatusCodes.OK).json({ success: true });
+};
+
 const poll: RequestHandler = async (req, res) => {
   const activityId = req.query.activityId as string;
   let timeoutId: NodeJS.Timeout | null = null;
@@ -72,7 +93,6 @@ const poll: RequestHandler = async (req, res) => {
 
   console.log(`Poll Client connected for activity ${activityId}`);
 
-  // This function will be called when a message arrives
   const sendResponse = (messages: any[]) => {
     if (responseSent) {
       return;
@@ -89,13 +109,11 @@ const poll: RequestHandler = async (req, res) => {
 
   LongPollManager.addWaiting(activityId, sendResponse);
 
-  // After 25 seconds, stop waiting and send empty response
   timeoutId = setTimeout(() => {
     LongPollManager.removeWaiting(activityId, sendResponse);
     res.json({ messages: [] });
   }, 25000);
 
-  // If client disconnects, remove from waiting
   req.on("close", () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -105,4 +123,4 @@ const poll: RequestHandler = async (req, res) => {
   });
 };
 
-export default { add, brows, poll, addLike };
+export default { add, brows, poll, addLike, deleteMessage };

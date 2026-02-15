@@ -11,23 +11,25 @@ type UsersActivities = {
   playing_at: string;
 };
 
-const userId = 7; // replace with login state
+const userId = 1; // replace with login state
 
 function Messanger() {
   const navigate = useNavigate();
   const [userActivities, setUserActivities] = useState<
     UsersActivities[] | undefined
   >();
-  const [selectedActivity, setSelectedActivity] = useState();
+  const [selectedActivity, setSelectedActivity] = useState<UsersActivities>();
 
   const isMobile = window.innerWidth < 768;
-
-  console.log(selectedActivity);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`)
       .then((res) => res.json())
-      .then((data) => setUserActivities(data));
+      .then((data) =>
+        setUserActivities(
+          data.filter((a, prev: UsersActivities) => a.id !== prev.id),
+        ),
+      );
   }, []);
 
   const openChatroom = (a: UsersActivities) => {

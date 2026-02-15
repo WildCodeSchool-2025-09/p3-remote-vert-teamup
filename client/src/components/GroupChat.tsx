@@ -21,6 +21,7 @@ type MessageType = {
   updated_at: string;
   user_id: number;
   username: string;
+  like_count: number;
 };
 
 function GroupChat({
@@ -37,11 +38,12 @@ function GroupChat({
 
   const shouldPoll = useRef(true);
   const isPollingRef = useRef(false);
-  // const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-  // }, []);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToLatest = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+  };
 
   useEffect(() => {
     const getMessages = async () => {
@@ -98,8 +100,7 @@ function GroupChat({
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
-      // Tell user the content cannot be 0
-      alert("Message body is 0");
+      // Tell user the content cannot be 0 ?
       return;
     }
 
@@ -130,7 +131,8 @@ function GroupChat({
   };
 
   const addLike = async (m: MessageType) => {
-    console.log(m);
+    console.log("this should be a message", m);
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/message/likes`,
@@ -145,13 +147,47 @@ function GroupChat({
           }),
         },
       );
+      const likeCountStatus = await res.json();
 
-      const likeStatus = await res.json();
+      if (likeCountStatus.success) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === m.id
+              ? {
+                  ...msg,
+                  like_count: msg.like_count + 1,
+                }
+              : msg,
+          ),
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      console.log(
-        "THIS IS WHAT WE GET AS AFFECTED ROWS",
-        likeStatus.affectedRows,
+  const deleteMessage = async (m: MessageType) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/message/delete`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            messageId: m.id,
+          }),
+        },
       );
+      const messageDeleteStatus = await res.json();
+
+      if (messageDeleteStatus.success) {
+        setMessages((prev: MessageType[]) => {
+          return prev.filter((msg) => msg.id !== m.id);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -162,8 +198,13 @@ function GroupChat({
       <p>Group Chat for {activity.id}</p>
       <div className="messages-display">
         {messages.map((m) => (
-          <div key={m.id} className="single-message">
-            <div className="user-date">
+          <div
+            key={m.id}
+            className={`single-message ${m.user_id === userId ? "users-message" : "others-messages"}`}
+          >
+            <div
+              className={`${m.user_id === userId ? "my-user-date" : "user-date"}`}
+            >
               <h3
                 className={`username ${m.user_id === userId && "my-username"}`}
               >
@@ -173,20 +214,31 @@ function GroupChat({
                 {formatMessageTime(m.created_at)}
               </small>
             </div>
-            <p>{m.content}</p>
-            <button
-              type="button"
-              className="like-btn"
-              onClick={() => addLike(m)}
-            >
-              <img src="../../public/icons/thumbs-up.svg" alt="Like" />
-            </button>
+            <p className="msg-content">{m.content}</p>
+            <div className="like-delete-wrap">
+              <button
+                type="button"
+                className="like-btn"
+                onClick={() => addLike(m)}
+              >
+                <img src="../../public/icons/thumbs-up.svg" alt="Like" />
+                <span>{m.like_count !== 0 && m.like_count}</span>
+              </button>
+              {m.user_id === userId && (
+                <button
+                  type="button"
+                  className="like-btn"
+                  onClick={() => deleteMessage(m)}
+                >
+                  <img src="../../public/icons/trash.svg" alt="delete img" />
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
       <div className="chat-input-container">
         <textarea
-          // ref={messagesEndRef}
           className="chat-input"
           value={typeMessage}
           placeholder="Message"

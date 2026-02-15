@@ -40,7 +40,7 @@ class participationRepository {
   async readUserActity(userId: number) {
     console.log(userId);
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT a.id, a.playing_at, a.city, s.name AS sport_name, p.status 
+      `SELECT DISTINCT a.id, a.playing_at, a.city, s.name AS sport_name, p.status 
         FROM participation AS p
         JOIN activity AS a ON a.id = p.activity_id
         JOIN sport AS s ON s.id = a.sport_id
