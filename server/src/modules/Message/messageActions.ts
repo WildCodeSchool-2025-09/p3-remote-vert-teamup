@@ -32,9 +32,8 @@ const add: RequestHandler = async (req, res, next) => {
     }
 
     const [message] = await MessageRepository.readSigle(result.insertId);
-    const newMessage = message[0];
 
-    LongPollManager.notifyWaiting(activityId.toString(), newMessage);
+    LongPollManager.notifyWaiting(activityId.toString(), message[0] as Message);
 
     res.status(201).json({ message: "Message Created", result });
   } catch (err) {
@@ -46,8 +45,6 @@ const poll: RequestHandler = async (req, res) => {
   const activityId = req.query.activityId as string;
   let timeoutId: NodeJS.Timeout | null = null;
   let responseSent = false;
-
-  console.log(`Poll Client connected for activity ${activityId}`);
 
   const sendResponse = (messages: Message[]) => {
     if (responseSent) {

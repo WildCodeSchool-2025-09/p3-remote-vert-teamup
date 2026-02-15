@@ -83,24 +83,55 @@ function GroupChat({
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
+        {
+          signal: AbortSignal.timeout(30000),
+        },
       );
 
       if (!response.ok) throw new Error("Poll request failed");
 
       const data = await response.json();
 
-      if (data.messages && data.messages.length > 0) {
+      if (data.messages.length > 0 && shouldPoll.current) {
         setMessages((prev) => [...prev, ...data.messages]);
+      }
+
+      if (shouldPoll.current) {
+        startPolling();
       }
     } catch (err) {
       console.error("Error polling:", err);
+
+      if (shouldPoll.current) {
+        setTimeout(startPolling, 3000);
+      }
     }
-    setTimeout(startPolling, 100);
   };
+
+  // const startPolling = async () => {
+  //   if (!shouldPoll.current) return;
+
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
+  //     );
+
+  //     if (!response.ok) throw new Error("Poll request failed");
+
+  //     const data = await response.json();
+
+  //     if (data.messages.length > 0) {
+  //       setMessages((prev) => [...prev, ...data.messages]);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error polling:", err);
+  //   }
+
+  //   setTimeout(startPolling, 1000);
+  // };
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
-      // Tell user the content cannot be 0 ?
       return;
     }
 

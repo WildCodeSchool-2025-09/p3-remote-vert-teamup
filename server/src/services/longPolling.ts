@@ -5,9 +5,9 @@ class LongPollManager {
 
   addWaiting(activityId: string, callback: Callback) {
     if (!this.waiting[activityId]) {
-      this.waiting[activityId] = []; // waiting {activityId: []}
+      this.waiting[activityId] = [];
     }
-    this.waiting[activityId].push(callback); // waiting {activityId: [callback]}
+    this.waiting[activityId].push(callback);
   }
 
   removeWaiting(activityId: string, callback: Callback) {
@@ -23,7 +23,6 @@ class LongPollManager {
 
     const callbacks = waitingList;
     delete this.waiting[activityId];
-    console.log("callbacks", callbacks);
 
     for (const callback of callbacks) {
       try {
