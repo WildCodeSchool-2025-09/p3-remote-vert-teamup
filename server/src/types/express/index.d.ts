@@ -107,3 +107,16 @@ type InvitationAcceptedEmail = {
   activityName: string;
   participantUsername: string;
 };
+
+type Message = {
+    id: number;
+    activity_id: number;
+    user_id: number;
+    content: string;
+    created_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
+    like_count: number;
+    username: string;
+  },
+;

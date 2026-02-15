@@ -41,9 +41,9 @@ function GroupChat({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToLatest = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-  };
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [messages]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -95,7 +95,7 @@ function GroupChat({
     } catch (err) {
       console.error("Error polling:", err);
     }
-    setTimeout(startPolling, 1000);
+    setTimeout(startPolling, 100);
   };
 
   const sendMessage = async () => {
@@ -221,7 +221,7 @@ function GroupChat({
                 className="like-btn"
                 onClick={() => addLike(m)}
               >
-                <img src="../../public/icons/thumbs-up.svg" alt="Like" />
+                <img src="/icons/thumbs-up.svg" alt="Like" />
                 <span>{m.like_count !== 0 && m.like_count}</span>
               </button>
               {m.user_id === userId && (
@@ -230,7 +230,7 @@ function GroupChat({
                   className="like-btn"
                   onClick={() => deleteMessage(m)}
                 >
-                  <img src="../../public/icons/trash.svg" alt="delete img" />
+                  <img src="/icons/trash.svg" alt="delete img" />
                 </button>
               )}
             </div>
@@ -253,6 +253,7 @@ function GroupChat({
             }
           }}
         />
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );

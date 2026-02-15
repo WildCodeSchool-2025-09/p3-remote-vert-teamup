@@ -4,6 +4,19 @@ import LongPollManager from "../../services/longPolling";
 import messageRepository from "./messageRepository";
 import { StatusCodes } from "http-status-codes";
 
+const brows: RequestHandler = async (req, res, next) => {
+  const userId = Number(req.query.userId);
+  const activityId = Number(req.query.activityId);
+
+  try {
+    const [messages] = await MessageRepository.read(userId, activityId);
+
+    res.status(200).json(messages);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const add: RequestHandler = async (req, res, next) => {
   const { userId, activityId, content } = req.body;
 
@@ -20,7 +33,6 @@ const add: RequestHandler = async (req, res, next) => {
 
     const [message] = await MessageRepository.readSigle(result.insertId);
     const newMessage = message[0];
-    console.log("show difference btwn:", newMessage[0]);
 
     LongPollManager.notifyWaiting(activityId.toString(), newMessage);
 
@@ -28,6 +40,43 @@ const add: RequestHandler = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+const poll: RequestHandler = async (req, res) => {
+  const activityId = req.query.activityId as string;
+  let timeoutId: NodeJS.Timeout | null = null;
+  let responseSent = false;
+
+  console.log(`Poll Client connected for activity ${activityId}`);
+
+  const sendResponse = (messages: Message[]) => {
+    if (responseSent) {
+      return;
+    }
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    responseSent = true;
+
+    res.json({ messages });
+  };
+
+  LongPollManager.addWaiting(activityId, sendResponse);
+
+  timeoutId = setTimeout(() => {
+    LongPollManager.removeWaiting(activityId, sendResponse);
+    res.json({ messages: [] });
+  }, 25000);
+
+  req.on("close", () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    LongPollManager.removeWaiting(activityId, sendResponse);
+  });
 };
 
 const addLike: RequestHandler = async (req, res, next) => {
@@ -60,19 +109,6 @@ const addLike: RequestHandler = async (req, res, next) => {
   }
 };
 
-const brows: RequestHandler = async (req, res, next) => {
-  const userId = Number(req.query.userId);
-  const activityId = Number(req.query.activityId);
-
-  try {
-    const [messages] = await MessageRepository.read(userId, activityId);
-
-    res.status(200).json(messages);
-  } catch (err) {
-    next(err);
-  }
-};
-
 const deleteMessage: RequestHandler = async (req, res, next) => {
   const { userId, messageId } = req.body;
 
@@ -84,43 +120,6 @@ const deleteMessage: RequestHandler = async (req, res, next) => {
   }
 
   res.status(StatusCodes.OK).json({ success: true });
-};
-
-const poll: RequestHandler = async (req, res) => {
-  const activityId = req.query.activityId as string;
-  let timeoutId: NodeJS.Timeout | null = null;
-  let responseSent = false;
-
-  console.log(`Poll Client connected for activity ${activityId}`);
-
-  const sendResponse = (messages: any[]) => {
-    if (responseSent) {
-      return;
-    }
-
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    responseSent = true;
-
-    res.json({ messages });
-  };
-
-  LongPollManager.addWaiting(activityId, sendResponse);
-
-  timeoutId = setTimeout(() => {
-    LongPollManager.removeWaiting(activityId, sendResponse);
-    res.json({ messages: [] });
-  }, 25000);
-
-  req.on("close", () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    LongPollManager.removeWaiting(activityId, sendResponse);
-  });
 };
 
 export default { add, brows, poll, addLike, deleteMessage };

@@ -25,11 +25,7 @@ function Messanger() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`)
       .then((res) => res.json())
-      .then((data) =>
-        setUserActivities(
-          data.filter((a, prev: UsersActivities) => a.id !== prev.id),
-        ),
-      );
+      .then((data) => setUserActivities(data));
   }, []);
 
   const openChatroom = (a: UsersActivities) => {
