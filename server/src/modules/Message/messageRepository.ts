@@ -28,7 +28,7 @@ class MessageRepository {
     return rows;
   }
 
-  async readSigle(messageId: number) {
+  async readSingle(messageId: number) {
     const rows = databaseClient.query<Rows>(
       `SELECT m.*, u.username
         FROM messages AS m

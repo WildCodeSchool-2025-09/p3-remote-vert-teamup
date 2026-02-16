@@ -31,9 +31,10 @@ const add: RequestHandler = async (req, res, next) => {
       res.status(400).json({ message: "Message Cannot be created" });
     }
 
-    const [message] = await MessageRepository.readSigle(result.insertId);
+    const [message] = await MessageRepository.readSingle(result.insertId);
+    const newMessage = message[0];
 
-    LongPollManager.notifyWaiting(activityId.toString(), message[0] as Message);
+    LongPollManager.notifyWaiting(activityId.toString(), newMessage as Message);
 
     res.status(201).json({ message: "Message Created", result });
   } catch (err) {
@@ -59,6 +60,8 @@ const poll: RequestHandler = async (req, res) => {
 
     res.json({ messages });
   };
+
+  console.log("Actions", activityId);
 
   LongPollManager.addWaiting(activityId, sendResponse);
 

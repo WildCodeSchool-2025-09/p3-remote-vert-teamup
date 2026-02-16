@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router";
 import { formatMessageTime } from "../hooks/DataFormater";
 
 type groupChatType = {
@@ -32,6 +33,8 @@ function GroupChat({
 
   const activity = activityProp ?? location.state?.activity;
   const userId = userIdProp ?? location.state?.userId; // Replace with login state
+  const isMobile = location.state?.isMobile;
+  const navigate = useNavigate();
 
   const [typeMessage, setTypeMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -40,9 +43,14 @@ function GroupChat({
   const isPollingRef = useRef(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevMessageCountRef = useRef(0);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    if (prevMessageCountRef.current < messages.length) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }
+
+    prevMessageCountRef.current = messages.length;
   }, [messages]);
 
   useEffect(() => {
@@ -83,9 +91,6 @@ function GroupChat({
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
-        {
-          signal: AbortSignal.timeout(30000),
-        },
       );
 
       if (!response.ok) throw new Error("Poll request failed");
@@ -107,28 +112,6 @@ function GroupChat({
       }
     }
   };
-
-  // const startPolling = async () => {
-  //   if (!shouldPoll.current) return;
-
-  //   try {
-  //     const response = await fetch(
-  //       `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
-  //     );
-
-  //     if (!response.ok) throw new Error("Poll request failed");
-
-  //     const data = await response.json();
-
-  //     if (data.messages.length > 0) {
-  //       setMessages((prev) => [...prev, ...data.messages]);
-  //     }
-  //   } catch (err) {
-  //     console.error("Error polling:", err);
-  //   }
-
-  //   setTimeout(startPolling, 1000);
-  // };
 
   const sendMessage = async () => {
     if (typeMessage.length === 0) {
@@ -225,8 +208,27 @@ function GroupChat({
   };
 
   return (
-    <div className="chat-room">
-      <p>Group Chat for {activity.id}</p>
+    <div
+      className="chat-room"
+      style={isMobile ? { marginBottom: "80px" } : undefined}
+    >
+      {isMobile ? (
+        <div className="mob-chat-header">
+          <button
+            type="button"
+            className="like-btn"
+            onClick={() => navigate("/messanger")}
+          >
+            <img src="/icons/move-left.svg" alt="Move-left-arrow" />
+          </button>
+          <p>Chat pour {activity.sport_name}</p>
+        </div>
+      ) : (
+        <p className="chat-header">
+          {activity.sport_name} a{" "}
+          <span>{formatMessageTime(activity.playing_at)}</span>
+        </p>
+      )}
       <div className="messages-display">
         {messages.map((m) => (
           <div
