@@ -275,7 +275,9 @@ function GroupChat({ activity: activityProp }: groupChatType) {
                   onClick={() => addLike(m)}
                 >
                   <img src="/icons/thumbs-up.svg" alt="Like" />
-                  <span>{m.like_count !== 0 && m.like_count}</span>
+                  <span className="like-count">
+                    {m.like_count !== 0 && m.like_count}
+                  </span>
                 </button>
                 {m.user_id === auth?.user.id && (
                   <button
@@ -294,7 +296,7 @@ function GroupChat({ activity: activityProp }: groupChatType) {
           <textarea
             className="chat-input"
             value={typeMessage}
-            placeholder="Message"
+            placeholder="Message..."
             onChange={(e) => {
               e.preventDefault();
               setTypeMessage(e.target.value);

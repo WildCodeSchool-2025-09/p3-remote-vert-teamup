@@ -61,8 +61,6 @@ const poll: RequestHandler = async (req, res) => {
     res.json({ messages });
   };
 
-  console.log("Actions", activityId);
-
   LongPollManager.addWaiting(activityId, sendResponse);
 
   timeoutId = setTimeout(() => {

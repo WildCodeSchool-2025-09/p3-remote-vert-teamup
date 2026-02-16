@@ -49,6 +49,7 @@
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 4px 0px;
 }
+
 .sub-chat-wrapper {
   display: flex;
   flex-direction: column;
@@ -112,6 +113,8 @@
   width: 100%;
   padding: 12px 2.5rem;
   border-bottom: 1px solid #ddd;
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--neutral-color) 40%, transparent);
 }
 
 .single-message {
@@ -199,6 +202,12 @@
   transition: transform 0.1s ease;
 }
 
+.like-count {
+  font-size: .6rem;
+  display: flex;
+  align-items: flex-end;
+}
+
 .send-message {
   padding: 0.4rem 1.2rem;
   background-color: var(--button-color);
@@ -232,6 +241,8 @@
 
   box-sizing: border-box;
   overflow-y: auto;
+
+  margin-bottom: 6rem;
 }
 
 .chat-input:focus {

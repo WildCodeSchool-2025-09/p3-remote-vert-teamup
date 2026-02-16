@@ -10,6 +10,7 @@ type UsersActivities = {
   sport_name: string;
   city: string;
   playing_at: string;
+  username: string;
 };
 
 function Messanger() {
@@ -48,8 +49,6 @@ function Messanger() {
     }
   };
 
-  console.log(selectedActivity);
-
   return (
     <>
       <div className="messanger-layout">
@@ -68,7 +67,6 @@ function Messanger() {
               onClick={() => openChatroom(a)}
             >
               <div className={`sport-img ${a.sport_name}`} />
-
               <div className="sub-chat-wrapper">
                 <h2>{a.sport_name}</h2>
                 <div className="sub-chat">
