@@ -1,12 +1,6 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
-type newUserType = {
-  userId?: number;
-  activityId?: number;
-  status?: string;
-};
-
 class participationRepository {
   async readAllParticipants(activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
@@ -20,14 +14,6 @@ class participationRepository {
     return rows as Participant[];
   }
 
-  async patch(id: number, status: string) {
-    const [result] = await databaseClient.query<Result>(
-      "UPDATE participation SET status = ? WHERE participation.id = ?",
-      [status, id],
-    );
-    return result.affectedRows;
-  }
-
   async create(newParticipant: newUserType) {
     const [Result] = await databaseClient.query<Result>(
       `INSERT INTO participation (status, user_id, activity_id)
@@ -38,14 +24,12 @@ class participationRepository {
   }
 
   async readUserActity(userId: number) {
-    console.log(userId);
     const [rows] = await databaseClient.query<Rows>(
       `SELECT DISTINCT a.id, a.playing_at, a.city, s.name AS sport_name, p.status 
         FROM participation AS p
         JOIN activity AS a ON a.id = p.activity_id
         JOIN sport AS s ON s.id = a.sport_id
-        WHERE p.user_id = ? OR a.user_id = ?
-        AND p.status = 'accepted'
+        WHERE (p.user_id = ? AND p.status = 'accepted') OR a.user_id = ?
         ORDER BY playing_at ASC`,
       [userId, userId],
     );
@@ -58,15 +42,6 @@ class participationRepository {
       `UPDATE participation SET status = ?, updated_at = NOW()
        WHERE user_id = ? AND activity_id = ?`,
       [status, userId, activityId],
-    );
-
-    return result;
-  }
-
-  async delete(userId: number, activityId: number) {
-    const [result] = await databaseClient.query<Result>(
-      "DELETE FROM participation WHERE user_id = ? AND activity_id = ?",
-      [userId, activityId],
     );
 
     return result;

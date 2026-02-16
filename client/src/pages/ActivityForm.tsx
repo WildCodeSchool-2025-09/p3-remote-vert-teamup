@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import "../styles/variables.css";
 import "../styles/ActivityForm.css";
 import { useMediaQuery } from "react-responsive";
 import ActivityCard from "../components/ActivityCard";
+import { StatusCodes } from "http-status-codes";
 
 const LIMIT = 6;
 
@@ -43,6 +45,8 @@ function ActivityForm() {
   const [activities, setActivities] = useState<Activity[]>([]);
 
   const isMobile = useMediaQuery({ query: "(max-width: 1439px)" });
+
+  const { auth } = useAuth();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/sports`)
@@ -92,11 +96,9 @@ function ActivityForm() {
     setError((prev) => ({ ...prev, addActivity: "" }));
     setIsSubmitting(true);
 
-    const guestIds = guests.map((guest) => guest.id);
-
     const activityData = {
       activity: {
-        user_id: 25, // TODO: remplacer après authentification !
+        user_id: auth?.user.id,
         sport_id: Number(sportId),
         address: addressRef.current?.value || "",
         city: cityRef.current?.value || "",
@@ -115,15 +117,18 @@ function ActivityForm() {
         toilet: toilet,
         air_conditioning: airConditioning,
       },
-      guestIds,
+      guests,
     };
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activity`,
+        `${import.meta.env.VITE_API_URL}/api/activities`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
+          },
           body: JSON.stringify(activityData),
         },
       );
@@ -136,7 +141,7 @@ function ActivityForm() {
       navigate("/my-activities", {
         state: {
           toast: "Activité créée avec succès !",
-          selectedTab: 1,
+          selectedTab: "published",
         },
       });
     } catch (err) {
@@ -156,7 +161,7 @@ function ActivityForm() {
         `${import.meta.env.VITE_API_URL}/api/users?email=${guestInput}`,
       );
 
-      if (response.status === 200) {
+      if (response.status === StatusCodes.OK) {
         const user = await response.json();
 
         if (!guests.some((guest) => guest.id === user.id)) {
@@ -166,12 +171,12 @@ function ActivityForm() {
         } else {
           setError((prev) => ({ ...prev, addGuest: "Déjà invité" }));
         }
-      } else if (response.status === 204) {
+      } else if (response.status === StatusCodes.NO_CONTENT) {
         setError((prev) => ({
           ...prev,
           addGuest: "Veuillez remplir le champ",
         }));
-      } else if (response.status === 404) {
+      } else if (response.status === StatusCodes.NOT_FOUND) {
         setError((prev) => ({ ...prev, addGuest: "Email inexistant" }));
       } else {
         setError((prev) => ({ ...prev, addGuest: "Erreur serveur" }));
@@ -186,12 +191,12 @@ function ActivityForm() {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
+    )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
-  }, []);
-
-  console.log(activities);
+  }, [auth]);
 
   return (
     <section className="publication-page">

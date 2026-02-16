@@ -3,6 +3,7 @@ import "../styles/Messanger.css";
 import { useNavigate } from "react-router";
 import GroupChat from "./GroupChat";
 import { formatMessageTime } from "../hooks/DataFormater";
+import { useAuth } from "../context/AuthContext";
 
 type UsersActivities = {
   id: number;
@@ -11,8 +12,6 @@ type UsersActivities = {
   playing_at: string;
 };
 
-const userId = 1; // replace with login state
-
 function Messanger() {
   const navigate = useNavigate();
   const [userActivities, setUserActivities] = useState<
@@ -20,23 +19,36 @@ function Messanger() {
   >();
   const [selectedActivity, setSelectedActivity] = useState<UsersActivities>();
 
+  const { auth } = useAuth();
+
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/participations?userId=${userId}`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth?.user.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.token}`,
+        },
+      },
+    )
       .then((res) => res.json())
       .then((data) => setUserActivities(data));
-  }, []);
+  }, [auth]);
 
   const openChatroom = (a: UsersActivities) => {
     if (isMobile) {
       navigate(`/chat/${a.id}`, {
-        state: { activity: a, userId: userId, isMobile: isMobile },
+        state: { activity: a, isMobile: isMobile },
       });
     } else {
       setSelectedActivity(a);
     }
   };
+
+  console.log(selectedActivity);
 
   return (
     <>
@@ -61,7 +73,14 @@ function Messanger() {
                 <h2>{a.sport_name}</h2>
                 <div className="sub-chat">
                   <p>{a.city}</p>
-                  <p className="message-date">
+                  <p
+                    className="message-date"
+                    style={
+                      a.id === selectedActivity?.id
+                        ? { color: "var(--light-color)" }
+                        : {}
+                    }
+                  >
                     {formatMessageTime(a.playing_at)}
                   </p>
                 </div>
@@ -75,7 +94,6 @@ function Messanger() {
               <GroupChat
                 key={selectedActivity.id}
                 activity={selectedActivity}
-                userId={userId}
               />
             ) : (
               <div className="no-chat-selected">

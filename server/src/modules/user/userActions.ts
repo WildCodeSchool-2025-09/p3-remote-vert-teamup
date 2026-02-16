@@ -1,6 +1,8 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import userRepository from "./userRepository";
+import Joi from "joi";
+import argon2 from "argon2";
 
 const readByEmail: RequestHandler = async (req, res, next) => {
   try {
@@ -24,4 +26,72 @@ const readByEmail: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { readByEmail };
+const add: RequestHandler = async (req, res, next) => {
+  function hasCode(err: unknown): err is { code: string } {
+    return typeof err === "object" && err !== null && "code" in err;
+  }
+
+  try {
+    req.body.password = await argon2.hash(req.body.password, {
+      type: argon2.argon2id,
+      memoryCost: 19 * 2 ** 10 /* 19 Mio en kio (19 * 1024 kio) */,
+      timeCost: 2,
+      parallelism: 1,
+    });
+    const insertId = await userRepository.create(req.body);
+    res.status(StatusCodes.OK).json({ insertId });
+  } catch (err: unknown) {
+    if (hasCode(err) && err.code === "ER_DUP_ENTRY") {
+      res.sendStatus(StatusCodes.CONFLICT);
+    } else {
+      next(err);
+    }
+  }
+};
+
+const validate: RequestHandler = async (req, res, next) => {
+  const createUserSchema = Joi.object({
+    username: Joi.string().trim().min(3).max(30).required(),
+    password: Joi.string().min(8).max(72).required(),
+    confirmPassword: Joi.string().valid(Joi.ref("password")).required(),
+    email: Joi.string().trim().email().required(),
+    firstname: Joi.string().trim().min(1).max(50).required(),
+    lastname: Joi.string().trim().min(1).max(50).required(),
+    born_at: Joi.string().required(),
+    address: Joi.string().trim().required(),
+    city: Joi.string().trim().required(),
+    zip_code: Joi.string().trim().required(),
+    phone: Joi.string().trim().replace(/\s+/g, "").required(),
+    picture: Joi.string().trim().allow("").optional(),
+  }).options({ abortEarly: false, stripUnknown: true });
+  try {
+    const { error, value } = createUserSchema.validate(req.body);
+    if (error) {
+      res.status(StatusCodes.BAD_REQUEST).json({ error: "VALIDATION_ERROR" });
+      return;
+    }
+    req.body = value;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const userId = Number.parseInt(req.auth.sub, 10);
+    const user = await userRepository.readById(userId);
+
+    if (!user) {
+      res.sendStatus(StatusCodes.NOT_FOUND);
+      return;
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { readByEmail, add, validate, read };

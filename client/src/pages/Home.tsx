@@ -1,32 +1,46 @@
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import ActivityCard from "../components/ActivityCard";
 import Carousel from "../components/Carousel";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const LIMIT = 10;
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`)
+    if (location.state) {
+      toast.success(location.state.toast);
+
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, location.pathname, navigate]);
+
+  useEffect(() => {
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
+    )
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
-  }, []);
+  }, [auth]);
 
   return (
     <section className="homepage">
       <div className="hero-wrapper">
         <h1 className="homepage-title">TeamUp</h1>
         <article className="homepage-article">
-          <p>
+          <p className="presentation">
             Envie de bouger, mais pas seul ? <br />
             TeamUp te permet de créer ou rejoindre des activités sportives avec
             des personnes qui partagent la même motivation.
-            <br /> <br />
-            <strong>Trouve ton équipe. Passe à l’action.</strong>
           </p>
+          <p>Trouve ton équipe. Passe à l’action.</p>
         </article>
         <div className="superwrapper">
           <div className="homepage-button-wrapper">

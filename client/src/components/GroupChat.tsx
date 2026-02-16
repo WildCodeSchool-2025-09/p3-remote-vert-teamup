@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
 import { formatMessageTime } from "../hooks/DataFormater";
+import { useAuth } from "../context/AuthContext";
 
 type groupChatType = {
   activity: {
@@ -10,7 +11,7 @@ type groupChatType = {
     city: string;
     playing_at: string;
   };
-  userId: number;
+  isMobile?: boolean;
 };
 
 type MessageType = {
@@ -25,14 +26,11 @@ type MessageType = {
   like_count: number;
 };
 
-function GroupChat({
-  activity: activityProp,
-  userId: userIdProp,
-}: groupChatType) {
+function GroupChat({ activity: activityProp }: groupChatType) {
   const location = useLocation();
+  const { auth } = useAuth();
 
   const activity = activityProp ?? location.state?.activity;
-  const userId = userIdProp ?? location.state?.userId; // Replace with login state
   const isMobile = location.state?.isMobile;
   const navigate = useNavigate();
 
@@ -57,7 +55,14 @@ function GroupChat({
     const getMessages = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/message?userId=${userId}&activityId=${activity.id}`,
+          `${import.meta.env.VITE_API_URL}/api/message?userId=${auth?.user.id}&activityId=${activity.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth?.token}`,
+            },
+          },
         );
 
         if (!res.ok) throw new Error("Fetch failed");
@@ -69,7 +74,7 @@ function GroupChat({
     };
 
     getMessages();
-  }, [userId, activity.id]);
+  }, [activity.id, auth]);
 
   useEffect(() => {
     if (isPollingRef.current) {
@@ -91,6 +96,13 @@ function GroupChat({
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/message/poll?activityId=${activity.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
+          },
+        },
       );
 
       if (!response.ok) throw new Error("Poll request failed");
@@ -125,10 +137,11 @@ function GroupChat({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify({
             content: typeMessage,
-            userId,
+            userId: auth?.user.id,
             activityId: activity.id,
           }),
         },
@@ -145,8 +158,6 @@ function GroupChat({
   };
 
   const addLike = async (m: MessageType) => {
-    console.log("this should be a message", m);
-
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/message/likes`,
@@ -154,10 +165,11 @@ function GroupChat({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify({
             messageId: m.id,
-            userId: userId,
+            userId: auth?.user.id,
           }),
         },
       );
@@ -188,9 +200,10 @@ function GroupChat({
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify({
-            userId: userId,
+            userId: auth?.user.id,
             messageId: m.id,
           }),
         },
@@ -240,13 +253,13 @@ function GroupChat({
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`single-message ${m.user_id === userId ? "users-message" : "others-messages"}`}
+              className={`single-message ${m.user_id === auth?.user.id ? "users-message" : "others-messages"}`}
             >
               <div
-                className={`${m.user_id === userId ? "my-user-date" : "user-date"}`}
+                className={`${m.user_id === auth?.user.id ? "my-user-date" : "user-date"}`}
               >
                 <h3
-                  className={`username ${m.user_id === userId && "my-username"}`}
+                  className={`username ${m.user_id === auth?.user.id && "my-username"}`}
                 >
                   {m.username}
                 </h3>
@@ -264,7 +277,7 @@ function GroupChat({
                   <img src="/icons/thumbs-up.svg" alt="Like" />
                   <span>{m.like_count !== 0 && m.like_count}</span>
                 </button>
-                {m.user_id === userId && (
+                {m.user_id === auth?.user.id && (
                   <button
                     type="button"
                     className="like-btn"

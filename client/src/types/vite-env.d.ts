@@ -27,9 +27,36 @@ type Activity = {
   user_picture: string;
   name: string;
   nb_participant: number;
+  total_participant: number;
+  participation_status: string;
 };
 
 type User = {
   id: number;
   email: string;
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  born_at: string;
+  address: string;
+  city: string;
+  zip_code: string;
+  phone: string;
+  picture: string;
+};
+
+type UserProfile = Omit<User, "password">;
+
+type Auth = {
+  user: User;
+  token: string;
+};
+
+type Participant = {
+  id: number;
+  userId: number;
+  username: string;
+  picture: string;
+  status: string;
 };
