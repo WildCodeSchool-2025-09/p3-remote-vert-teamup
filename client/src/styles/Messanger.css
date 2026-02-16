@@ -1,11 +1,12 @@
 .messanger-layout {
-  /* display: flex; */
+  display: flex;
   height: 100vh;
   margin-left: 100px;
 }
 @media (max-width: 780px) {
   .messanger-layout {
     margin-left: 0;
+    display: block;
   }
 }
 
@@ -95,12 +96,12 @@
   position: fixed;
   top: 0;
   z-index: 1000;
-  background: white;
-  width: 100%;
-  padding: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  background: white;
+  width: 100%;
+  padding: 12px 2.5rem;
   border-bottom: 1px solid #ddd;
 }
 

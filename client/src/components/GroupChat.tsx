@@ -208,11 +208,8 @@ function GroupChat({
   };
 
   return (
-    <div
-      className="chat-room"
-      style={isMobile ? { marginBottom: "80px" } : undefined}
-    >
-      {isMobile ? (
+    <>
+      {isMobile && (
         <div className="mob-chat-header">
           <button
             type="button"
@@ -221,74 +218,85 @@ function GroupChat({
           >
             <img src="/icons/move-left.svg" alt="Move-left-arrow" />
           </button>
-          <p>Chat pour {activity.sport_name}</p>
+          <p>
+            {activity.sport_name} à{" "}
+            <span>{formatMessageTime(activity.playing_at)}</span>
+          </p>
         </div>
-      ) : (
-        <p className="chat-header">
-          {activity.sport_name} a{" "}
-          <span>{formatMessageTime(activity.playing_at)}</span>
-        </p>
       )}
-      <div className="messages-display">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`single-message ${m.user_id === userId ? "users-message" : "others-messages"}`}
-          >
+
+      <div
+        className="chat-room"
+        style={isMobile ? { marginBottom: "80px" } : undefined}
+      >
+        {!isMobile && (
+          <p className="chat-header">
+            {activity.sport_name} à{" "}
+            <span>{formatMessageTime(activity.playing_at)}</span>
+          </p>
+        )}
+
+        <div className="messages-display">
+          {messages.map((m) => (
             <div
-              className={`${m.user_id === userId ? "my-user-date" : "user-date"}`}
+              key={m.id}
+              className={`single-message ${m.user_id === userId ? "users-message" : "others-messages"}`}
             >
-              <h3
-                className={`username ${m.user_id === userId && "my-username"}`}
+              <div
+                className={`${m.user_id === userId ? "my-user-date" : "user-date"}`}
               >
-                {m.username}
-              </h3>
-              <small className="message-date">
-                {formatMessageTime(m.created_at)}
-              </small>
-            </div>
-            <p className="msg-content">{m.content}</p>
-            <div className="like-delete-wrap">
-              <button
-                type="button"
-                className="like-btn"
-                onClick={() => addLike(m)}
-              >
-                <img src="/icons/thumbs-up.svg" alt="Like" />
-                <span>{m.like_count !== 0 && m.like_count}</span>
-              </button>
-              {m.user_id === userId && (
+                <h3
+                  className={`username ${m.user_id === userId && "my-username"}`}
+                >
+                  {m.username}
+                </h3>
+                <small className="message-date">
+                  {formatMessageTime(m.created_at)}
+                </small>
+              </div>
+              <p className="msg-content">{m.content}</p>
+              <div className="like-delete-wrap">
                 <button
                   type="button"
                   className="like-btn"
-                  onClick={() => deleteMessage(m)}
+                  onClick={() => addLike(m)}
                 >
-                  <img src="/icons/trash.svg" alt="delete img" />
+                  <img src="/icons/thumbs-up.svg" alt="Like" />
+                  <span>{m.like_count !== 0 && m.like_count}</span>
                 </button>
-              )}
+                {m.user_id === userId && (
+                  <button
+                    type="button"
+                    className="like-btn"
+                    onClick={() => deleteMessage(m)}
+                  >
+                    <img src="/icons/trash.svg" alt="delete img" />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="chat-input-container">
-        <textarea
-          className="chat-input"
-          value={typeMessage}
-          placeholder="Message"
-          onChange={(e) => {
-            e.preventDefault();
-            setTypeMessage(e.target.value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
+          ))}
+        </div>
+        <div className="chat-input-container">
+          <textarea
+            className="chat-input"
+            value={typeMessage}
+            placeholder="Message"
+            onChange={(e) => {
               e.preventDefault();
-              sendMessage();
-            }
-          }}
-        />
-        <div ref={messagesEndRef} />
+              setTypeMessage(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+          />
+          <div ref={messagesEndRef} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
