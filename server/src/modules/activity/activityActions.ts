@@ -1,7 +1,8 @@
 import type { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import participationRepository from "../participation/participationRepository";
-import activityRepository from "./activityRepository";
+import activityRepository from "../activity/activityRepository";
+import mailService from "../../services/mailService";
 
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -10,9 +11,9 @@ const add: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const { activity, guestIds } = req.body;
+    const { activity, guests } = req.body;
 
-    if (!activity.visibility && guestIds.length === 0) {
+    if (!activity.visibility && guests.length === 0) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         error: "Une activité privée doit avoir au moins un participant",
       });
@@ -20,15 +21,22 @@ const add: RequestHandler = async (req, res, next) => {
     }
 
     const activityId = await activityRepository.create(activity);
+    const newsParticipants = guests.map((guest: Partial<User>) => ({
+      userId: guest.id,
+      activityId: activityId,
+      status: "inviting",
+    }));
 
     if (!activity.visibility) {
-      guestIds.map(async (userId: number) => {
-        await participationRepository.create({
-          userId,
+      for (const newParticipant of newsParticipants) {
+        await participationRepository.create(newParticipant);
+        const mailData = await activityRepository.readWithOrganizer(
           activityId,
-          status: "inviting",
-        });
-      });
+          newParticipant.userId,
+        );
+
+        await mailService.sendInvitationEmail(mailData);
+      }
     }
 
     res.status(StatusCodes.CREATED).json();
@@ -42,12 +50,13 @@ const browse: RequestHandler = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page as string, 10) || 1;
     const limit = Number.parseInt(req.query.limit as string, 10) || 10;
+    const userId = Number(req.query.userId);
 
     const filters: Filters =
       req.query.filters && JSON.parse(req.query.filters as string);
 
     const { activities, totalActivities, totalPages } =
-      await activityRepository.readAll(page, limit, filters);
+      await activityRepository.readAll(page, limit, filters, userId);
 
     res.json({
       activities: activities,
@@ -79,7 +88,7 @@ const browseMine: RequestHandler = async (req, res, next) => {
       status,
     );
 
-    res.status(200).json(activities);
+    res.status(StatusCodes.OK).json(activities);
   } catch (err) {
     next(err);
   }
@@ -87,7 +96,7 @@ const browseMine: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const activityId = Number.parseInt(req.params.id, 10);
+    const activityId = Number(req.params.id);
 
     const activity = await activityRepository.readOne(activityId);
 
@@ -102,4 +111,23 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { add, browse, browseMine, read };
+const verifyNbAvaiableSpots: RequestHandler = async (req, res, next) => {
+  try {
+    const activityId = req.body.activityId;
+
+    const activity = await activityRepository.readOne(activityId);
+
+    if (activity?.nb_participant === activity?.nb_spots) {
+      res.status(StatusCodes.CONFLICT).json({
+        error: "ACTIVITY_FULL",
+      });
+      return;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { add, browse, browseMine, read, verifyNbAvaiableSpots };

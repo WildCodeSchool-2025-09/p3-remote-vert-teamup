@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "../styles/SignIn.css";
 import { useAuth } from "../context/AuthContext";
 
@@ -29,29 +29,34 @@ function SignIn() {
 
       setAuth(user);
 
-      navigate("/");
+      navigate(-1);
     } else {
       console.error(response);
     }
   }
 
   return (
-    <div className="signin-container">
-      <h1>Connexion</h1>
-      <form onSubmit={(e) => login(e)} className="signin-form">
-        <div>
-          <label htmlFor="email">Email</label>{" "}
-          <input ref={emailRef} type="email" id="email" />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>{" "}
-          <input type="password" id="password" ref={passwordRef} />
-        </div>
-        <button className="send-btn" type="submit">
-          Connecter
-        </button>
-      </form>
-    </div>
+    <>
+      <div className="signin-container">
+        <h1>Connexion</h1>
+        <form onSubmit={(e) => login(e)} className="signin-form">
+          <div>
+            <label htmlFor="email">Email</label>{" "}
+            <input ref={emailRef} type="email" id="email" />
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>{" "}
+            <input type="password" id="password" ref={passwordRef} />
+          </div>
+          <button className="send-btn" type="submit">
+            Connecter
+          </button>
+        </form>
+        <p className="link-to">
+          Si vous n'êtes pas inscrit : <Link to="/sign-up">Cliquez ici !</Link>
+        </p>
+      </div>
+    </>
   );
 }
 

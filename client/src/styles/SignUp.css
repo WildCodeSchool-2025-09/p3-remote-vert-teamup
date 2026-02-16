@@ -21,4 +21,27 @@
   .message-error {
     color: var(--refused-color);
   }
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    gap: 3vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  #sign-up {
+    margin-bottom: 0rem;
+    margin-left: 6rem;
+
+    h1 {
+      font-size: var(--heading-desktop-size);
+    }
+
+    div {
+      display: flex;
+      flex-direction: row;
+    }
+  }
 }

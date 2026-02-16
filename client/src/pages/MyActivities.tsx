@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
 import ActivityCard from "../components/ActivityCard.tsx";
 import { useAuth } from "../context/AuthContext.tsx";
@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthContext.tsx";
 function MyActivities() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<string>("incoming");
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
   const [showParticpants, setShowParticipants] = useState<number | null>();
 
@@ -18,7 +18,7 @@ function MyActivities() {
   useEffect(() => {
     if (location.state) {
       if (location.state !== undefined) {
-        setSelectedTab(location.state);
+        setSelectedTab(location.state.selectedTab);
       }
 
       if (location.state.toast) {
@@ -29,23 +29,12 @@ function MyActivities() {
     }
   }, [location.state, location.pathname, navigate]);
 
-  let status = "";
-
-  if (selectedTab === 0) {
-    status = "incoming";
-  } else if (selectedTab === 1) {
-    status = "published";
-  } else if (selectedTab === 2) {
-    status = "pending";
-  }
-
-  useEffect(() => {
+  const fetchMyActivities = () => {
     if (!auth?.token) {
       return;
     }
-
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/me/activities?status=${status}`,
+      `${import.meta.env.VITE_API_URL}/api/me/activities?status=${selectedTab}`,
       {
         method: "GET",
         headers: {
@@ -56,29 +45,27 @@ function MyActivities() {
     )
       .then((response) => response.json())
       .then((myActivities) => setMyActivities(myActivities));
-  }, [status, auth]);
+  };
 
   useEffect(() => {
-    selectedTab && setShowParticipants(null);
+    fetchMyActivities();
   }, [selectedTab]);
 
   return (
     <>
       <div id="my-activities">
         <h1>Mes Activités</h1>
-        <Toaster position="top-center" />
-
         <ActivityTabs
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
         />
-
         <section className="cards-myactivities">
           {myActivities.map((myActivity) => (
             <ActivityCard
               activity={myActivity}
               key={myActivity.id}
-              status={status}
+              selectedTab={selectedTab}
+              refreshMyActivities={fetchMyActivities}
               participantsListIsOpen={showParticpants === myActivity.id}
               onClickListParticipant={() =>
                 setShowParticipants(

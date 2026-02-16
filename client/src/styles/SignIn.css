@@ -35,15 +35,28 @@
 
 .signin-container div {
   width: 100%;
+
+  & input {
+    border: 1px solid var(--input-color);
+    border-radius: 8px;
+    height: 37px;
+    padding-left: 30px;
+    width: 100%;
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+  }
 }
-& input {
-  border: 1px solid var(--input-color);
-  border-radius: 8px;
-  height: 37px;
-  padding-left: 30px;
-  width: 100%;
+
+.link-to {
   font-family: var(--body-font);
   font-size: var(--body-size);
+  text-decoration: none;
+  color: var(--dark-color);
+  & a {
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    color: var(--dark-color);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -52,11 +65,27 @@
     margin-top: 3rem;
   }
 
+  .signin-container div input {
+    font-size: var(--body-desktop-size);
+  }
+
   .send-btn {
     font-size: var(--button-desktop-size);
     height: 2rem;
     width: 7.5rem;
     border-radius: 12px;
     cursor: pointer;
+  }
+
+  .link-to {
+    font-size: var(--body-desktop-size);
+    & > a {
+      font-size: var(--body-desktop-size);
+      transition: all 0.3s ease-in-out;
+      &:hover {
+        text-decoration: underline;
+        font-size: larger;
+      }
+    }
   }
 }

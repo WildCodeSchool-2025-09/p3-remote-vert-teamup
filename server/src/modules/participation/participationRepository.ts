@@ -1,12 +1,6 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
-type newUserType = {
-  userId?: number;
-  activityId?: number;
-  status?: string;
-};
-
 class participationRepository {
   async readAllParticipants(activityId: number) {
     const [rows] = await databaseClient.query<Rows>(
@@ -18,14 +12,6 @@ class participationRepository {
     );
 
     return rows as Participant[];
-  }
-
-  async patch(id: number, status: string) {
-    const [result] = await databaseClient.query<Result>(
-      "UPDATE participation SET status = ? WHERE participation.id = ?",
-      [status, id],
-    );
-    return result.affectedRows;
   }
 
   async create(newParticipant: newUserType) {
@@ -67,15 +53,6 @@ class participationRepository {
       `UPDATE participation SET status = ?, updated_at = NOW()
        WHERE user_id = ? AND activity_id = ?`,
       [status, userId, activityId],
-    );
-
-    return result;
-  }
-
-  async delete(userId: number, activityId: number) {
-    const [result] = await databaseClient.query<Result>(
-      "DELETE FROM participation WHERE user_id = ? AND activity_id = ?",
-      [userId, activityId],
     );
 
     return result;

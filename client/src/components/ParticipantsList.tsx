@@ -1,34 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import { StatusCodes } from "http-status-codes";
 import "../styles/ParticipantsList.css";
-import { useOutletContext } from "react-router";
+
+import { useAuth } from "../context/AuthContext";
 
 type ParticipantsListProps = {
   activityId: number;
   visibility: boolean;
+  refreshMyActivities?: (() => void) | undefined;
+  nbAvailableSpots: number;
 };
 
-type Participant = {
-  id: number;
-  userId: number;
-  username: string;
-  picture: string;
-  status: string;
-};
-
-function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
+function ParticipantsList({
+  activityId,
+  visibility,
+  refreshMyActivities,
+  nbAvailableSpots,
+}: ParticipantsListProps) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [inputGuest, setInputGuest] = useState("");
   const [error, setError] = useState("");
 
-  const { auth } = useOutletContext() as Auth;
+  const { auth } = useAuth();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/participants?id=${activityId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${auth.token}`,
+        Authorization: `Bearer ${auth?.token}`,
       },
     })
       .then((response) => response.json())
@@ -62,19 +62,27 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       };
 
       const invitationResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participation`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify(newGuest),
         },
       );
 
       if (invitationResponse.status === StatusCodes.CONFLICT) {
-        throw new Error("Cette personne a déjà été invitée");
+        const errorData = await invitationResponse.json();
+        const errorMessage: Record<string, string> = {
+          ACTIVITY_FULL: "L'activité est complète",
+          ALREADY_INVITED: "Cette personne a déjà été invitée",
+        };
+
+        throw new Error(
+          errorMessage[errorData.error] || "Une erreur est survenu",
+        );
       }
 
       if (!response.ok) {
@@ -98,16 +106,27 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
     setInputGuest("");
   }
 
-  async function acceptOrRefuseRequest(id: number, newStatus: string) {
+  async function acceptOrRefuseRequest(
+    id: number,
+    newStatus: string,
+    username: string,
+    userId: number,
+  ) {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/participant/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/participations`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({
+            status: newStatus,
+            userId, //participant
+            activityId,
+            participantUsername: username,
+            type: "request",
+          }),
         },
       );
 
@@ -118,6 +137,7 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       setParticipants((prev) =>
         prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)),
       );
+      refreshMyActivities?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     }
@@ -146,7 +166,13 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
       {participants.map((participant) => (
         <li key={participant.username}>
           <div>
-            <img src={participant.picture} alt="participant" />
+            {participant.picture ? (
+              <img src={participant.picture} alt="participant" />
+            ) : (
+              <p className="no-picture">
+                {participant.username[0].toUpperCase()}
+              </p>
+            )}
             <p>{participant.username}</p>
           </div>
           {participant.status === "refused" ? (
@@ -155,13 +181,18 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
             <img src="/icons/check.png" alt="validate" />
           ) : participant.status === "inviting" ? (
             <img src="/icons/hourglass.png" alt="pending" />
-          ) : (
+          ) : nbAvailableSpots > 0 ? (
             <div>
               <button
                 type="button"
                 className="btn-accepted"
                 onClick={() =>
-                  acceptOrRefuseRequest(participant.id, "accepted")
+                  acceptOrRefuseRequest(
+                    participant.id,
+                    "accepted",
+                    participant.username,
+                    participant.userId,
+                  )
                 }
               >
                 Accepter
@@ -169,11 +200,20 @@ function ParticipantsList({ activityId, visibility }: ParticipantsListProps) {
               <button
                 type="button"
                 className="btn-refused"
-                onClick={() => acceptOrRefuseRequest(participant.id, "refused")}
+                onClick={() =>
+                  acceptOrRefuseRequest(
+                    participant.id,
+                    "refused",
+                    participant.username,
+                    participant.userId,
+                  )
+                }
               >
                 Refuser
               </button>
             </div>
+          ) : (
+            <p>Complet</p>
           )}
         </li>
       ))}
