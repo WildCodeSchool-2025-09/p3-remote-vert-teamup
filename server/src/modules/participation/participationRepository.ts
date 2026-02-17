@@ -30,7 +30,8 @@ class participationRepository {
         JOIN activity AS a ON a.id = p.activity_id
         JOIN sport AS s ON s.id = a.sport_id
         JOIN user AS u ON a.user_id = u.id
-        WHERE (p.user_id = ? AND p.status = 'accepted') OR a.user_id = ?
+        WHERE p.user_id = ? AND p.status = 'accepted' 
+        OR a.user_id = ?
         ORDER BY playing_at ASC`,
       [userId, userId],
     );

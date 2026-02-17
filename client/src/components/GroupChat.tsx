@@ -5,7 +5,7 @@ import { formatMessageTime } from "../hooks/DataFormater";
 import { useAuth } from "../context/AuthContext";
 
 type groupChatType = {
-  activity: {
+  activity?: {
     id: number;
     sport_name: string;
     city: string;
