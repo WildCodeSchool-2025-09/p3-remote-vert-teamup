@@ -17,22 +17,27 @@ const browseByActivity: RequestHandler = async (req, res, next) => {
   }
 };
 
-const browseSome: RequestHandler = async (req, res, next) => {
+const browseUserActivity: RequestHandler = async (req, res, next) => {
   try {
     const userId = Number(req.query.userId);
 
     if (!userId) {
-      res.json({
-        message: "User is not enrolled in any activity",
-      });
+      res.status(400).json({ message: "UserId is required" });
       return;
     }
 
-    const activitiesUserEnrolled = await participationRepository.read({
-      userId,
-    });
+    const activitiesUserEnrolled =
+      await participationRepository.readUserActity(userId);
+    console.log(activitiesUserEnrolled);
 
-    res.status(201).json(activitiesUserEnrolled.map((a) => a.activity_id));
+    console.log(activitiesUserEnrolled.length === 0);
+
+    if (activitiesUserEnrolled.length === 0) {
+      res.sendStatus(204);
+      return;
+    }
+
+    res.status(201).json(activitiesUserEnrolled);
   } catch (err) {
     next(err);
   }
@@ -116,7 +121,7 @@ const editStatus: RequestHandler = async (req, res, next) => {
 
 export default {
   add,
+  browseUserActivity,
   editStatus,
-  browseSome,
   browseByActivity,
 };

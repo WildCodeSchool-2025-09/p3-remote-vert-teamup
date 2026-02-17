@@ -23,26 +23,17 @@ class participationRepository {
     return Result;
   }
 
-  async read(newParticipant: newUserType) {
-    const conditions = [];
-    const params = [];
-
-    if (newParticipant.userId) {
-      conditions.push("p.user_id = ?");
-      params.push(newParticipant.userId);
-    }
-
-    if (newParticipant.activityId) {
-      conditions.push("p.activity_id = ?");
-      params.push(newParticipant.activityId);
-    }
-
-    const query = conditions.length > 0 && ` WHERE ${conditions.join(" AND ")}`;
-
+  async readUserActity(userId: number) {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT * FROM participation AS p
-      ${query}`,
-      params,
+      `SELECT DISTINCT a.id, u.username, a.playing_at, a.city, s.name AS sport_name, p.status 
+        FROM participation AS p
+        JOIN activity AS a ON a.id = p.activity_id
+        JOIN sport AS s ON s.id = a.sport_id
+        JOIN user AS u ON a.user_id = u.id
+        WHERE p.user_id = ? AND p.status = 'accepted' 
+        OR a.user_id = ?
+        ORDER BY playing_at ASC`,
+      [userId, userId],
     );
 
     return rows;

@@ -3,6 +3,7 @@ import activityActions from "./modules/activity/activityActions";
 import sportActions from "./modules/sport/sportActions";
 import userActions from "./modules/user/userActions";
 import participationActions from "./modules/participation/participationActions";
+import messageActions from "./modules/Message/messageActions";
 import authActions from "./modules/auth/authActions";
 
 const router = express.Router();
@@ -24,7 +25,7 @@ router.get("/api/profile", userActions.read);
 router.post("/api/activities", activityActions.add);
 router.get("/api/me/activities", activityActions.browseMine);
 
-router.get("/api/participations", participationActions.browseSome);
+router.get("/api/participations", participationActions.browseUserActivity);
 router.post(
   "/api/participations",
   activityActions.verifyNbAvaiableSpots,
@@ -35,5 +36,11 @@ router.put(
   activityActions.verifyNbAvaiableSpots,
   participationActions.editStatus,
 );
+
+router.post("/api/message", messageActions.add);
+router.post("/api/message/likes", messageActions.addLike);
+router.get("/api/message", messageActions.brows);
+router.get("/api/message/poll", messageActions.poll);
+router.put("/api/message/delete", messageActions.deleteMessage);
 
 export default router;
