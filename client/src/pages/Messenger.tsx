@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import "../styles/Messanger.css";
+import "../styles/Messenger.css";
 import { useNavigate } from "react-router";
-import GroupChat from "./GroupChat";
 import { formatMessageTime } from "../hooks/DataFormater";
 import { useAuth } from "../context/AuthContext";
+import GroupChat from "../components/GroupChat";
 
 type UsersActivities = {
   id: number;
@@ -13,7 +13,7 @@ type UsersActivities = {
   username: string;
 };
 
-function Messanger() {
+function Messenger() {
   const navigate = useNavigate();
   const [userActivities, setUserActivities] = useState<
     UsersActivities[] | undefined
@@ -59,6 +59,7 @@ function Messanger() {
               à une activité.
             </h3>
           )}
+          <div className="no-chat-selected">Sélectionnez une conversation</div>
           {userActivities?.map((a) => (
             <button
               type="button"
@@ -88,15 +89,11 @@ function Messanger() {
         </div>
         {!isMobile && (
           <div className="chat-panel">
-            {selectedActivity ? (
+            {selectedActivity && (
               <GroupChat
                 key={selectedActivity.id}
                 activity={selectedActivity}
               />
-            ) : (
-              <div className="no-chat-selected">
-                Sélectionnez une conversation
-              </div>
             )}
           </div>
         )}
@@ -105,4 +102,4 @@ function Messanger() {
   );
 }
 
-export default Messanger;
+export default Messenger;

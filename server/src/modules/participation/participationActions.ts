@@ -28,9 +28,6 @@ const browseUserActivity: RequestHandler = async (req, res, next) => {
 
     const activitiesUserEnrolled =
       await participationRepository.readUserActity(userId);
-    console.log(activitiesUserEnrolled);
-
-    console.log(activitiesUserEnrolled.length === 0);
 
     if (activitiesUserEnrolled.length === 0) {
       res.sendStatus(204);

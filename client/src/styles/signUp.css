@@ -4,23 +4,28 @@
   align-items: center;
   color: var(--dark-color);
   margin-bottom: 10rem;
+
   h1 {
     margin-top: 5vh;
     margin-bottom: 3vh;
     font-size: var(--heading-size);
     font-family: var(--heading-font);
   }
-  p {
-    margin-top: 3vh;
-    font-size: var(--title-size);
-    font-family: var(--title-font);
+
+  .champs-requis {
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    font-style: italic;
+    margin-top: -0.8rem;
   }
-  .message-success {
-    color: var(--input-color);
-  }
+
   .message-error {
     color: var(--refused-color);
+    font-family: var(--body-highlight-font);
+    font-size: var(--body-size);
+    text-align: center;
   }
+
   div {
     display: flex;
     flex-direction: column;
@@ -37,6 +42,14 @@
 
     h1 {
       font-size: var(--heading-desktop-size);
+    }
+
+    .champs-requis {
+      font-size: var(--body-desktop-size);
+    }
+
+    .message-error {
+      font-size: var(--body-desktop-size);
     }
 
     div {

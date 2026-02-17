@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import "../styles/ActivityCard.css";
 import "../styles/ActivityDetails.css";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 function ActivityDetails() {
   const { id } = useParams();
@@ -114,11 +115,14 @@ function ActivityDetails() {
       navigate("/my-activities", {
         state: {
           selectedTab: activity.auto_validation ? "incoming" : "pending",
-          toast: activity.auto_validation
-            ? "Vous avez bien réservé votre place"
-            : "Votre demande réservation a bien été envoyée",
         },
       });
+
+      setTimeout(() => {
+        activity.auto_validation
+          ? toast.success("Vous avez bien réservé votre place")
+          : toast.success("Votre demande réservation a bien été envoyée");
+      }, 50);
     } catch (err) {
       console.error(err);
     }

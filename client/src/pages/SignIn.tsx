@@ -40,8 +40,6 @@ function SignIn() {
     if (response.status === 200) {
       const user = await response.json();
 
-      console.log(location.state);
-
       setAuth(user);
 
       if (location.state?.from === "/sign-up") {
@@ -50,6 +48,10 @@ function SignIn() {
         navigate(-1);
       }
     }
+
+    setTimeout(() => {
+      toast.success("Connexion réussie");
+    }, 50);
 
     if (response.status === 422) {
       setError("Email ou mot de passe incorrect");

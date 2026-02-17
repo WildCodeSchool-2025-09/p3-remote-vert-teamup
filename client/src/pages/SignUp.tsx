@@ -4,6 +4,7 @@ import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
 import "../styles/SignUp.css";
 import { Link, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 type NewUser = Omit<User, "id"> & {
   confirmPassword: string;
@@ -66,10 +67,12 @@ function SignUp() {
       }
       navigate("/sign-in", {
         state: {
-          toast: "Compte créé avec succès !",
           from: "/sign-up",
         },
       });
+      setTimeout(() => {
+        toast.success("Compte créé avec succès");
+      }, 50);
     } catch (error) {
       setError((prev) => ({
         ...prev,

@@ -12,11 +12,18 @@
     font-family: var(--heading-font);
   }
 
-  .message-error {
-    text-align: center;
+  .champs-requis {
+    font-family: var(--body-font);
     font-size: var(--body-size);
-    font-family: var(--body-highlight-font);
+    font-style: italic;
+    margin-top: -0.8rem;
+  }
+
+  .message-error {
     color: var(--refused-color);
+    font-family: var(--body-highlight-font);
+    font-size: var(--body-size);
+    text-align: center;
   }
 
   div {
@@ -25,13 +32,6 @@
     justify-content: center;
     width: 100%;
     gap: 3vh;
-  }
-
-  .champs-requis {
-    font-size: var(--body-size);
-    font-family: var(--body-font);
-    font-style: italic;
-    margin-top: -2vh;
   }
 }
 
@@ -44,6 +44,10 @@
       font-size: var(--heading-desktop-size);
     }
 
+    .champs-requis {
+      font-size: var(--body-desktop-size);
+    }
+
     .message-error {
       font-size: var(--body-desktop-size);
     }
@@ -51,10 +55,6 @@
     div {
       display: flex;
       flex-direction: row;
-    }
-
-    .champs-requis {
-      font-size: var(--body-desktop-size);
     }
   }
 }
