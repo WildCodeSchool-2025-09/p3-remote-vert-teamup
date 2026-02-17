@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import "../styles/Header.css";
 import { useAuth } from "../context/AuthContext";
 
@@ -14,9 +14,9 @@ function Header() {
       <NavLink to="/">
         <img src="/logo.png" alt="logo team up" />
       </NavLink>
-      <div className="btn-chat">
+      <Link to="/messanger" className="btn-chat">
         <img src="/icons/message.png" alt="icon message" />
-      </div>
+      </Link>
     </header>
   );
 }

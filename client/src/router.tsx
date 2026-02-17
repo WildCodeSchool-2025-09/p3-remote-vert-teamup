@@ -5,9 +5,11 @@ import ActivityDetails from "./pages/ActivityDetails";
 import ActivityForm from "./pages/ActivityForm";
 import MyActivities from "./pages/MyActivities.tsx";
 import SignUp from "./pages/SignUp.tsx";
-import Home from "./pages/Home.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import Profile from "./pages/Profile.tsx";
+import Home from "./pages/Home.tsx";
+import Messanger from "./components/Messanger.tsx";
+import GroupChat from "./components/GroupChat.tsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
       {
         path: "/my-activities",
         element: <MyActivities />,
+      },
+      {
+        path: "/messanger",
+        element: <Messanger />,
+      },
+      {
+        path: "/chat/:activityId",
+        element: <GroupChat />,
       },
       {
         path: "/sign-up",
