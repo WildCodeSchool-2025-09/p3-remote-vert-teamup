@@ -104,30 +104,7 @@ function Activities() {
   }, [filters, navigate]);
 
   useEffect(() => {
-    let userId = 0;
-    if (auth) {
-      userId = auth.user.id;
-    }
-
     const fetchAndFilterActivities = async () => {
-      let enrolledActivityIds: number[] = [];
-
-      if (auth) {
-        const enrollmentsResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth.user.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${auth.token}`,
-            },
-          },
-        );
-        enrolledActivityIds = await enrollmentsResponse.json();
-      }
-
-      // voir pour enrollementActivities ça ne prend que les activitié ou je suis enrollé mais pas créer
-
       const queryString = new URLSearchParams({
         filters: JSON.stringify(filters),
       }).toString();
@@ -138,13 +115,7 @@ function Activities() {
 
       const activitiesData = await activitiesResponse.json();
 
-      const filteredActivities = userId
-        ? activitiesData.activities.filter(
-            (a: Activity) => !enrolledActivityIds.includes(a.id),
-          )
-        : activitiesData.activities;
-
-      setActivities(filteredActivities);
+      setActivities(activitiesData.activities);
       setTotalPages(activitiesData.pagination.totalPages);
       setTotalActivities(activitiesData.pagination.totalActivities);
     };

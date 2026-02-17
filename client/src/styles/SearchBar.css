@@ -44,8 +44,8 @@ section.searchbar article input.error-input {
 section.searchbar article input.error-input:focus {
   box-shadow: 0 0 0 2px rgba(252, 66, 66, 0.2);
   outline: none;
-  border: 3px solid var(--refused-color);
-  border-radius: 8px 8px 0 0;
+  border: 2px solid var(--refused-color);
+  border-radius: 8px;
 }
 
 section.searchbar article img {
@@ -100,8 +100,9 @@ section.searchbar article ul.dropdown-false {
 
 section.searchbar article ul.dropdown-false {
   color: var(--refused-color);
-  background-color: rgba(230, 57, 70, 0.1);
+  background-color: var(--light-color);
   border: 1px solid var(--refused-color);
+  padding-left: 1rem;
 }
 
 section.searchbar article ul.dropdown {

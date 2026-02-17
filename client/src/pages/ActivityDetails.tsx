@@ -125,7 +125,7 @@ function ActivityDetails() {
   };
 
   return (
-    <main className="activity-details">
+    <section className="activity-details">
       <button type="button" className="back-button" onClick={goBack}>
         <img src="/icons/arrow-left.png" alt="" />
         Retour
@@ -137,7 +137,7 @@ function ActivityDetails() {
         <div className="image-overlay" />
         <section className="image-content">
           <h2>{activity.name}</h2>
-          <p className={`price-tag ${price === 0 ? "free" : "paid"}`}>
+          <p className={`price-tag-card ${price === 0 ? "free" : "paid"}`}>
             {price === 0 ? "Gratuit" : `${price}€`}
           </p>
         </section>
@@ -330,7 +330,7 @@ function ActivityDetails() {
       >
         {nbAvailableSpots <= 0 ? "Complet" : "Réserver"}
       </button>
-    </main>
+    </section>
   );
 }
 

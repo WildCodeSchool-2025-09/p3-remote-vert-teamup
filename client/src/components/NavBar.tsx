@@ -5,7 +5,8 @@ import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
-  const match = useMatch("/activities/page/:page");
+  const match = useMatch("/my-activities");
+  const match2 = useMatch("/publication");
   const { auth } = useAuth();
 
   return (
@@ -32,7 +33,9 @@ function NavBar() {
             Accueil
           </NavLink>
           <NavLink
-            className={match ? "navbar-link link-active" : "navbar-link"}
+            className={({ isActive }) =>
+              isActive ? "navbar-link link-active" : "navbar-link"
+            }
             to="/activities/page/1"
           >
             <svg viewBox="0 0 109 106">
@@ -45,8 +48,8 @@ function NavBar() {
         </div>
         <div className="middle-navbar">
           <NavLink
-            className={({ isActive }) =>
-              isActive
+            className={
+              match2
                 ? "navbar-link link-publication link-publication-active"
                 : "navbar-link link-publication"
             }
@@ -73,9 +76,7 @@ function NavBar() {
             </NavLink>
           )}
           <NavLink
-            className={({ isActive }) =>
-              isActive ? "navbar-link link-active" : "navbar-link"
-            }
+            className={match ? "navbar-link link-active" : "navbar-link"}
             to={auth ? "/my-activities" : "/sign-in"}
           >
             <svg viewBox="0 0 27 27">

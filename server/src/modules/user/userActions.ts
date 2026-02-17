@@ -20,7 +20,7 @@ const readByEmail: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    res.json(user).status(StatusCodes.OK);
+    res.status(StatusCodes.OK).json(user);
   } catch (err) {
     next(err);
   }
@@ -42,7 +42,9 @@ const add: RequestHandler = async (req, res, next) => {
     res.status(StatusCodes.OK).json({ insertId });
   } catch (err: unknown) {
     if (hasCode(err) && err.code === "ER_DUP_ENTRY") {
-      res.sendStatus(StatusCodes.CONFLICT);
+      res
+        .status(StatusCodes.CONFLICT)
+        .json({ message: "Nom d'utilisateur ou email déja existant" });
     } else {
       next(err);
     }
@@ -51,23 +53,67 @@ const add: RequestHandler = async (req, res, next) => {
 
 const validate: RequestHandler = async (req, res, next) => {
   const createUserSchema = Joi.object({
-    username: Joi.string().trim().min(3).max(30).required(),
-    password: Joi.string().min(8).max(72).required(),
-    confirmPassword: Joi.string().valid(Joi.ref("password")).required(),
-    email: Joi.string().trim().email().required(),
-    firstname: Joi.string().trim().min(1).max(50).required(),
-    lastname: Joi.string().trim().min(1).max(50).required(),
-    born_at: Joi.string().required(),
-    address: Joi.string().trim().required(),
-    city: Joi.string().trim().required(),
-    zip_code: Joi.string().trim().required(),
-    phone: Joi.string().trim().replace(/\s+/g, "").required(),
+    username: Joi.string().trim().min(1).max(30).required().messages({
+      "string.empty": "Le nom d'utilisateur n'est pas renseigné",
+      "string.max": "Le nom d'utilisateur est trop long (30 caractères max)",
+    }),
+    email: Joi.string().trim().email().required().messages({
+      "string.email": "Email invalide",
+      "string.empty": "L'email n'est pas renseigné",
+    }),
+    password: Joi.string()
+      .min(8)
+      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/)
+      .max(72)
+      .required()
+      .messages({
+        "string.pattern.base": "Mot de passe invalide",
+        "string.empty": "Le mot de passe n'est pas renseigné",
+        "string.min": "Le mot de passe est trop court",
+      }),
+    confirmPassword: Joi.string()
+      .valid(Joi.ref("password"))
+      .required()
+      .messages({ "any.only": "Les deux mots de passe sont différents" }),
+    firstname: Joi.string().trim().min(1).max(50).required().messages({
+      "string.empty": "Le prénom n'est pas renseigné",
+    }),
+    lastname: Joi.string().trim().min(1).max(50).required().messages({
+      "string.empty": "Le nom n'est pas renseigné",
+    }),
+    born_at: Joi.string().required().messages({
+      "string.empty": "La date de naissance n'est pas renseignée",
+    }),
+    address: Joi.string().trim().required().messages({
+      "string.empty": "L'adresse' n'est pas renseignée",
+    }),
+    city: Joi.string().trim().required().messages({
+      "string.empty": "La ville n'est pas renseignée",
+    }),
+    zip_code: Joi.string()
+      .trim()
+      .required()
+      .pattern(/^\d{5}$/)
+      .messages({
+        "string.empty": "Le code postal n'est pas renseigné",
+        "string.pattern.base": "Le code postal doit être composé de 5 chiffres",
+      }),
+    phone: Joi.string()
+      .trim()
+      .replace(/\s+/g, "")
+      .required()
+      .pattern(/^\d{10}$/)
+      .messages({
+        "string.empty": "Le numéro de téléphone n'est pas renseigné",
+        "string.pattern.base":
+          "Le numéro de téléphone doit être composé de 10 chiffres",
+      }),
     picture: Joi.string().trim().allow("").optional(),
   }).options({ abortEarly: false, stripUnknown: true });
   try {
     const { error, value } = createUserSchema.validate(req.body);
     if (error) {
-      res.status(StatusCodes.BAD_REQUEST).json({ error: "VALIDATION_ERROR" });
+      res.status(StatusCodes.BAD_REQUEST).json(error.details[0]);
       return;
     }
     req.body = value;

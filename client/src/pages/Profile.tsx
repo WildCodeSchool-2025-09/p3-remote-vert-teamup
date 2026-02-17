@@ -56,21 +56,27 @@ function Profile() {
         <header className="profile-header">
           <figure className="profile-avatar">
             {userProfile.picture ? (
-              <img src={userProfile.picture} alt={`Photo de ${userProfile.username}`} />
+              <img src={userProfile.picture} alt={userProfile.username} />
             ) : (
               <span>{userProfile.username.charAt(0).toUpperCase()}</span>
             )}
           </figure>
           <div className="profile-identity">
             <h2 className="profile-username">{userProfile.username}</h2>
-            <p className="profile-age">{calculateAge(userProfile.born_at)} ans</p>
+            <p className="profile-age">
+              {calculateAge(userProfile.born_at)} ans
+            </p>
           </div>
         </header>
 
         <section className="profile-rating">
           <img src="/icons/star.png" alt="Avis" className="profile-icon" />
           <span>5/5 - 9 avis</span>
-          <img src="/icons/voir-plus.png" alt="Voir les avis" className="profile-chevron" />
+          <img
+            src="/icons/voir-plus.png"
+            alt="Voir les avis"
+            className="profile-chevron"
+          />
         </section>
 
         <hr className="profile-separator" />
@@ -78,20 +84,35 @@ function Profile() {
         <ul className="profile-info-list">
           <li className="profile-info-row">
             <img src="/icons/mail.png" alt="Email" className="profile-icon" />
-            <a href={`mailto:${userProfile.email}`} className="profile-email-link">
+            <a
+              href={`mailto:${userProfile.email}`}
+              className="profile-email-link"
+            >
               {userProfile.email}
             </a>
           </li>
           <li className="profile-info-row">
-            <img src="/icons/phone.png" alt="Téléphone" className="profile-icon" />
+            <img
+              src="/icons/phone.png"
+              alt="Téléphone"
+              className="profile-icon"
+            />
             <span>{userProfile.phone}</span>
           </li>
           <li className="profile-info-row">
-            <img src="/icons/localisation.png" alt="Adresse" className="profile-icon" />
+            <img
+              src="/icons/localisation.png"
+              alt="Adresse"
+              className="profile-icon"
+            />
             <span>{fullAddress}</span>
           </li>
           <li className="profile-info-row">
-            <img src="/icons/anniversaire.png" alt="Date de naissance" className="profile-icon" />
+            <img
+              src="/icons/anniversaire.png"
+              alt="Date de naissance"
+              className="profile-icon"
+            />
             <span>{formatBirthDate(userProfile.born_at)}</span>
           </li>
         </ul>
@@ -100,11 +121,19 @@ function Profile() {
 
         <ul className="profile-info-list">
           <li className="profile-info-row">
-            <img src="/icons/sport-pref.png" alt="Sport favori" className="profile-icon" />
+            <img
+              src="/icons/sport-pref.png"
+              alt="Sport favori"
+              className="profile-icon"
+            />
             <span>Non renseigné</span>
           </li>
           <li className="profile-info-row">
-            <img src="/icons/mains.png" alt="Membre depuis" className="profile-icon" />
+            <img
+              src="/icons/mains.png"
+              alt="Membre depuis"
+              className="profile-icon"
+            />
             <span>Membre depuis 2026</span>
           </li>
         </ul>
@@ -113,19 +142,43 @@ function Profile() {
 
         <ul className="profile-action-list">
           <li className="profile-action-row">
-            <img src="/icons/cadena.png" alt="Mot de passe" className="profile-icon" />
+            <img
+              src="/icons/cadena.png"
+              alt="Mot de passe"
+              className="profile-icon"
+            />
             <span>Changer mot de passe</span>
-            <img src="/icons/voir-plus.png" alt="Aller" className="profile-chevron" />
+            <img
+              src="/icons/voir-plus.png"
+              alt="Aller"
+              className="profile-chevron"
+            />
           </li>
           <li className="profile-action-row">
-            <img src="/icons/desactive.png" alt="Désactiver" className="profile-icon" />
+            <img
+              src="/icons/desactive.png"
+              alt="Désactiver"
+              className="profile-icon"
+            />
             <span>Désactiver mon compte</span>
-            <img src="/icons/voir-plus.png" alt="Aller" className="profile-chevron" />
+            <img
+              src="/icons/voir-plus.png"
+              alt="Aller"
+              className="profile-chevron"
+            />
           </li>
           <li className="profile-action-row">
-            <img src="/icons/supprime.png" alt="Supprimer" className="profile-icon" />
+            <img
+              src="/icons/supprime.png"
+              alt="Supprimer"
+              className="profile-icon"
+            />
             <span>Supprimer mon compte</span>
-            <img src="/icons/voir-plus.png" alt="Aller" className="profile-chevron" />
+            <img
+              src="/icons/voir-plus.png"
+              alt="Aller"
+              className="profile-chevron"
+            />
           </li>
         </ul>
       </article>

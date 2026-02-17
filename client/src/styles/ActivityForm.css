@@ -1320,6 +1320,7 @@ fieldset {
     justify-content: center;
     gap: 1.5rem;
     padding-bottom: 4rem;
+    padding-top: 1rem;
   }
 
   .recently-activities {

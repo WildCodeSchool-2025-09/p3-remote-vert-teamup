@@ -54,6 +54,24 @@
   align-items: flex-end;
   padding: 0 8px 8px 8px;
   color: var(--light-color);
+  position: relative;
+
+  & > .icon-lock {
+    position: absolute;
+    top: 5px;
+    left: 88%;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 2rem;
+    background-color: var(--accent-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > img {
+      width: 1.2rem;
+    }
+  }
 
   & > h2 {
     text-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;

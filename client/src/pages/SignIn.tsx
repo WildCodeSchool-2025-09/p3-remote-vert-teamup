@@ -1,16 +1,29 @@
-import { useRef } from "react";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
 import "../styles/SignIn.css";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 function SignIn() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [error, setError] = useState("");
 
   const { setAuth } = useAuth() as {
     setAuth: (auth: Auth | null) => void;
   };
+
+  useEffect(() => {
+    if (location.state?.toast) {
+      toast.success(location.state.toast);
+      navigate(location.pathname, {
+        replace: true,
+        state: { from: location.state.from },
+      });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
@@ -27,11 +40,19 @@ function SignIn() {
     if (response.status === 200) {
       const user = await response.json();
 
+      console.log(location.state);
+
       setAuth(user);
 
-      navigate(-1);
-    } else {
-      console.error(response);
+      if (location.state?.from === "/sign-up") {
+        navigate("/");
+      } else {
+        navigate(-1);
+      }
+    }
+
+    if (response.status === 422) {
+      setError("Email ou mot de passe incorrect");
     }
   }
 
@@ -48,6 +69,7 @@ function SignIn() {
             <label htmlFor="password">Password</label>{" "}
             <input type="password" id="password" ref={passwordRef} />
           </div>
+          <p>{error}</p>
           <button className="send-btn" type="submit">
             Connecter
           </button>
