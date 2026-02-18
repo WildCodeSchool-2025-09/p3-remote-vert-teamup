@@ -1,26 +1,16 @@
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link } from "react-router";
 import ActivityCard from "../components/ActivityCard";
 import Carousel from "../components/Carousel";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+
 import { useAuth } from "../context/AuthContext";
 
 const LIMIT = 10;
 
 function Home() {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const location = useLocation();
-  const navigate = useNavigate();
   const { auth } = useAuth();
-
-  useEffect(() => {
-    if (location.state) {
-      toast.success(location.state.toast);
-
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location.state, location.pathname, navigate]);
 
   useEffect(() => {
     fetch(
@@ -40,21 +30,17 @@ function Home() {
             TeamUp te permet de créer ou rejoindre des activités sportives avec
             des personnes qui partagent la même motivation.
           </p>
-          <p>Trouve ton équipe. Passe à l’action.</p>
+          <p>Trouve ton équipe et passe à l’action !</p>
         </article>
         <div className="superwrapper">
           <div className="homepage-button-wrapper">
             <Link to="/activities/page/1">
-              <button type="button">
-                <img src="/icons/search.png" alt="search" />
-                Explore
-              </button>
+              <img src="/icons/search.png" alt="search" />
+              <p>Explore</p>
             </Link>
-            <Link to="/publication">
-              <button type="button">
-                <img src="/icons/add.png" alt="add" />
-                Crée
-              </button>
+            <Link to={auth?.user ? "/publication" : "/sign-in"}>
+              <img src="/icons/add.png" alt="add" />
+              <p>Créé</p>
             </Link>
           </div>
         </div>

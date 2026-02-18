@@ -6,6 +6,7 @@ import "../styles/ActivityForm.css";
 import { useMediaQuery } from "react-responsive";
 import ActivityCard from "../components/ActivityCard";
 import { StatusCodes } from "http-status-codes";
+import toast from "react-hot-toast";
 
 const LIMIT = 6;
 
@@ -140,10 +141,13 @@ function ActivityForm() {
 
       navigate("/my-activities", {
         state: {
-          toast: "Activité créée avec succès !",
           selectedTab: "published",
         },
       });
+
+      setTimeout(() => {
+        toast.success("Activité créée avec succès");
+      }, 50);
     } catch (err) {
       setError((prev) => ({
         ...prev,

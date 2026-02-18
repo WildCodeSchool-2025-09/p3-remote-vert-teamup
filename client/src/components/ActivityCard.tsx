@@ -84,6 +84,11 @@ function ActivityCard({
             }
           }}
         >
+          {!activity.visibility && (
+            <div className="icon-lock">
+              <img src="/icons/lock.png" alt="lock" />
+            </div>
+          )}
           <div className="overlay-img"> </div>
           <h2>{activity.name}</h2>
           <p className={`label-price ${price === 0 ? "free" : "paid"}`}>

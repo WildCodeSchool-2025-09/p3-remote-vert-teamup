@@ -78,13 +78,6 @@ declare global {
     name: string;
   };
 
-  type InvitationAcceptedEmail = {
-    organizerEmail: string;
-    organizerUsername: string;
-    activityName: string;
-    participantUsername: string;
-  };
-
   type Activity = {
     id: number;
     address: string;

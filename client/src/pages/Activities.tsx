@@ -104,11 +104,6 @@ function Activities() {
   }, [filters, navigate]);
 
   useEffect(() => {
-    let userId = 0;
-    if (auth?.user) {
-      userId = auth.user.id;
-    }
-
     const fetchAndFilterActivities = async () => {
       const queryString = new URLSearchParams({
         filters: JSON.stringify(filters),

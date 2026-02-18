@@ -3,8 +3,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { muiTheme } from "../theme/muiTheme";
 import { useEffect, useRef, useState } from "react";
 import "../styles/SignUp.css";
-import { StatusCodes } from "http-status-codes";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 type NewUser = Omit<User, "id"> & {
   confirmPassword: string;
@@ -25,20 +25,25 @@ function SignUp() {
     phone: "",
     picture: "",
   });
-  const [message, setMessage] = useState<string>("");
-  const messageRef = useRef<HTMLParagraphElement | null>(null);
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
   const navigate = useNavigate();
+  const [error, setError] = useState({
+    field: "",
+    message: "",
+  });
 
   useEffect(() => {
-    if (message && messageRef.current) {
-      messageRef.current.scrollIntoView({
+    if (error && errorRef.current) {
+      errorRef.current.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
     }
-  }, [message]);
+  }, [error]);
+
   const Submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError({ field: "", message: "" });
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/users`,
@@ -49,25 +54,30 @@ function SignUp() {
         },
       );
       if (!response.ok) {
-        switch (response.status) {
-          case StatusCodes.BAD_REQUEST:
-            setMessage("Données saisies invalides");
-            break;
-          case StatusCodes.CONFLICT:
-            setMessage("Nom d'utilisateur ou email déjà existant");
-            break;
-          default:
-            setMessage("Erreur serveur");
-        }
+        const errorData = await response.json();
+        errorData.message && errorData.path
+          ? setError({
+              field: errorData.path[0],
+              message: errorData.message,
+            })
+          : errorData.message
+            ? setError((prev) => ({ ...prev, message: errorData.message }))
+            : setError((prev) => ({ ...prev, message: "Erreur serveur" }));
         return;
       }
-      navigate("/", {
+      navigate("/sign-in", {
         state: {
-          toast: "Compte créé avec succès !",
+          from: "/sign-up",
         },
       });
+      setTimeout(() => {
+        toast.success("Compte créé avec succès");
+      }, 50);
     } catch (error) {
-      setMessage("Impossible de contacter le serveur");
+      setError((prev) => ({
+        ...prev,
+        message: "Impossible de contacter le serveur",
+      }));
     }
   };
   const ChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +86,9 @@ function SignUp() {
       ...prev,
       [name]: value,
     }));
+    if (error.field) {
+      setError({ field: "", message: "" });
+    }
   };
 
   return (
@@ -91,6 +104,7 @@ function SignUp() {
             display: "flex",
             flexDirection: "column",
             gap: "3vh",
+            width: "70%",
           }}
         >
           <div>
@@ -102,6 +116,7 @@ function SignUp() {
               name="username"
               value={user.username}
               onChange={ChangeInput}
+              error={error.field === "username"}
             />
             <TextField
               label="Email"
@@ -111,11 +126,12 @@ function SignUp() {
               name="email"
               value={user.email}
               onChange={ChangeInput}
+              error={error.field === "email"}
             />
           </div>
           <div>
             <TextField
-              label="Mot de passe (8 char. min)"
+              label="Mot de passe"
               type="password"
               autoComplete="password"
               required
@@ -124,9 +140,10 @@ function SignUp() {
               name="password"
               value={user.password}
               onChange={ChangeInput}
+              error={error.field === "password"}
             />
             <TextField
-              label="Confirme mot de passe"
+              label="Confirmer mot de passe"
               type="password"
               autoComplete="confirmPassword"
               required
@@ -135,8 +152,12 @@ function SignUp() {
               name="confirmPassword"
               value={user.confirmPassword}
               onChange={ChangeInput}
+              error={error.field === "confirmPassword"}
             />
           </div>
+          <p className="champs-requis">
+            Min. 8 caractères : 1 maj, 1 min, 1 chiffre, 1 symbole.
+          </p>
           <div>
             <TextField
               label="Prénom"
@@ -146,6 +167,7 @@ function SignUp() {
               name="firstname"
               value={user.firstname}
               onChange={ChangeInput}
+              error={error.field === "firstname"}
             />
             <TextField
               label="Nom"
@@ -155,6 +177,7 @@ function SignUp() {
               name="lastname"
               value={user.lastname}
               onChange={ChangeInput}
+              error={error.field === "lastname"}
             />
           </div>
           <TextField
@@ -165,6 +188,7 @@ function SignUp() {
             name="address"
             value={user.address}
             onChange={ChangeInput}
+            error={error.field === "address"}
           />
           <div>
             <TextField
@@ -175,6 +199,7 @@ function SignUp() {
               name="city"
               value={user.city}
               onChange={ChangeInput}
+              error={error.field === "city"}
             />
             <TextField
               label="Code postal"
@@ -184,6 +209,7 @@ function SignUp() {
               name="zip_code"
               value={user.zip_code}
               onChange={ChangeInput}
+              error={error.field === "zip_code"}
             />
           </div>
           <div>
@@ -195,6 +221,7 @@ function SignUp() {
               name="phone"
               value={user.phone}
               onChange={ChangeInput}
+              error={error.field === "phone"}
             />
             <TextField
               label="Date de naissance"
@@ -206,22 +233,20 @@ function SignUp() {
               value={user.born_at}
               onChange={ChangeInput}
               slotProps={{ inputLabel: { shrink: true } }}
+              error={error.field === "born_at"}
             />
           </div>
-          <TextField
-            label="URL photo"
-            variant="outlined"
-            size="small"
-            name="picture"
-            value={user.picture}
-            onChange={ChangeInput}
-          />
+          <p ref={errorRef} className={"message-error"}>
+            {error.message}
+          </p>
           <Button
             type="submit"
             variant="contained"
             size="large"
             sx={{
+              marginBottom: "2rem",
               fontSize: "button-mobile",
+              borderRadius: "10px",
               backgroundColor: "var(--button-color)",
               "&:hover": {
                 backgroundColor:
@@ -233,8 +258,11 @@ function SignUp() {
           </Button>
         </Box>
       </ThemeProvider>
-      <p ref={messageRef} className={"message-error"}>
-        {message}
+      <p className="link-to">
+        Si vous êtes déjà inscrit :{" "}
+        <Link to="/sign-in" state={{ from: "/sign-up" }}>
+          Cliquez ici !
+        </Link>
       </p>
     </div>
   );

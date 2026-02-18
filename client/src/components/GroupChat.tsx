@@ -40,16 +40,19 @@ function GroupChat({ activity: activityProp }: groupChatType) {
   const shouldPoll = useRef(true);
   const isPollingRef = useRef(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const prevMessageCountRef = useRef(0);
+  // const messagesEndRef = useRef<HTMLDivElement>(null);
+  // const prevMessageCountRef = useRef(0);
 
-  useEffect(() => {
-    if (prevMessageCountRef.current < messages.length) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-    }
+  // useEffect(() => {
+  //   if (prevMessageCountRef.current < messages.length) {
+  //     messagesEndRef.current?.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "center",
+  //     });
+  //   }
 
-    prevMessageCountRef.current = messages.length;
-  }, [messages]);
+  //   prevMessageCountRef.current = messages.length;
+  // }, [messages]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -222,31 +225,28 @@ function GroupChat({ activity: activityProp }: groupChatType) {
 
   return (
     <>
-      {isMobile && (
-        <div className="mob-chat-header">
-          <button
-            type="button"
-            className="like-btn"
-            onClick={() => navigate("/messanger")}
-          >
-            <img src="/icons/move-left.svg" alt="Move-left-arrow" />
-          </button>
-          <p>
-            {activity.sport_name} à{" "}
-            <span>{formatMessageTime(activity.playing_at)}</span>
-          </p>
-        </div>
-      )}
-
-      <div
-        className="chat-room"
-        style={isMobile ? { marginBottom: "80px" } : undefined}
-      >
+      <div className="chat-room">
         {!isMobile && (
           <p className="chat-header">
             {activity.sport_name} à{" "}
             <span>{formatMessageTime(activity.playing_at)}</span>
           </p>
+        )}
+
+        {isMobile && (
+          <div className="mob-chat-header">
+            <button
+              type="button"
+              className="like-btn"
+              onClick={() => navigate("/messenger")}
+            >
+              <img src="/icons/move-left.svg" alt="Move-left-arrow" />
+            </button>
+            <p>
+              {activity.sport_name} à{" "}
+              <span>{formatMessageTime(activity.playing_at)}</span>
+            </p>
+          </div>
         )}
 
         <div className="messages-display">
@@ -308,7 +308,7 @@ function GroupChat({ activity: activityProp }: groupChatType) {
               }
             }}
           />
-          <div ref={messagesEndRef} />
+          <div /*ref={messagesEndRef}*/ />
         </div>
       </div>
     </>

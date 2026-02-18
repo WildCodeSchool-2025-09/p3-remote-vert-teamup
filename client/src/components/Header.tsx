@@ -14,9 +14,11 @@ function Header() {
       <NavLink to="/">
         <img src="/logo.png" alt="logo team up" />
       </NavLink>
-      <Link to="/messanger" className="btn-chat">
-        <img src="/icons/message.png" alt="icon message" />
-      </Link>
+      {auth && (
+        <Link to="/messenger" className="btn-chat">
+          <img src="/icons/message.png" alt="icon message" />
+        </Link>
+      )}
     </header>
   );
 }

@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import ActivityTabs from "../components/ActivityTabs.tsx";
 import "../styles/myActivity.css";
-import { toast } from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import ActivityCard from "../components/ActivityCard.tsx";
 import { useAuth } from "../context/AuthContext.tsx";
 
 function MyActivities() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<string>("incoming");
   const [myActivities, setMyActivities] = useState<Activity[]>([]);
   const [showParticpants, setShowParticipants] = useState<number | null>();
@@ -20,14 +18,8 @@ function MyActivities() {
       if (location.state !== undefined) {
         setSelectedTab(location.state.selectedTab);
       }
-
-      if (location.state.toast) {
-        toast.success(location.state.toast);
-      }
-
-      navigate(location.pathname, { replace: true });
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state]);
 
   const fetchMyActivities = () => {
     if (!auth?.token) {

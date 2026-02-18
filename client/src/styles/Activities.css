@@ -177,6 +177,7 @@
 
     & > h1 {
       font-size: var(--title-desktop-size);
+      margin-top: 0.5rem;
     }
 
     & p {
