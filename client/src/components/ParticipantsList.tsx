@@ -119,10 +119,11 @@ function ParticipantsList({
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
           },
           body: JSON.stringify({
             status: newStatus,
-            userId, //participant
+            userId,
             activityId,
             participantUsername: username,
             type: "request",

@@ -26,7 +26,7 @@ const logIn: RequestHandler = async (req, res, next) => {
         myPayload,
         process.env.APP_SECRET as string,
         {
-          expiresIn: "1h",
+          expiresIn: "12h",
         },
       );
 

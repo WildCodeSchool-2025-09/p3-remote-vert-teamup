@@ -47,11 +47,10 @@ function SignIn() {
       } else {
         navigate(-1);
       }
+      setTimeout(() => {
+        toast.success("Connexion réussie");
+      }, 50);
     }
-
-    setTimeout(() => {
-      toast.success("Connexion réussie");
-    }, 50);
 
     if (response.status === 422) {
       setError("Email ou mot de passe incorrect");

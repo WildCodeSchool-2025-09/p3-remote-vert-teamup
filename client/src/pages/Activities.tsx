@@ -15,9 +15,9 @@ const tagLabelTranslations = [
   { key: "air_conditioning", label: "Climatisation" },
   { key: "disabled", label: "Handisport" },
   { key: "all", label: "Tout Niveu" },
-  { key: "amateur", label: "Débutant" },
-  { key: "begginer", label: "Intermédiaire" },
-  { key: "advance", label: "Confirmé" },
+  { key: "beginner", label: "Débutant" },
+  { key: "amateur", label: "Intermédiaire" },
+  { key: "advanced", label: "Confirmé" },
 ];
 
 const sortingCondition = [
@@ -152,7 +152,7 @@ function Activities() {
       {!isMobile && <p className="tagline">Que recherchez-vous ?</p>}
       <section className="page-activities">
         <div className="activities-container">
-          <SearchBar setFilters={setFilters} />
+          <SearchBar setFilters={setFilters} filters={filters} />
           <div className="header-activity">
             <h1>Activités disponibles</h1>
             <div className="result-wrapper">

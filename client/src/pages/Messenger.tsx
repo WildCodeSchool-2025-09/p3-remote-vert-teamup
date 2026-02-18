@@ -25,18 +25,25 @@ function Messenger() {
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth?.user.id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth?.token}`,
+    const load = async () => {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/participations?userId=${auth?.user.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth?.token}`,
+          },
         },
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => setUserActivities(data));
+      );
+      const data: UsersActivities[] = await res.json();
+      const unique = [
+        ...new Map(data.map((a: UsersActivities) => [a.id, a])).values(),
+      ];
+      setUserActivities(unique);
+    };
+
+    if (auth?.user?.id) load();
   }, [auth]);
 
   const openChatroom = (a: UsersActivities) => {

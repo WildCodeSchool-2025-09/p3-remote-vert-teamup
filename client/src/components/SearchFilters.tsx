@@ -34,9 +34,9 @@ const equipmentOptions: EquipmentOptionsType[] = [
 
 const levelOptions: LevelOptionsType[] = [
   { key: "all", label: "Tout Niveau" },
-  { key: "amateur", label: "Débutant" },
-  { key: "begginer", label: "Intermédiaire" },
-  { key: "advance", label: "Confirmé" },
+  { key: "beginner", label: "Débutant" },
+  { key: "amateur", label: "Intermédiaire" },
+  { key: "advanced", label: "Confirmé" },
 ];
 
 const initialState = {
