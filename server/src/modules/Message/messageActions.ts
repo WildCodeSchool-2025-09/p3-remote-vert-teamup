@@ -4,8 +4,9 @@ import LongPollManager from "../../services/longPolling";
 import messageRepository from "./messageRepository";
 import { StatusCodes } from "http-status-codes";
 
-const brows: RequestHandler = async (req, res, next) => {
-  const userId = Number(req.query.userId);
+const browse: RequestHandler = async (req, res, next) => {
+  const userId = req.auth?.sub ? Number(req.auth.sub) : null;
+
   const activityId = Number(req.query.activityId);
 
   try {
@@ -120,4 +121,4 @@ const deleteMessage: RequestHandler = async (req, res, next) => {
   res.status(StatusCodes.OK).json({ success: true });
 };
 
-export default { add, brows, poll, addLike, deleteMessage };
+export default { add, browse, poll, addLike, deleteMessage };

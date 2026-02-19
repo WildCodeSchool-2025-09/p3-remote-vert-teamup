@@ -12,7 +12,7 @@ class MessageRepository {
     return result;
   }
 
-  async read(userId: number, activityId: number) {
+  async read(userId: number | null, activityId: number) {
     const rows = databaseClient.query<Rows>(
       `SELECT m.*, u.username,
         COUNT(l.id) AS like_count

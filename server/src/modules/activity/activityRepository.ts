@@ -32,17 +32,37 @@ class ActivityRepository {
     return result.insertId;
   }
 
-  async readAll(page: number, limit: number, filters: Filters, userId: number) {
+  async readAll(
+    page: number,
+    limit: number,
+    filters: Filters,
+    userId: number | null,
+    sort: string,
+  ) {
     const offset = (page - 1) * limit;
-
     const conditions = [];
     const params = [];
+    let orderBy = "a.id DESC";
+
     if (userId) {
       conditions.push(
         "u.id != ? AND NOT EXISTS (SELECT 1 FROM participation AS p2 WHERE p2.activity_id = a.id AND p2.user_id = ?)",
       );
       params.push(userId, userId);
     }
+
+    if (sort === "recent") {
+      orderBy = "a.playing_at DESC";
+    }
+
+    if (sort === "oldest") {
+      orderBy = "a.playing_at ASC";
+    }
+
+    if (sort === "price") {
+      orderBy = "a.price ASC";
+    }
+
     if (filters) {
       if (filters.sport) {
         conditions.push("s.name = ?");
@@ -85,7 +105,9 @@ class ActivityRepository {
       WHERE a.visibility = 1
       ${query}
       AND a.playing_at >= CURDATE() 
-      GROUP BY a.id ORDER BY a.id DESC LIMIT ? OFFSET ?`,
+      GROUP BY a.id
+      ORDER BY ${orderBy}
+      LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
 

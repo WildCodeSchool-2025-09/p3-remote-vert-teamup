@@ -195,9 +195,10 @@ function ActivityForm() {
   };
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
-    )
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`, {
+      method: "GET",
+      headers: auth?.token ? { Authorization: `Bearer ${auth.token}` } : {},
+    })
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
   }, [auth]);

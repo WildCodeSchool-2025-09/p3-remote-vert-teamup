@@ -47,7 +47,7 @@ const verifyToken: RequestHandler = (req, res, next) => {
     const authorizationHeader = req.get("Authorization");
 
     if (authorizationHeader == null) {
-      throw new Error("Authorization header is missing");
+      return next();
     }
 
     const [type, token] = authorizationHeader.split(" ");
