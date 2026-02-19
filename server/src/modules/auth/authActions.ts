@@ -26,7 +26,7 @@ const logIn: RequestHandler = async (req, res, next) => {
         myPayload,
         process.env.APP_SECRET as string,
         {
-          expiresIn: "1h",
+          expiresIn: "12h",
         },
       );
 
@@ -47,7 +47,7 @@ const verifyToken: RequestHandler = (req, res, next) => {
     const authorizationHeader = req.get("Authorization");
 
     if (authorizationHeader == null) {
-      throw new Error("Authorization header is missing");
+      return next();
     }
 
     const [type, token] = authorizationHeader.split(" ");

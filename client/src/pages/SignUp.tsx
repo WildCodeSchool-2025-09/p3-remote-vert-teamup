@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { muiTheme } from "../theme/muiTheme";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "../styles/SignUp.css";
 import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
@@ -25,21 +25,12 @@ function SignUp() {
     phone: "",
     picture: "",
   });
-  const errorRef = useRef<HTMLParagraphElement | null>(null);
+
   const navigate = useNavigate();
   const [error, setError] = useState({
     field: "",
     message: "",
   });
-
-  useEffect(() => {
-    if (error && errorRef.current) {
-      errorRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [error]);
 
   const Submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,9 +227,7 @@ function SignUp() {
               error={error.field === "born_at"}
             />
           </div>
-          <p ref={errorRef} className={"message-error"}>
-            {error.message}
-          </p>
+          <p className={"message-error"}>{error.message}</p>
           <Button
             type="submit"
             variant="contained"

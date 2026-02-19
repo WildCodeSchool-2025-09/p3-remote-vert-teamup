@@ -13,7 +13,7 @@ router.get("/api/sports", sportActions.browse);
 router.get("/api/users", userActions.readByEmail);
 router.post("/api/users", userActions.validate, userActions.add);
 
-router.get("/api/activities", activityActions.browse);
+router.get("/api/activities", authActions.verifyToken, activityActions.browse);
 router.get("/api/activities/:id", activityActions.read);
 
 router.post("/api/login", authActions.logIn);
@@ -39,7 +39,7 @@ router.put(
 
 router.post("/api/message", messageActions.add);
 router.post("/api/message/likes", messageActions.addLike);
-router.get("/api/message", messageActions.brows);
+router.get("/api/message", messageActions.browse);
 router.get("/api/message/poll", messageActions.poll);
 router.put("/api/message/delete", messageActions.deleteMessage);
 

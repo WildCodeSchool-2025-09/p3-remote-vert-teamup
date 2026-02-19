@@ -40,31 +40,21 @@ function GroupChat({ activity: activityProp }: groupChatType) {
   const shouldPoll = useRef(true);
   const isPollingRef = useRef(false);
 
-  // const messagesEndRef = useRef<HTMLDivElement>(null);
-  // const prevMessageCountRef = useRef(0);
-
-  // useEffect(() => {
-  //   if (prevMessageCountRef.current < messages.length) {
-  //     messagesEndRef.current?.scrollIntoView({
-  //       behavior: "smooth",
-  //       block: "center",
-  //     });
-  //   }
-
-  //   prevMessageCountRef.current = messages.length;
-  // }, [messages]);
-
   useEffect(() => {
     const getMessages = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/message?userId=${auth?.user.id}&activityId=${activity.id}`,
+          `${import.meta.env.VITE_API_URL}/api/message?activityId=${activity.id}`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${auth?.token}`,
-            },
+            headers: auth?.user
+              ? {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${auth?.token}`,
+                }
+              : {
+                  "Content-Type": "application/json",
+                },
           },
         );
 

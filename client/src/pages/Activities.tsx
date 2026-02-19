@@ -15,9 +15,9 @@ const tagLabelTranslations = [
   { key: "air_conditioning", label: "Climatisation" },
   { key: "disabled", label: "Handisport" },
   { key: "all", label: "Tout Niveu" },
-  { key: "amateur", label: "Débutant" },
-  { key: "begginer", label: "Intermédiaire" },
-  { key: "advance", label: "Confirmé" },
+  { key: "beginner", label: "Débutant" },
+  { key: "amateur", label: "Intermédiaire" },
+  { key: "advanced", label: "Confirmé" },
 ];
 
 const sortingCondition = [
@@ -42,6 +42,7 @@ function Activities() {
   });
   const [totalPages, setTotalPages] = useState(1);
   const [sortOpen, setSortOpen] = useState(false);
+  const [sort, setSort] = useState("");
   const navigate = useNavigate();
 
   const { auth } = useAuth();
@@ -107,10 +108,15 @@ function Activities() {
     const fetchAndFilterActivities = async () => {
       const queryString = new URLSearchParams({
         filters: JSON.stringify(filters),
+        sort: JSON.stringify(sort),
       }).toString();
 
       const activitiesResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}&userId=${auth?.user.id}`,
+        `${import.meta.env.VITE_API_URL}/api/activities?page=${currentPage}&limit=${LIMIT}&${queryString}`,
+        {
+          method: "GET",
+          headers: auth?.token ? { Authorization: `Bearer ${auth.token}` } : {},
+        },
       );
 
       const activitiesData = await activitiesResponse.json();
@@ -121,38 +127,14 @@ function Activities() {
     };
 
     fetchAndFilterActivities();
-  }, [currentPage, filters, auth]);
-
-  const sortActivities = (item: string) => {
-    const sortedActivities = [...activities];
-
-    if (item === "recent") {
-      sortedActivities.sort(
-        (a, b) =>
-          new Date(a.playing_at).getTime() - new Date(b.playing_at).getTime(),
-      );
-    }
-
-    if (item === "oldest") {
-      sortedActivities.sort(
-        (a, b) =>
-          new Date(b.playing_at).getTime() - new Date(a.playing_at).getTime(),
-      );
-    }
-
-    if (item === "price") {
-      sortedActivities.sort((a, b) => Number(a.price) - Number(b.price));
-    }
-
-    setActivities(sortedActivities);
-  };
+  }, [currentPage, filters, sort, auth]);
 
   return (
     <>
       {!isMobile && <p className="tagline">Que recherchez-vous ?</p>}
       <section className="page-activities">
         <div className="activities-container">
-          <SearchBar setFilters={setFilters} />
+          <SearchBar setFilters={setFilters} filters={filters} />
           <div className="header-activity">
             <h1>Activités disponibles</h1>
             <div className="result-wrapper">
@@ -217,7 +199,7 @@ function Activities() {
                             value={item.key}
                             name="sort"
                             onClick={() => {
-                              sortActivities(item.key);
+                              setSort(item.key);
                             }}
                           />
                         </label>

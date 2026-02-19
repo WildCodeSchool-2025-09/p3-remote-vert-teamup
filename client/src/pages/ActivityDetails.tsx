@@ -10,6 +10,9 @@ function ActivityDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activity, setActivity] = useState<Activity | null>(null);
+  const [reservationStatus, setReservationStatus] = useState<
+    "idle" | "loading" | "already"
+  >("idle");
   const [participants, setParticipants] = useState<Participant[]>([]);
   const mapModalRef = useRef<HTMLDialogElement>(null);
   const openMapModal = () => mapModalRef.current?.showModal();
@@ -26,6 +29,18 @@ function ActivityDetails() {
       .then((response) => response.json())
       .then((participants) => setParticipants(participants));
   }, [id]);
+
+  useEffect(() => {
+    if (!auth || !participants.length) return;
+
+    const isParticipant = participants.find(
+      (participant) => participant.userId === auth.user.id,
+    );
+
+    if (isParticipant?.status === "accepted") {
+      setReservationStatus("already");
+    }
+  }, [participants, auth]);
 
   if (!activity) {
     return <p>Chargement...</p>;
@@ -83,9 +98,8 @@ function ActivityDetails() {
       return;
     }
 
-    if (nbAvailableSpots === 0) {
-      return;
-    }
+    if (nbAvailableSpots <= 0 || reservationStatus !== "idle") return;
+    setReservationStatus("loading");
 
     const newParticipant = {
       userId: auth.user.id,
@@ -107,6 +121,7 @@ function ActivityDetails() {
       );
 
       if (response.status === StatusCodes.CONFLICT) {
+        setReservationStatus("already");
         return;
       }
 
@@ -125,6 +140,7 @@ function ActivityDetails() {
       }, 50);
     } catch (err) {
       console.error(err);
+      setReservationStatus("idle");
     }
   };
 
@@ -332,7 +348,11 @@ function ActivityDetails() {
         }
         disabled={nbAvailableSpots <= 0}
       >
-        {nbAvailableSpots <= 0 ? "Complet" : "Réserver"}
+        {reservationStatus === "already"
+          ? "Déjà inscrit"
+          : nbAvailableSpots <= 0
+            ? "Complet"
+            : "Réserver"}
       </button>
     </section>
   );

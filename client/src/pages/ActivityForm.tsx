@@ -35,8 +35,8 @@ function ActivityForm() {
   const [toilet, setToilet] = useState(false);
   const [airConditioning, setAirConditioning] = useState(false);
   const [level, setLevel] = useState<
-    "begginer" | "amateur" | "advance" | "All"
-  >("All");
+    "beginner" | "amateur" | "advanced" | "all"
+  >("all");
   const [handisport, setHandisport] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [guestInput, setGuestInput] = useState<string>("");
@@ -195,9 +195,10 @@ function ActivityForm() {
   };
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}&userId=${auth?.user.id}`,
-    )
+    fetch(`${import.meta.env.VITE_API_URL}/api/activities?limit=${LIMIT}`, {
+      method: "GET",
+      headers: auth?.token ? { Authorization: `Bearer ${auth.token}` } : {},
+    })
       .then((response) => response.json())
       .then((activities) => setActivities(activities.activities));
   }, [auth]);
@@ -400,17 +401,17 @@ function ActivityForm() {
             shower ||
             toilet ||
             airConditioning ||
-            level !== "All" ||
+            level !== "all" ||
             handisport) && (
             <div className="criteria-tags">
-              {level !== "All" && (
+              {level !== "all" && (
                 <span className="criteria-tag">
-                  {level === "begginer"
+                  {level === "beginner"
                     ? "Débutant"
                     : level === "amateur"
                       ? "Intermédiaire"
                       : "Confirmé"}
-                  <button type="button" onClick={() => setLevel("All")}>
+                  <button type="button" onClick={() => setLevel("all")}>
                     ✕
                   </button>
                 </span>
@@ -479,7 +480,7 @@ function ActivityForm() {
                   setShower(false);
                   setToilet(false);
                   setAirConditioning(false);
-                  setLevel("All");
+                  setLevel("all");
                   setHandisport(false);
                 }}
               >
@@ -529,8 +530,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="levelDesktop"
-                    checked={level === "All"}
-                    onChange={() => setLevel("All")}
+                    checked={level === "all"}
+                    onChange={() => setLevel("all")}
                   />
                 </label>
                 <label>
@@ -538,8 +539,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="levelDesktop"
-                    checked={level === "begginer"}
-                    onChange={() => setLevel("begginer")}
+                    checked={level === "beginner"}
+                    onChange={() => setLevel("beginner")}
                   />
                 </label>
                 <label>
@@ -556,8 +557,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="levelDesktop"
-                    checked={level === "advance"}
-                    onChange={() => setLevel("advance")}
+                    checked={level === "advanced"}
+                    onChange={() => setLevel("advanced")}
                   />
                 </label>
               </fieldset>
@@ -769,7 +770,7 @@ function ActivityForm() {
                   setShower(false);
                   setToilet(false);
                   setAirConditioning(false);
-                  setLevel("All");
+                  setLevel("all");
                   setHandisport(false);
                 }}
               >
@@ -825,8 +826,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="level"
-                    checked={level === "All"}
-                    onChange={() => setLevel("All")}
+                    checked={level === "all"}
+                    onChange={() => setLevel("all")}
                   />
                 </label>
                 <label className="criteria-label">
@@ -834,8 +835,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="level"
-                    checked={level === "begginer"}
-                    onChange={() => setLevel("begginer")}
+                    checked={level === "beginner"}
+                    onChange={() => setLevel("beginner")}
                   />
                 </label>
                 <label className="criteria-label">
@@ -852,8 +853,8 @@ function ActivityForm() {
                   <input
                     type="radio"
                     name="level"
-                    checked={level === "advance"}
-                    onChange={() => setLevel("advance")}
+                    checked={level === "advanced"}
+                    onChange={() => setLevel("advanced")}
                   />
                 </label>
               </div>
